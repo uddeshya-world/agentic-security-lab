@@ -1,0 +1,32 @@
+{
+  "id": "01-triage-the-exfil",
+  "title": "Triage the exfil you caused",
+  "order": 1,
+  "difficulty": "intermediate",
+  "est_minutes": 20,
+  "summary": "Run the cross-tool exfiltration, then answer the five questions every triage has to answer, using only what the environment recorded.",
+  "owasp": [
+    "LLM02 Sensitive Information Disclosure",
+    "LLM06 Excessive Agency"
+  ],
+  "controls": [],
+  "takeaway": "Impact is a chain. Triage means naming every link, and saying plainly which links the evidence does not cover.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "The five questions"
+    },
+    {
+      "id": "step-02",
+      "title": "Cause the incident"
+    },
+    {
+      "id": "step-03",
+      "title": "Corroborate it in the sink"
+    },
+    {
+      "id": "step-04",
+      "title": "Write the timeline"
+    }
+  ]
+}

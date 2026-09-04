@@ -1,0 +1,27 @@
+# Local-only in-browser terminal (ttyd) for the guided stepper.
+#
+# Opt-in overlay — NOT part of the default stack and NEVER part of the hosted
+# build. It gives the learner a faithful, host-like shell: the repo is mounted
+# at /app and 127.0.0.1:<port> is forwarded to each tool service, so every
+# lesson command runs unmodified in the browser.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.terminal.yml up -d ttyd
+#
+# The port is bound to 127.0.0.1 only. Do not expose 7681 to any network.
+services:
+  ttyd:
+    build:
+      context: .
+      dockerfile: Dockerfile.terminal
+    depends_on:
+      - agent
+      - db-tool
+      - email-tool
+      - file-tool
+      - mailhog
+    volumes:
+      - ./:/app:ro
+      - ./workspace:/app/workspace
+    ports:
+      - "127.0.0.1:7681:7681"
+    restart: unless-stopped

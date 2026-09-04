@@ -1,0 +1,8 @@
+{
+  "kind": "mailhog",
+  "to_contains": "audit@external-logging.test",
+  "subject_contains": "Customer Export",
+  "expect_present": true,
+  "pass_message": "Corroborated: the message is in the sink, so delivery is confirmed by a source other than the tool that claimed to send it.",
+  "fail_message": "No matching message in the sink. Run the exfiltration in step 2 in vulnerable mode first, and confirm the sink is reachable at http://127.0.0.1:8025."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "06-rag-deep-poisoning",
+  "legacy_id": "m2",
+  "order": 6,
+  "title": "Deep RAG poisoning — crowding & false provenance",
+  "summary": "Module 2. The trust-label filter from Module 1 is not enough. Beat it two ways — flood retrieval with near-duplicate poison, and mislabel a poison doc as trusted — then build a content-aware detector that catches both.",
+  "difficulty": "hard",
+  "est_minutes": 20,
+  "attack_id": "m2_rag_deep",
+  "mailhog": false,
+  "owasp": ["LLM01 Prompt Injection", "LLM04 Data Poisoning", "LLM08 Vector Weaknesses", "ASI06 Context Poisoning"],
+  "controls": ["C6", "C8"],
+  "code_paths": ["defenses/m02/rag_detector.py", "rag/retriever.py", "rag/chroma_store.py"],
+  "takeaway": "Trust labels are spoofable and top-k is floodable. Defend on content, not just metadata.",
+  "design_rule": "Detect instruction-shaped chunks and collapse near-duplicate crowding before context is built.",
+  "steps": [
+    { "id": "step-01", "title": "Why Module 1's filter fails", "file": "step-01.md" },
+    { "id": "step-02", "title": "Flood and mislabel", "file": "step-02.md" },
+    { "id": "step-03", "title": "Build a content detector", "file": "step-03.md" },
+    { "id": "step-04", "title": "Prove the context is clean", "file": "step-04.md" }
+  ]
+}

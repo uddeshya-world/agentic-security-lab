@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m10",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Fabrication shipped: the lifetime-warranty claim reached the user with no source and no citation.",
+  "fail_message": "The fabricated claim did not ship. Ensure the graded run used vulnerable mode."
+}

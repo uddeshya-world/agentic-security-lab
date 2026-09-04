@@ -1,0 +1,6 @@
+{
+  "kind": "lab_status",
+  "assert": "all_tools_ok",
+  "pass_message": "All three tool servers are reachable and healthy. The lab is ready.",
+  "fail_message": "One or more tool servers are not responding. Run `docker compose ps` and check logs before continuing."
+}

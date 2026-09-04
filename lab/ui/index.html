@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CyberRange — sandbox console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+  <style>
+    /* The console inherits the range's palette rather than defining a second
+       identity. Its own class names keep working; only the tokens move. */
+    :root {
+      --panel: var(--plate);
+      --panel-2: var(--shelf);
+      --line: var(--edge);
+      --text: var(--chalk);
+      --muted: var(--ash);
+      --cyan: var(--halon);
+      --amber: var(--ember);
+      --red: var(--ember);
+      --blue: #b79cff;
+      --sql: var(--ember-ink);
+      --radius: 8px;
+      --font: var(--body);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: var(--font); background: var(--void); color: var(--text); min-height: 100vh; }
+    .shell { position: relative; max-width: 1440px; margin: 0 auto; padding: var(--s5) var(--s5) var(--s7); }
+
+    header.top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 8px 4px 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .brand {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .tagline { color: var(--muted); font-size: 0.92rem; max-width: 56ch; line-height: 1.45; }
+    .remediation-list { margin: 0; padding-left: 1.15rem; color: var(--muted); font-size: 0.86rem; line-height: 1.5; }
+    .remediation-list li { margin: 4px 0; }
+    .remediation-list strong { color: var(--text); }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chip {
+      font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 999px;
+      border: 1px solid var(--line); color: var(--muted);
+    }
+    .chip.on { border-color: #1f5c45; color: var(--cyan); }
+    .chip.partial { border-color: #5c4a18; color: var(--amber); }
+    .chip.off { opacity: 0.45; }
+    .owasp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.78rem; }
+    @media (max-width: 700px) { .owasp-grid { grid-template-columns: 1fr; } }
+    .owasp-item {
+      background: var(--void); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+    }
+    .owasp-item .id { font-family: var(--mono); font-size: 10px; color: var(--amber); }
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .tabs button {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      background: transparent; border: 1px solid var(--line); color: var(--muted);
+      border-radius: 6px; padding: 6px 10px; cursor: pointer;
+    }
+    .tabs button.active { border-color: var(--amber); color: var(--amber); }
+
+    .status-row {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end;
+    }
+    .pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .pill .led {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--muted);
+      box-shadow: 0 0 0 0 transparent;
+    }
+    .pill.on .led { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    .pill.hot .led { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+    .pill.bad .led { background: var(--red); box-shadow: 0 0 10px var(--red); }
+    .pill.hot { color: var(--amber); border-color: #5a3a22; }
+    .pill.on { color: var(--cyan); border-color: #1a4a3a; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+      min-height: calc(100vh - 140px);
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .panel-h {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,0.25);
+    }
+    .panel-h h2 {
+      margin: 0;
+      font-size: 0.78rem;
+      font-family: var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .panel-b { padding: 12px 14px; }
+
+    /* attack catalog */
+    .attack-card {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text);
+      padding: 11px 12px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .attack-card:hover { background: rgba(255,122,60,0.06); border-color: #3a2a20; }
+    .attack-card.active {
+      border-color: var(--amber);
+      background: rgba(255,122,60,0.08);
+    }
+    .attack-card .t {
+      font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;
+    }
+    .attack-card .m {
+      font-family: var(--mono); font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .attack-card .d {
+      margin-top: 6px; font-size: 0.8rem; color: var(--muted); line-height: 1.35;
+    }
+
+    .links { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .links a {
+      color: var(--blue); text-decoration: none; font-size: 0.82rem;
+      font-family: var(--mono);
+    }
+    .links a:hover { color: var(--cyan); }
+
+    .main-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+    .prompt-box {
+      font-family: var(--mono);
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      background: var(--void);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+    .prompt-box:focus {
+      outline: 2px solid rgba(255,122,60,0.35);
+      border-color: var(--amber);
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button.fire, button.ghost {
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.88rem;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    button.fire {
+      background: linear-gradient(180deg, #ff8a4c, var(--amber));
+      color: #1a0c04;
+      box-shadow: 0 0 24px rgba(255,122,60,0.25);
+    }
+    button.fire:disabled { opacity: 0.45; cursor: wait; box-shadow: none; }
+    button.ghost {
+      background: transparent;
+      border-color: var(--line);
+      color: var(--text);
+    }
+    button.ghost:hover { border-color: var(--muted); }
+
+    .expect {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    @media (max-width: 700px) { .expect { grid-template-columns: 1fr; } }
+    .expect .box {
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      border: 1px solid var(--line);
+      background: var(--void);
+    }
+    .expect .box h4 {
+      margin: 0 0 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .expect .vuln { border-color: #4a2830; }
+    .expect .sec { border-color: #1a4a3a; }
+
+    .timeline {
+      font-family: var(--mono);
+      font-size: 12px;
+      max-height: 340px;
+      overflow: auto;
+      background: var(--void);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+    }
+    .ev {
+      padding: 8px 0;
+      border-bottom: 1px solid #18202a;
+      line-height: 1.45;
+    }
+    .ev:last-child { border-bottom: none; }
+    .ev .k {
+      display: inline-block;
+      min-width: 72px;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--blue);
+    }
+    .ev .k.sql { color: var(--sql); }
+    .ev .k.defense { color: var(--amber); }
+    .ev .k.tool { color: var(--cyan); }
+    .ev .k.plan { color: #c4a0ff; }
+    .ev .k.result { color: var(--red); }
+    .sql-block {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #0c140c;
+      border: 1px solid #2a4a2a;
+      border-radius: 6px;
+      color: var(--sql);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .forensics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 800px) { .forensics { grid-template-columns: 1fr; } }
+    .mono-out {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: var(--void);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      max-height: 220px;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: var(--muted);
+      margin: 0;
+    }
+    .mono-out strong { color: var(--text); }
+
+    .banner {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .banner.show { display: block; }
+    .banner.ok { background: #10261c; color: var(--cyan); border: 1px solid #1f5c45; }
+    .banner.fail { background: #2a1218; color: var(--red); border: 1px solid #5c2430; }
+    .banner.warn { background: #2a1c0e; color: var(--amber); border: 1px solid #5c3a18; }
+
+    .hint {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--void);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      white-space: pre-wrap;
+      line-height: 1.45;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: var(--amber);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; }
+      body::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="cr-nav">
+    <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange<span class="sub">console</span></a>
+    <a class="link" href="/lab/ui/catalog.html">← Back to the range</a>
+    <span class="grow"></span>
+    <a class="link" href="http://127.0.0.1:8025" target="_blank" rel="noopener">MailHog</a>
+    <a class="link" href="/docs" target="_blank" rel="noopener">API</a>
+  </header>
+  <div class="shell">
+    <header class="top">
+      <div class="brand">
+        <div class="eyebrow">sandbox · free fire</div>
+        <h1>Fire anything at the live agent.</h1>
+        <p class="tagline">
+          No steps, no grading — the whole attack catalogue against the real planner and real tools, with the
+          remediation card for each one. If you want the taught path with graded checks,
+          <a href="/lab/ui/catalog.html" style="color:var(--halon-ink)">start at the range</a>.
+        </p>
+      </div>
+      <div class="status-row" id="statusPills">
+        <span class="pill" id="pillMode"><span class="led"></span><span>mode…</span></span>
+        <span class="pill" id="pillOllama"><span class="led"></span><span>ollama…</span></span>
+        <span class="pill" id="pillTools"><span class="led"></span><span>tools…</span></span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="panel">
+        <div class="panel-h"><h2>Attack catalog</h2></div>
+        <div class="panel-b">
+          <p style="margin:0 0 12px;font-size:0.82rem;color:var(--muted);line-height:1.4">
+            Select an exploit. The full prompt loads in the console. Fire it at the <strong style="color:var(--text)">live agent</strong>.
+          </p>
+          <div id="attackList"><div class="skel" style="height:56px;margin-bottom:8px"></div><div class="skel" style="height:56px;margin-bottom:8px"></div><div class="skel" style="height:56px"></div></div>
+          <div class="links">
+            <a href="http://127.0.0.1:8025" target="_blank" rel="noopener">↗ MailHog (exfil proof)</a>
+            <a href="/docs" target="_blank" rel="noopener">↗ API docs</a>
+            <a href="/lab/status" target="_blank" rel="noopener">↗ Stack status JSON</a>
+          </div>
+          <div style="margin-top:16px">
+            <div class="panel-h" style="padding:8px 0;border:none;background:transparent"><h2>Secure mode</h2></div>
+            <div class="hint" id="secureHint">Loading…</div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main-col">
+        <section class="panel">
+          <div class="panel-h">
+            <h2>Live agent console</h2>
+            <span class="pill" id="runState" style="padding:4px 8px">idle</span>
+          </div>
+          <div class="panel-b">
+            <label for="prompt" style="display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:0.06em;text-transform:uppercase">
+              Prompt sent to planner (Ollama)
+            </label>
+            <textarea id="prompt" class="prompt-box" spellcheck="false" placeholder="Select an attack or write your own exploit prompt…"></textarea>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:0.85rem;color:var(--muted);cursor:pointer">
+              <input type="checkbox" id="seedPoison" />
+              Seed RAG poison before run (for indirect prompt injection)
+            </label>
+            <div class="actions">
+              <button class="fire" id="btnFire" type="button">▶ Fire at live agent</button>
+              <button class="ghost" id="btnClear" type="button">Clear timeline</button>
+            </div>
+            <div id="resultBanner" class="banner"></div>
+            <div class="expect">
+              <div class="box vuln">
+                <h4>Expect if vulnerable</h4>
+                <div id="expectVuln">Select an attack</div>
+              </div>
+              <div class="box sec">
+                <h4>Expect if SECURE_MODE</h4>
+                <div id="expectSec">Select an attack</div>
+              </div>
+            </div>
+            <div class="chip-row" id="owaspChips"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-h"><h2>How to prevent this (remediation)</h2></div>
+          <div class="panel-b" id="remediationPanel">
+            <p style="margin:0;color:var(--muted);font-size:0.88rem">Select an attack to see root cause, fixes, and lab code.</p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-h"><h2>Execution timeline</h2></div>
+          <div class="panel-b">
+            <div class="timeline" id="timeline">
+              <div class="ev" style="color:var(--muted)">Fire an attack. You will see PLANNER steps → TOOL calls → SQL / DEFENSE here.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-h"><h2>Forensics</h2></div>
+          <div class="panel-b">
+            <div class="forensics">
+              <div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">Planner plan (JSON)</div>
+                <pre class="mono-out" id="planOut">—</pre>
+              </div>
+              <div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">Tool results + final answer</div>
+                <pre class="mono-out" id="toolsOut">—</pre>
+              </div>
+            </div>
+            <div style="margin-top:12px">
+              <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">RAG context (what the model saw)</div>
+              <pre class="mono-out" id="ragOut">—</pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-h"><h2>OWASP / AI security coverage</h2></div>
+          <div class="panel-b">
+            <p id="curriculumMission" style="margin:0 0 10px;font-size:0.86rem;color:var(--muted);line-height:1.45"></p>
+            <div class="tabs">
+              <button type="button" class="active" data-tab="llm" id="tabLlm">LLM Top 10</button>
+              <button type="button" data-tab="asi" id="tabAsi">Agentic ASI</button>
+              <button type="button" data-tab="ctrl" id="tabCtrl">Controls C1–C7</button>
+            </div>
+            <div id="coverageBody" class="owasp-grid"></div>
+            <p id="coverageSummary" style="margin:12px 0 0;font-family:var(--mono);font-size:11px;color:var(--muted)"></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let exploits = [];
+    let current = null;
+    let curriculum = null;
+
+    async function api(path, opts = {}) {
+      const r = await fetch(path, {
+        ...opts,
+        headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+      });
+      const text = await r.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
+      if (!r.ok) {
+        const e = new Error(data.error || data.detail || text || r.statusText);
+        e.data = data;
+        throw e;
+      }
+      return data;
+    }
+
+    function setPill(el, cls, text) {
+      el.className = "pill " + (cls || "");
+      el.innerHTML = `<span class="led"></span><span>${text}</span>`;
+    }
+
+    async function refreshStatus() {
+      const s = await api("/lab/status");
+      const mode = s.mode_summary || {};
+      const modeEl = document.getElementById("pillMode");
+      if (mode.all_tools_secure) setPill(modeEl, "on", "SECURE_MODE on");
+      else if (mode.all_tools_vuln) setPill(modeEl, "hot", "VULNERABLE mode");
+      else setPill(modeEl, "bad", "mixed modes — recreate stack");
+
+      const ol = document.getElementById("pillOllama");
+      if (s.ollama?.reachable_from_agent) setPill(ol, "on", `ollama · ${s.ollama.model || "ok"}`);
+      else setPill(ol, "bad", "ollama unreachable");
+
+      const toolsOk = Object.values(s.tools || {}).every(t => t.ok);
+      setPill(document.getElementById("pillTools"), toolsOk ? "on" : "bad", toolsOk ? "tools up" : "tools down");
+
+      renderSecureHelp(s.secure_mode_help);
+      return s;
+    }
+
+    /* "Secure mode" means two different things. Show the per-run switch first —
+       it is what the guided scenarios use — and the container recreate second,
+       with one shell shown at a time instead of both mashed into one box. */
+    function renderSecureHelp(help) {
+      const el = document.getElementById("secureHint");
+      if (!help) { el.textContent = "Status unavailable."; return; }
+      const isWin = navigator.platform?.startsWith("Win") || /Windows/.test(navigator.userAgent);
+      const first = isWin ? "powershell" : "bash";
+      const other = isWin ? "bash" : "powershell";
+      el.innerHTML = `
+        <p style="margin:0 0 8px"><strong style="color:var(--text)">For one run:</strong> ${esc(help.per_run)}</p>
+        <p style="margin:0 0 6px"><strong style="color:var(--text)">Persistently:</strong> ${esc(help.persistent)}</p>
+        <pre class="mono-out" style="margin:0 0 6px" id="secCmd">${esc(help[first])}</pre>
+        <button type="button" class="ghost" id="secSwap" style="font-size:11px;padding:3px 8px">show ${esc(other)}</button>
+        <p style="margin:8px 0 0;color:var(--muted)">${esc(help.revert)}</p>`;
+      let showing = first;
+      document.getElementById("secSwap").onclick = () => {
+        showing = showing === "bash" ? "powershell" : "bash";
+        document.getElementById("secCmd").textContent = help[showing];
+        document.getElementById("secSwap").textContent =
+          "show " + (showing === "bash" ? "powershell" : "bash");
+      };
+    }
+
+    function selectAttack(id) {
+      current = exploits.find(e => e.id === id) || exploits[0];
+      document.querySelectorAll(".attack-card").forEach(c => {
+        c.classList.toggle("active", c.dataset.id === current.id);
+      });
+      document.getElementById("prompt").value = current.prompt;
+      document.getElementById("seedPoison").checked = !!current.seed_poison;
+      document.getElementById("expectVuln").textContent = current.expected;
+      document.getElementById("expectSec").textContent = current.secure_expect;
+      document.getElementById("resultBanner").className = "banner";
+      renderRemediation(current);
+      renderOwaspChips(current);
+    }
+
+    function renderOwaspChips(atk) {
+      const row = document.getElementById("owaspChips");
+      const tags = (atk.owasp || []).concat((atk.controls || []).map(c => "Control " + c));
+      row.innerHTML = tags.map(t => `<span class="chip on">${esc(t)}</span>`).join("")
+        || `<span class="chip">No tags</span>`;
+    }
+
+    function renderRemediation(atk) {
+      const panel = document.getElementById("remediationPanel");
+      const r = atk.remediation;
+      if (!r) {
+        panel.innerHTML = `<p style="margin:0;color:var(--muted)">No remediation card for this attack.</p>`;
+        return;
+      }
+      const fixes = (r.immediate_fix || []).map(x => `<li>${esc(x)}</li>`).join("");
+      const prod = (r.production_checklist || []).map(x => `<li>${esc(x)}</li>`).join("");
+      const code = (r.code || []).map(c => `<span class="chip">${esc(c)}</span>`).join("");
+      panel.innerHTML = `
+        <p style="margin:0 0 8px;font-size:0.9rem"><strong style="color:var(--text)">Root cause:</strong>
+          <span style="color:var(--muted)">${esc(r.root_cause)}</span></p>
+        <p style="margin:0 0 8px;font-size:0.9rem"><strong style="color:var(--text)">Impact:</strong>
+          <span style="color:var(--muted)">${esc(r.impact)}</span></p>
+        <p style="margin:0 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--cyan)">Immediate fix</p>
+        <ul class="remediation-list">${fixes}</ul>
+        <p style="margin:12px 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--amber)">What SECURE_MODE does in this lab</p>
+        <p style="margin:0 0 8px;color:var(--muted);font-size:0.86rem">${esc(r.secure_mode_does)}</p>
+        <p style="margin:12px 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Production checklist</p>
+        <ul class="remediation-list">${prod}</ul>
+        <div class="chip-row" style="margin-top:10px">${code}</div>
+        <p style="margin:10px 0 0;font-size:0.8rem;color:var(--muted)">
+          Practice: fire in VULNERABLE → read this card → enable SECURE_MODE + recreate → fire again → match DEFENSE lines to controls.
+        </p>`;
+    }
+
+    function coverageClass(v) {
+      if (v === true) return "on";
+      if (v === "partial") return "partial";
+      return "off";
+    }
+
+    function renderCoverage(tab) {
+      const body = document.getElementById("coverageBody");
+      if (!curriculum) return;
+      if (tab === "llm") {
+        body.innerHTML = Object.entries(curriculum.owasp_llm || {}).map(([id, v]) => `
+          <div class="owasp-item">
+            <div class="id">${id} · <span class="chip ${coverageClass(v.covered)}">${v.covered === true ? "covered" : v.covered === "partial" ? "partial" : "not yet"}</span></div>
+            <div style="margin-top:4px;color:var(--text);font-weight:500">${esc(v.name)}</div>
+            <div style="margin-top:4px;color:var(--muted)">${esc(v.student_learns || "")}</div>
+          </div>`).join("");
+      } else if (tab === "asi") {
+        body.innerHTML = Object.entries(curriculum.owasp_asi || {}).map(([id, v]) => `
+          <div class="owasp-item">
+            <div class="id">${id} · <span class="chip ${coverageClass(v.covered)}">${v.covered === true ? "covered" : v.covered === "partial" ? "partial" : "not yet"}</span></div>
+            <div style="margin-top:4px;color:var(--text);font-weight:500">${esc(v.name)}</div>
+            <div style="margin-top:4px;color:var(--muted)">${esc(v.student_learns || "")}</div>
+          </div>`).join("");
+      } else {
+        body.innerHTML = (curriculum.controls || []).map(c => `
+          <div class="owasp-item">
+            <div class="id">${esc(c.id)} · ${(c.owasp || []).join(", ")}</div>
+            <div style="margin-top:4px;color:var(--text);font-weight:500">${esc(c.name)}</div>
+            <div style="margin-top:4px;color:var(--muted)">${esc(c.how)}</div>
+            <div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--cyan)">${esc((c.lab_code || []).join(" · "))}</div>
+          </div>`).join("");
+      }
+    }
+
+    function phaseKey(phase) {
+      const m = {
+        plan: "PLAN", tool: "TOOL", sql: "SQL", defense: "DEFENSE",
+        result: "RESULT", retrieve: "RAG", explain: "NOTE", teach: "NOTE", user: "USER",
+      };
+      return m[phase] || (phase || "LOG").toUpperCase();
+    }
+
+    function renderTimeline(list) {
+      const el = document.getElementById("timeline");
+      if (!list || !list.length) {
+        el.innerHTML = `<div class="ev" style="color:var(--muted)">No events yet.</div>`;
+        return;
+      }
+      el.innerHTML = list.map(e => {
+        const k = phaseKey(e.phase);
+        const cls = (e.phase || "").toLowerCase();
+        let extra = "";
+        const sql = e.detail?.sql || (e.phase === "sql" ? e.message.replace(/^SQL:\s*/i, "") : null);
+        if (sql && e.phase === "sql") {
+          extra = `<div class="sql-block">${esc(sql)}</div>`;
+        }
+        return `<div class="ev"><span class="k ${cls}">${k}</span> ${esc(e.message)}${extra}</div>`;
+      }).join("");
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
+    }
+
+    function showForensics(data) {
+      document.getElementById("planOut").textContent =
+        JSON.stringify(data.plan || [], null, 2);
+      document.getElementById("toolsOut").textContent =
+        JSON.stringify({
+          final_answer: data.final_answer,
+          executor_results: data.executor_results,
+        }, null, 2);
+      const rag = data.rag_context || [];
+      document.getElementById("ragOut").textContent =
+        rag.length ? rag.map((c, i) => `--- chunk ${i + 1} ---\n${c}`).join("\n\n") : "(empty)";
+    }
+
+    function banner(cls, text) {
+      const b = document.getElementById("resultBanner");
+      b.className = "banner show " + cls;
+      b.textContent = text;
+    }
+
+    async function fire() {
+      const prompt = document.getElementById("prompt").value.trim();
+      if (!prompt) return;
+      const btn = document.getElementById("btnFire");
+      const state = document.getElementById("runState");
+      btn.disabled = true;
+      state.innerHTML = `<span class="spinner"></span>running live agent…`;
+      banner("warn", "Calling live Ollama planner + tools. This can take 30–120s on CPU…");
+
+      try {
+        let data;
+        if (current && document.getElementById("prompt").value.trim() === current.prompt) {
+          data = await api("/lab/attack/" + current.id, { method: "POST" });
+        } else {
+          data = await api("/run", {
+            method: "POST",
+            body: JSON.stringify({
+              session_id: "live-ui",
+              message: prompt,
+              seed_poison: document.getElementById("seedPoison").checked,
+            }),
+          });
+        }
+
+        renderTimeline(data.events || []);
+        showForensics(data);
+
+        if (!data.ok) {
+          banner("fail", "Agent error: " + (data.error || "unknown") + " — check ollama pill above.");
+        } else {
+          const path = data.path || "live_ollama";
+          const tools = data.executor_results || [];
+          const usedTools = tools.filter(t => t.tool && t.tool !== "answer");
+          const blocked = tools.some(t => {
+            const r = t.result;
+            if (!r) return false;
+            if (typeof r === "object" && (r.error || r.error_type)) return true;
+            if (r.result && r.result.error) return true;
+            return false;
+          });
+          // Plain-English outcome for students
+          if (path === "live_ollama") {
+            if (data.secure_mode && blocked) {
+              banner("ok", "LIVE AI planned tools → SECURE_MODE blocked them. Read DEFENSE + Remediation.");
+            } else if (usedTools.length) {
+              banner("fail", "LIVE AI planned tools → exploit ran on real Docker tools. Check plan JSON + SQL.");
+            } else {
+              banner("warn", "LIVE AI answered without tools. Try another catalog attack.");
+            }
+          } else {
+            // executor_fallback — LLM too slow/skipped tools
+            if (data.secure_mode && blocked) {
+              banner("ok",
+                "AI planner was too slow (timeout). Lab still ran the expected attack plan on REAL tools — and SECURE_MODE blocked it. " +
+                "This is still a valid blue-team demo. Read DEFENSE + Remediation.");
+            } else if (usedTools.length) {
+              banner("fail",
+                "AI planner was too slow (timeout on CPU). Lab still ran the expected attack on REAL Docker tools (SQL/email are real). " +
+                "Not a fake HTML demo — check plan JSON, SQL, MailHog. For live AI planning, wait for a warm model or use a smaller one.");
+            } else {
+              banner("warn", "Fallback ran but no tool calls observed. Check tool pills / logs.");
+            }
+          }
+        }
+        await refreshStatus();
+      } catch (err) {
+        banner("fail", String(err.message || err));
+        document.getElementById("toolsOut").textContent = JSON.stringify(err.data || { error: String(err) }, null, 2);
+      } finally {
+        btn.disabled = false;
+        state.textContent = "idle";
+      }
+    }
+
+    async function init() {
+      exploits = await api("/lab/exploits");
+      try {
+        curriculum = await api("/lab/curriculum");
+        document.getElementById("curriculumMission").textContent = curriculum.mission || "";
+        const cs = curriculum.coverage_summary || {};
+        document.getElementById("coverageSummary").textContent =
+          `LLM Top 10: ${cs.llm_top10_full || 0} full + ${cs.llm_top10_partial || 0} partial / ${cs.llm_top10_total || 10} · ` +
+          `Agentic ASI: ${cs.asi_full || 0} full + ${cs.asi_partial || 0} partial / ${cs.asi_listed || 0} in scope · ` +
+          `Controls taught: ${cs.controls_taught || 0}`;
+        renderCoverage("llm");
+      } catch (e) {
+        document.getElementById("curriculumMission").textContent = "Curriculum API unavailable.";
+      }
+
+      const list = document.getElementById("attackList");
+      if (!exploits.length) {
+        list.innerHTML = `<div class="state"><h4>No attacks loaded</h4>
+          <p>The exploit catalogue came back empty. Confirm the agent is up with
+          <code>docker compose ps</code>, then reload.</p></div>`;
+        return;
+      }
+      list.innerHTML = exploits.map(e => `
+        <button type="button" class="attack-card" data-id="${e.id}">
+          <div class="m">${e.category} · ${e.difficulty} · ${(e.owasp || []).slice(0, 3).join(" ")}</div>
+          <div class="t">${e.title}</div>
+          <div class="d">${esc(e.expected).slice(0, 120)}…</div>
+        </button>
+      `).join("");
+      list.querySelectorAll(".attack-card").forEach(btn => {
+        btn.addEventListener("click", () => selectAttack(btn.dataset.id));
+      });
+      document.querySelectorAll(".tabs button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderCoverage(btn.dataset.tab);
+        });
+      });
+      selectAttack(exploits[0]?.id);
+      await refreshStatus();
+      setInterval(refreshStatus, 12000);
+    }
+
+    document.getElementById("btnFire").addEventListener("click", fire);
+    document.getElementById("btnClear").addEventListener("click", async () => {
+      await api("/lab/events", { method: "DELETE" });
+      renderTimeline([]);
+      document.getElementById("resultBanner").className = "banner";
+    });
+
+    init();
+  </script>
+</body>
+</html>

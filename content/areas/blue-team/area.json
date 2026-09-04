@@ -1,0 +1,50 @@
+{
+  "id": "blue-team",
+  "title": "Blue Team / SOC",
+  "status": "authoring",
+  "difficulty": "intermediate",
+  "blurb": "Hunt the breach you caused. You exfiltrated a customer table in the AI Security area — now work the same incident from the other side: triage it, write the detection that would have caught it, and prove the control closed it.",
+  "long_description": "Most SOC training hands you someone else's logs and asks you to find someone else's attack. This one hands you your own. You run the cross-tool exfiltration from the AI & Agent Security area, then work the evidence it leaves in the lab event log and the mail sink: what was taken, when, by which path, and what field would have caught it earliest. It runs on the same Docker stack as the AI area — no new services, no second environment to stand up.",
+  "env": {
+    "id": "ai-security",
+    "compose": "docker-compose.yml",
+    "services": [
+      "agent",
+      "db-tool",
+      "email-tool",
+      "file-tool",
+      "mailhog"
+    ],
+    "requires": [
+      "docker"
+    ],
+    "notes": "Reuses the AI Security stack unchanged. Nothing new to install; the evidence surfaces are the lab event log and the MailHog sink."
+  },
+  "certs": [
+    "MITRE ATT&CK (exfiltration, collection)",
+    "OWASP Top 10 for LLM Applications (2025)"
+  ],
+  "roles": [
+    "SOC Analyst (Tier 1/2)",
+    "Detection Engineer",
+    "Incident Responder"
+  ],
+  "prerequisites": [
+    "Finish at least scenarios 01 and 03 of AI & Agent Security",
+    "Comfortable reading JSON and a timestamped event log",
+    "No SIEM experience required"
+  ],
+  "outcomes": [
+    "Triage an exfiltration incident from raw evidence: what, when, where, how much",
+    "Distinguish the events that describe the attack from the events that merely describe the configuration",
+    "Write a detection that keys on the harmful pattern rather than on a common one",
+    "Explain why alerting on every outbound email is a broken rule",
+    "Prove a control closed the gap, and state honestly what your evidence does not prove"
+  ],
+  "credential": {
+    "id": "blue-team-triage",
+    "title": "Agent Incident Triage",
+    "requires": "all scenarios completed",
+    "description": "Proves you can work an agent-driven exfiltration end to end: triage the evidence, write the detection, and measure the control."
+  }
+}

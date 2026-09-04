@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "g1",
+  "require_mode": "any",
+  "expect": "ran",
+  "pass_message": "Guardrail map generated: the six-layer taxonomy printed from the lab's own control catalog.",
+  "fail_message": "The guardrail map did not run. Ensure the agent service is up."
+}

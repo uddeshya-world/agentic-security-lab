@@ -1,0 +1,13 @@
+{
+  "kind": "recall",
+  "prompt": "Which control keeps untrusted retrieved text out of the planner's context in the first place?",
+  "options": [
+    "Schema validation on the tool call",
+    "Human-in-the-loop approval",
+    "RAG trust / provenance filter",
+    "Egress domain allow-list"
+  ],
+  "answer": 2,
+  "pass_message": "Right. It is the earliest layer on the path — it stops indirect injection before the planner ever sees the poison.",
+  "fail_message": "Each of these is a real layer, but only one sits between retrieval and the planner. Re-read the four-point answer above."
+}

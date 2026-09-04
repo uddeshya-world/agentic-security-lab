@@ -1,0 +1,9 @@
+{
+  "kind": "evidence",
+  "simulate": "a3",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "require_event": "sql",
+  "pass_message": "Incident caused and recorded: an unscoped read chained into outbound mail, with both links sitting in the event log.",
+  "fail_message": "The chain did not complete. Press Run on this step in vulnerable mode, then check again — the check reads the run, it does not perform it."
+}

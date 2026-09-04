@@ -1,0 +1,47 @@
+{
+  "attack_id": "a1_param_manipulation",
+  "name": "Parameter manipulation (SQLi + path traversal)",
+  "layer": "A",
+  "secure_mode": false,
+  "success": true,
+  "blocked": false,
+  "detail": "Parameter abuse: sqli=yes, path_traversal=no",
+  "evidence": {
+    "sqli_response": {
+      "result": {
+        "rows": [
+          {
+            "customer_id": 1,
+            "name": "Alice Example",
+            "email": "alice@example.test"
+          },
+          {
+            "customer_id": 2,
+            "name": "Bob Example",
+            "email": "bob@example.test"
+          },
+          {
+            "customer_id": 3,
+            "name": "Carol Example",
+            "email": "carol@example.test"
+          }
+        ],
+        "count": 3
+      },
+      "side_effects": []
+    },
+    "traversal_response": {
+      "result": {
+        "content": "80a6bbc3e993\n",
+        "resolved_path": "/workspace/../etc/hostname"
+      },
+      "side_effects": [
+        {
+          "type": "file_read",
+          "resolved_path": "/workspace/../etc/hostname"
+        }
+      ]
+    }
+  },
+  "timestamp": "2026-07-11T08:08:17.562153+00:00"
+}

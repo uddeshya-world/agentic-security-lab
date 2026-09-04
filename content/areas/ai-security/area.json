@@ -1,0 +1,46 @@
+{
+  "id": "ai-security",
+  "title": "AI & Agent Security",
+  "icon": "🤖",
+  "status": "available",
+  "difficulty": "intermediate",
+  "blurb": "Attack a real LLM agent — poison its retrieval, hijack its planner, chain its tools to exfiltrate data — then build the guardrails that stop each one and measure the difference.",
+  "long_description": "Most AI-security training stops at 'jailbreak the chatbot'. This Area gives you a full agentic system — LangGraph planner + executor, a SQL tool, an email tool, a file tool, a RAG store and persistent memory — that is deliberately vulnerable, running on your own machine. You exploit it for real (real SQL, real SMTP, real retrieval), then flip SECURE_MODE and watch specific guardrails block specific steps. Every scenario ends with a measured before/after.",
+  "env": {
+    "id": "ai-security",
+    "compose": "docker-compose.yml",
+    "services": ["agent", "ollama", "db-tool", "email-tool", "file-tool", "mailhog", "chroma"],
+    "requires": ["docker"],
+    "notes": "Ollama stays inside the Docker network. Graded steps never require it."
+  },
+  "certs": [
+    "OWASP Top 10 for LLM Applications (2025)",
+    "OWASP Agentic Security Initiative / ASI (2026)",
+    "MITRE ATLAS (adversarial ML tactics)"
+  ],
+  "roles": [
+    "AI Security Engineer",
+    "LLM / ML Red Teamer",
+    "AI Application Security Engineer",
+    "Security Architect (AI platforms)"
+  ],
+  "credential": {
+    "id": "ai-security-practitioner",
+    "title": "AI Security Practitioner",
+    "requires": "all scenarios completed",
+    "description": "Proves you can exploit an agent end-to-end and implement the six control layers that stop it."
+  },
+  "prerequisites": [
+    "Comfortable with a terminal and Docker Compose",
+    "Basic Python reading ability (you will open the lab's defense code)",
+    "No prior ML experience required"
+  ],
+  "outcomes": [
+    "Explain the agent data path: user → RAG → planner (LLM) → executor → tools",
+    "Demonstrate SQL injection, path traversal and cross-tool exfiltration through agent tooling",
+    "Execute an indirect prompt injection that turns retrieved documents into agent instructions",
+    "Map every finding to OWASP LLM Top 10 and Agentic ASI categories",
+    "Implement and verify six control layers outside the model",
+    "Produce a before/after attack-success table as evidence"
+  ]
+}

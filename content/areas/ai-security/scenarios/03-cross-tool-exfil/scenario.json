@@ -1,0 +1,23 @@
+{
+  "id": "03-cross-tool-exfil",
+  "legacy_id": "a3",
+  "order": 3,
+  "title": "Cross-tool exfiltration (dump → email)",
+  "summary": "Impact usually needs two tools: read the sensitive data, then send it somewhere. Chain db_tool into email_tool and watch the data leave — with MailHog as your proof.",
+  "difficulty": "medium",
+  "est_minutes": 18,
+  "attack_id": "a3_cross_tool_exfil",
+  "mailhog": true,
+  "owasp": ["LLM02 Sensitive Information Disclosure", "LLM06 Excessive Agency", "ASI02 Tool Misuse"],
+  "controls": ["C1", "C4", "C5", "C7"],
+  "code_paths": ["tools/email_tool/server.py", "defenses/m01/approval_gate.py", "defenses/m01/least_privilege.py"],
+  "takeaway": "Side-effect tools need separate, stronger gates than read tools.",
+  "design_rule": "Domain allow-lists + human-in-the-loop for anything that leaves the trust boundary.",
+  "steps": [
+    { "id": "step-01", "title": "Why chains are the real threat", "file": "step-01.md" },
+    { "id": "step-02", "title": "Run the exfil chain", "file": "step-02.md" },
+    { "id": "step-03", "title": "Confirm the leak in MailHog", "file": "step-03.md" },
+    { "id": "step-04", "title": "Gate the side-effect tool", "file": "step-04.md" },
+    { "id": "step-05", "title": "Prove the chain is broken", "file": "step-05.md" }
+  ]
+}

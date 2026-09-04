@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CyberRange — hands-on AI agent security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+<style>
+  /* ---- hero ---------------------------------------------------------- */
+  .hero { padding: var(--s8) 0 var(--s7); }
+  .hero h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(34px, 6.2vw, 60px); line-height: 1.02; letter-spacing: -0.04em;
+    margin: var(--s4) 0 var(--s4); max-width: 16ch;
+  }
+  .hero h1 .cool { color: var(--halon); }
+  .hero .lede { color: var(--ash); font-size: 16px; line-height: 1.6; max-width: 58ch; margin: 0; }
+  .hero .demo { margin: var(--s7) 0 var(--s6); max-width: 720px; }
+  .hero .cta { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
+  .hero .cta .note { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+
+  /* ---- counts strip --------------------------------------------------- */
+  .counts { display: flex; flex-wrap: wrap; gap: var(--s6); padding: var(--s4) 0; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); }
+  .counts div { display: flex; flex-direction: column; gap: 2px; }
+  .counts .n { font-family: var(--mono); font-size: 19px; font-weight: 500; color: var(--chalk); font-variant-numeric: tabular-nums; }
+  .counts .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+
+  /* ---- area record ---------------------------------------------------- */
+  .sechead { display: flex; align-items: baseline; gap: var(--s3); margin: var(--s7) 0 var(--s4); }
+  .sechead h2 { font-family: var(--display); font-size: 15px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
+  .sechead .hint { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+
+  .record { display: grid; grid-template-columns: 340px minmax(0, 1fr); }
+  .record .idcol { padding: var(--s5); border-right: 1px solid var(--edge); }
+  .record .idcol h3 { font-family: var(--display); font-size: 22px; letter-spacing: -.025em; margin: var(--s2) 0 var(--s3); line-height: 1.15; }
+  .record .idcol p { color: var(--ash); font-size: 13.5px; line-height: 1.6; margin: 0 0 var(--s4); }
+  .record .idcol h4 { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s2); font-weight: 500; }
+  .record .idcol ul { margin: 0; padding-left: 1.1em; color: var(--ash); font-size: 13px; line-height: 1.55; }
+  .record .idcol li { margin: 3px 0; }
+  .record .idcol li::marker { color: var(--halon-line); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s1); }
+  .progress-block { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--edge); }
+  .progress-block .row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; color: var(--ash); margin-bottom: var(--s2); }
+  .progress-block .row b { color: var(--chalk); font-weight: 500; }
+
+  /* scenario table — 16 rows deserve a table, not sixteen truncated tiles */
+  .slate { width: 100%; border-collapse: collapse; }
+  .slate th {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--dim); font-weight: 500; text-align: left; padding: var(--s3) var(--s3);
+    border-bottom: 1px solid var(--edge); position: sticky; top: 54px; background: var(--plate);
+  }
+  .slate td { border-bottom: 1px solid var(--edge); padding: 0; }
+  .slate tr:last-child td { border-bottom: 0; }
+  .slate a.row { display: contents; }
+  .slate td .cell { padding: 10px var(--s3); display: block; }
+  .slate tbody tr { cursor: pointer; }
+  .slate tbody tr:hover { background: var(--shelf); }
+  .slate tbody tr:hover .t { color: var(--halon-ink); }
+  .slate .ord { font-family: var(--mono); font-size: 11px; color: var(--dim); width: 44px; font-variant-numeric: tabular-nums; }
+  .slate .ord.done { color: var(--halon); }
+  .slate .t { font-size: 13.5px; color: var(--chalk); }
+  /* Two lines of summary is enough to choose a scenario; sixteen four-line rows
+     is a wall. The full text is on the scenario page. */
+  .slate .s { font-size: 12px; color: var(--dim); margin-top: 2px; display: -webkit-box;
+              -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .slate .owasp { display: flex; flex-wrap: wrap; gap: 3px; }
+  .slate .n { font-family: var(--mono); font-size: 11px; color: var(--ash); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ---- roadmap: an index, not fake cards ------------------------------ */
+  .roadmap { border-top: 1px solid var(--edge); }
+  .roadmap li {
+    display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: var(--s4); align-items: baseline;
+    padding: 11px var(--s2); border-bottom: 1px solid var(--edge); cursor: default;
+  }
+  .roadmap { list-style: none; margin: 0; padding: 0; }
+  .roadmap .code { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--dim); }
+  .roadmap .nm { font-size: 13.5px; color: var(--ash); }
+  .roadmap .nm span { display: block; font-size: 12px; color: var(--dim); margin-top: 1px; }
+  .roadmap .certs { font-family: var(--mono); font-size: 10.5px; color: var(--dim); text-align: right; }
+
+  /* ---- badge dialog --------------------------------------------------- */
+  dialog { border: 1px solid var(--edge-hi); background: var(--plate); color: var(--chalk); border-radius: var(--r-lg); padding: 0; max-width: 560px; width: 92%; }
+  dialog::backdrop { background: rgba(4, 6, 9, .78); }
+  .sheet { padding: var(--s6); }
+  .sheet h3 { font-family: var(--display); font-size: 20px; letter-spacing: -.02em; margin: var(--s2) 0 var(--s2); }
+  .sheet p { color: var(--ash); font-size: 13px; line-height: 1.6; margin: 0 0 var(--s3); }
+  .sheet .token { font-family: var(--mono); font-size: 10.5px; color: var(--dim); word-break: break-all; background: var(--void); border: 1px solid var(--edge); border-radius: var(--r); padding: var(--s3); max-height: 110px; overflow: auto; }
+  .sheet .foot { display: flex; justify-content: space-between; gap: var(--s2); margin-top: var(--s5); }
+  .sheet .missing { max-height: 200px; overflow: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ash); }
+  .sheet .missing div { padding: 4px 0; border-bottom: 1px solid var(--edge); }
+
+  /* ---- responsive ----------------------------------------------------- */
+  @media (max-width: 900px) {
+    .record { grid-template-columns: 1fr; }
+    .record .idcol { border-right: 0; border-bottom: 1px solid var(--edge); }
+    .slate th { position: static; }
+    .slate .hidesm { display: none; }
+  }
+  @media (max-width: 620px) {
+    .hero { padding: var(--s6) 0 var(--s5); }
+    .counts { gap: var(--s5); }
+    .roadmap li { grid-template-columns: 44px minmax(0,1fr); }
+    .roadmap .certs { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cr-nav">
+  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <span class="grow"></span>
+  <a class="link" href="/lab/ui/index.html">Sandbox console</a>
+  <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  <a class="link" href="/docs" target="_blank" rel="noopener">API</a>
+</header>
+
+<main class="shell">
+
+  <section class="hero">
+    <div class="eyebrow" id="eyebrow">self-hosted · deliberately vulnerable · graded on real lab state</div>
+    <h1>Exploit the agent.<br />Then find the line that <span class="cool">should have said&nbsp;no</span>.</h1>
+    <p class="lede">
+      A working LangGraph agent with a SQL tool, an email tool, retrieval and memory — built wrong on
+      purpose, running on your machine. You break it for real, build the control that stops it, and
+      the lab measures the difference.
+    </p>
+
+    <div class="trace demo" id="heroTrace" aria-label="How far an attack travels through an agent"></div>
+
+    <div class="cta">
+      <a class="btn assert" href="/lab/ui/scenario.html?area=ai-security&id=00-orientation">Start the range</a>
+      <a class="btn ghost" href="/lab/ui/index.html">Open the sandbox console</a>
+      <span class="note">no account · progress stays in this browser</span>
+    </div>
+  </section>
+
+  <section class="counts" id="counts">
+    <div><span class="n skel" style="width:44px;height:19px">&nbsp;</span><span class="l">loading</span></div>
+  </section>
+
+  <div class="sechead">
+    <h2>Live area</h2>
+    <span class="hint" id="liveHint"></span>
+  </div>
+  <div class="panel" id="areaHost">
+    <div style="padding:var(--s5)">
+      <div class="skel" style="height:14px;width:38%;margin-bottom:10px"></div>
+      <div class="skel" style="height:11px;width:66%;margin-bottom:6px"></div>
+      <div class="skel" style="height:11px;width:52%"></div>
+    </div>
+  </div>
+
+  <div class="sechead">
+    <h2>Not built yet</h2>
+    <span class="hint">planned at expert depth in docs/CURRICULUM.md — these do not open</span>
+  </div>
+  <ul class="roadmap" id="roadmap"></ul>
+
+</main>
+
+<footer class="cr-foot shell">
+  <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
+</footer>
+
+<dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
+
+<script src="/lab/ui/cyberrange.js?v=7"></script>
+<script>
+// Areas we have designed but not authored. Listed so the curriculum reads whole —
+// rendered as an index with no link, because a card you cannot open is a lie.
+const ROADMAP = [
+  { code:"WEB", title:"Web Application Security", note:"OWASP Top 10 against a deliberately vulnerable app", certs:"PortSwigger WSA · BSCP · eWPT" },
+  { code:"OFF", title:"Offensive Security",        note:"recon to root — the full kill chain on a target box", certs:"eJPT · PNPT · OSCP-prep" },
+  { code:"SOC", title:"Blue Team / SOC",           note:"SIEM queries, triage and detection engineering",      certs:"BTL1/2 · GCIA-prep" },
+  { code:"CLD", title:"Cloud Security",            note:"IAM misconfiguration and container hardening",         certs:"AWS Security · CKS-adjacent" },
+  { code:"DEV", title:"DevSecOps & Supply Chain",  note:"CI/CD security, secrets, SBOM, IaC scanning",           certs:"vendor-neutral" },
+  { code:"DFR", title:"Digital Forensics & IR",    note:"memory and disk triage, incident playbooks",            certs:"GCFA · GCIH-prep" },
+  { code:"RE",  title:"Malware Analysis & RE",     note:"static and dynamic analysis, no egress",                certs:"GREM-prep" },
+  { code:"NET", title:"Network & Fundamentals",    note:"packet analysis and protocols — the on-ramp",           certs:"Security+ · Network+" },
+  { code:"CRY", title:"Cryptography & Secrets",    note:"applied crypto, PKI, key-management failures",          certs:"vendor-neutral" },
+  { code:"GRC", title:"Governance & Policy-as-Code", note:"OPA/Rego, NIST/ISO mapping, usable audit trails",     certs:"vendor-neutral" },
+];
+
+const esc = CR.esc;
+let AREAS = [];
+
+/* ---- hero: the product in three seconds -------------------------------
+   Beat one: the attack runs the whole path and lands in the world.
+   Beat two: the same attack, contained at the executor. Nothing else on the
+   page needs to explain what this lab is for. */
+const HERO_BREACH = {
+  events: [
+    { phase: "user",     message: "How long does shipping take?" },
+    { phase: "retrieve", message: "Retrieved shipping-faq.txt (contains a hidden SYSTEM NOTE)" },
+    { phase: "plan",     message: "Planner emitted: db_tool(table=customers, filter=1=1)" },
+    { phase: "tool",     message: "Executor dispatched db_tool without re-validating the plan" },
+    { phase: "sql",      message: "SELECT * FROM customers WHERE 1=1" },
+    { phase: "result",   message: "3 customer records emailed to audit@external-logging.test" },
+  ],
+  result: { success: true, blocked: false, detail: "customer table emailed off-box" },
+};
+const HERO_CONTAINED = {
+  events: [
+    { phase: "user",     message: "How long does shipping take?" },
+    { phase: "retrieve", message: "Poisoned chunk quarantined by the RAG trust filter" },
+    { phase: "plan",     message: "Planner emitted: db_tool(table=customers, filter=1=1)" },
+    { phase: "tool",     message: "Executor re-validated the plan instead of trusting it" },
+    { phase: "defense",  message: "GUARDRAIL blocked the call (schema validation + least privilege)" },
+  ],
+  result: { success: false, blocked: true, detail: "" },
+};
+
+function playHero() {
+  const el = document.getElementById("heroTrace");
+  el.innerHTML = CR.traceHTML("Reading the run…");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) { CR.paintTrace(el, HERO_CONTAINED.events, HERO_CONTAINED.result); return; }
+  setTimeout(() => CR.paintTrace(el, HERO_BREACH.events, HERO_BREACH.result), 350);
+  setTimeout(() => CR.paintTrace(el, HERO_CONTAINED.events, HERO_CONTAINED.result), 2600);
+}
+
+/* ---- counts ---------------------------------------------------------- */
+function renderCounts(area) {
+  const graded = (area?.scenarios || []).reduce((n, s) => n + (s.graded_steps || 0), 0);
+  // Derived, not hard-coded: an Area being authored must never inflate the live
+  // count, and a roadmap tile must never be counted as product.
+  const live = AREAS.filter((a) => a.status === "available").length;
+  const planned = ROADMAP.length + AREAS.filter((a) => a.status !== "available").length;
+  const cells = [
+    [area ? area.scenario_count : 0, "scenarios"],
+    [graded, "graded checks"],
+    [area ? `~${Math.round((area.estimated_minutes || 0) / 60)}h` : "—", "hands-on"],
+    ["10/10", "OWASP LLM top 10"],
+    [`${live} live · ${planned} planned`, "areas"],
+  ];
+  document.getElementById("counts").innerHTML = cells
+    .map(([n, l]) => `<div><span class="n">${esc(n)}</span><span class="l">${esc(l)}</span></div>`).join("");
+}
+
+/* ---- the live area record -------------------------------------------- */
+function renderArea(area) {
+  const prog = area.scenarios.map((s) => {
+    const p = CR.loadProgress(area.id, s.id);
+    const done = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
+    return { s, done, total: s.step_count || 0, complete: s.step_count > 0 && done >= s.step_count };
+  });
+  const completeCount = prog.filter((r) => r.complete).length;
+  const pct = area.scenario_count ? Math.round((completeCount / area.scenario_count) * 100) : 0;
+
+  const rows = prog.map(({ s, complete }) => `
+    <tr data-href="/lab/ui/scenario.html?area=${esc(area.id)}&id=${esc(s.id)}">
+      <td class="ord"><span class="cell ${complete ? "done" : ""}">${complete ? "✓" : String(s.order).padStart(2, "0")}</span></td>
+      <td><span class="cell"><span class="t">${esc(s.title)}</span><span class="s">${esc(s.summary || "")}</span></span></td>
+      <td class="hidesm"><span class="cell owasp">${(s.owasp || []).slice(0, 2).map((o) => `<span class="tag quiet">${esc(o)}</span>`).join("")}</span></td>
+      <td class="n"><span class="cell">${s.est_minutes || "—"} min</span></td>
+      <td class="n"><span class="cell">${s.graded_steps ? s.graded_steps + " graded" : "read"}</span></td>
+    </tr>`).join("");
+
+  const cred = area.credential || {};
+  document.getElementById("areaHost").innerHTML = `
+    <div class="record">
+      <div class="idcol">
+        <div class="chips"><span class="tag cold"><i class="dot"></i>live</span><span class="tag">${esc(area.difficulty || "")}</span></div>
+        <h3>${esc(area.title)}</h3>
+        <p>${esc(area.blurb || "")}</p>
+
+        <h4>You will be able to</h4>
+        <ul>${(area.outcomes || []).slice(0, 4).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>
+
+        <h4>Roles this maps to</h4>
+        <div class="chips">${(area.roles || []).map((r) => `<span class="tag">${esc(r)}</span>`).join("")}</div>
+
+        <h4>Frameworks covered</h4>
+        <div class="chips">${(area.certs || []).map((c) => `<span class="tag quiet">${esc(c)}</span>`).join("")}</div>
+
+        <div class="progress-block">
+          <div class="row"><span>Scenarios complete</span><b>${completeCount} / ${area.scenario_count}</b></div>
+          <div class="meter"><i style="width:${pct}%"></i></div>
+          <div class="row" style="margin:var(--s3) 0 0"><span>${esc(cred.title || "Completion badge")}</span></div>
+          <button class="btn ${completeCount === area.scenario_count && area.scenario_count ? "assert" : "ghost"} sm"
+                  id="claimBtn" style="width:100%;justify-content:center;margin-top:var(--s2)">
+            ${completeCount === area.scenario_count && area.scenario_count ? "Claim badge" : "See what the badge requires"}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <table class="slate">
+          <thead><tr><th>#</th><th>Scenario</th><th class="hidesm">Maps to</th><th style="text-align:right">Time</th><th style="text-align:right">Checks</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  document.querySelectorAll(".slate tbody tr").forEach((tr) => {
+    tr.onclick = () => (location.href = tr.dataset.href);
+  });
+  document.getElementById("claimBtn").onclick = () => openBadge(area);
+  document.getElementById("liveHint").textContent =
+    `${area.scenario_count} scenarios · every graded step asserts real lab state`;
+}
+
+/* ---- badge ------------------------------------------------------------ */
+async function openBadge(area) {
+  const body = document.getElementById("badgeBody");
+  const sheet = document.getElementById("badgeSheet");
+  body.innerHTML = `<p><span class="spinner"></span> Checking your graded results…</p>`;
+  sheet.showModal();
+
+  let res;
+  try {
+    res = await CR.api(`/credential/${area.id}/issue`, {
+      method: "POST",
+      body: JSON.stringify({ learner: null, passed: CR.transcript(area.id, area.scenarios) }),
+    });
+  } catch (e) {
+    body.innerHTML = `<div class="state bad"><h4>The lab did not answer</h4><p>${esc(e.message)}</p></div>
+      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
+    document.getElementById("closeBadge").onclick = () => sheet.close();
+    return;
+  }
+
+  if (!res.ok) {
+    const el = res.eligibility || { passed_count: 0, required_count: 0, missing: [] };
+    body.innerHTML = `
+      <div class="eyebrow">Badge requirements</div>
+      <h3>${esc(el.passed_count)} of ${esc(el.required_count)} graded checks passed</h3>
+      <p>The badge is issued when every graded check in this Area has passed on this machine.
+         Reading a step does not count — a check does. Still open:</p>
+      <div class="missing">${el.missing.slice(0, 40).map((m) =>
+        `<div>${esc(m.scenario)} · ${esc(m.step)} — ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
+      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
+  } else {
+    const a = res.assertion;
+    body.innerHTML = `
+      <div class="eyebrow">Issued by this instance</div>
+      <h3>${esc(a.badge.name)}</h3>
+      <p>${esc(a.badge.description || "")}</p>
+      <p><b>${esc(a.evidence.transcript.length)} graded checks</b> are recorded in this badge, each naming the
+         scenario, the step and the mode it was graded in. The transcript is signed, so an edited badge fails
+         verification.</p>
+      <p style="color:var(--dim)">${esc(res.verification.note)}</p>
+      <div class="token" id="tok">${esc(res.token)}</div>
+      <div class="foot">
+        <button class="btn sm" id="copyTok">Copy badge token</button>
+        <span style="display:flex;gap:var(--s2)">
+          <a class="btn sm ghost" href="/lab/ui/verify.html?token=${encodeURIComponent(res.token)}">Verify it</a>
+          <button class="btn sm" id="closeBadge">Close</button>
+        </span>
+      </div>`;
+    document.getElementById("copyTok").onclick = (e) => {
+      navigator.clipboard?.writeText(res.token);
+      e.target.textContent = "Copied";
+    };
+  }
+  document.getElementById("closeBadge").onclick = () => sheet.close();
+}
+
+/* ---- roadmap ---------------------------------------------------------- */
+function renderRoadmap() {
+  const authoring = AREAS.filter((a) => a.status !== "available").map((a) => ({
+    code: (a.id || "").slice(0, 3).toUpperCase(),
+    title: a.title,
+    note: a.blurb || "",
+    certs: "being written",
+    inProgress: true,
+  }));
+  const rows = authoring.concat(ROADMAP);
+  document.getElementById("roadmap").innerHTML = rows.map((r) => `
+    <li aria-disabled="true">
+      <span class="code">${esc(r.code)}</span>
+      <span class="nm">${esc(r.title)}<span>${esc(r.note)}</span></span>
+      <span class="certs">${r.inProgress ? '<span class="tag warn">in progress</span>' : esc(r.certs)}</span>
+    </li>`).join("");
+}
+
+/* ---- boot -------------------------------------------------------------- */
+async function init() {
+  playHero();
+  try {
+    const cat = await CR.api("/catalog");
+    AREAS = cat.areas || [];
+  } catch (e) {
+    document.getElementById("areaHost").innerHTML = `
+      <div class="state bad" style="margin:var(--s5)">
+        <h4>The lab is not answering on this port</h4>
+        <p>Start it from the repo folder with <code>docker compose up -d</code>, then reload.</p>
+      </div>`;
+    document.getElementById("counts").innerHTML = "";
+    renderRoadmap();
+    return;
+  }
+  const area = AREAS.find((a) => a.status === "available") || AREAS[0];
+  if (!area) {
+    document.getElementById("areaHost").innerHTML = `
+      <div class="state" style="margin:var(--s5)"><h4>No areas loaded</h4>
+      <p>The content tree came back empty. Check <code>content/areas/</code> is mounted into the agent container.</p></div>`;
+    renderRoadmap();
+    return;
+  }
+  renderCounts(area);
+  renderArea(area);
+  renderRoadmap();
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "a1",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Same payload, blocked. SECURE_MODE rejected the free-form filter and required a bound customer_id.",
+  "fail_message": "The attack was not blocked under secure mode. Confirm the graded run used secure mode and that db_tool honors the SECURE_MODE override."
+}

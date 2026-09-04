@@ -1,0 +1,5 @@
+{
+  "kind": "lab_status",
+  "pass_message": "Every tool server is reachable, so the evidence you are about to collect is complete rather than partial.",
+  "fail_message": "One or more tool servers are not responding. Bring the stack up with `docker compose up -d` before hunting: a partial stack produces partial evidence and confident wrong conclusions."
+}

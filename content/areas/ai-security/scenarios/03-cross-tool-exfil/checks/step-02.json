@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "a3",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Exfil chain completed: db_tool dumped customers and email_tool sent them to the external address.",
+  "fail_message": "The chain did not complete. Ensure both tools are healthy and the graded run used vulnerable mode."
+}

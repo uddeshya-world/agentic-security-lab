@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m7",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Rogue tool ran: with no attestation, the unmanifested backdoor tool was invoked with the agent's privileges.",
+  "fail_message": "The rogue tool did not run. Ensure the graded run used vulnerable mode."
+}

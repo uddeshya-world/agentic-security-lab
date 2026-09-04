@@ -1,0 +1,21 @@
+# In-browser terminal for the guided stepper (local-only).
+#
+# A faithful, host-like shell: the lab repo is mounted at /app and socat forwards
+# 127.0.0.1:<port> to each tool service on the compose network, so every lesson
+# command (curl http://127.0.0.1:8101/..., python -m json.tool, cat data/...) runs
+# UNMODIFIED — the same commands a learner would run on their host.
+#
+# The ttyd binary is copied from the upstream image (it is statically linked, so
+# it runs on this python-slim base without its own runtime).
+FROM tsl0922/ttyd:latest AS ttyd
+
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl socat ca-certificates bash procps jq less \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=ttyd /usr/bin/ttyd /usr/local/bin/ttyd
+COPY scripts/terminal-entry.sh /usr/local/bin/terminal-entry.sh
+RUN chmod +x /usr/local/bin/terminal-entry.sh
+WORKDIR /app
+EXPOSE 7681
+CMD ["/usr/local/bin/terminal-entry.sh"]

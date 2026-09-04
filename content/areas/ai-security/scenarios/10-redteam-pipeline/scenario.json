@@ -1,0 +1,22 @@
+{
+  "id": "10-redteam-pipeline",
+  "legacy_id": "m6",
+  "order": 10,
+  "title": "Red-team evaluation pipeline",
+  "summary": "Module 6. Turn ad-hoc probing into a repeatable suite. Run every module's attack as one battery, compute attack-success rate in vulnerable vs secure mode, and wire it into CI so a regression fails the build.",
+  "difficulty": "medium",
+  "est_minutes": 15,
+  "attack_id": "m6_redteam",
+  "mailhog": false,
+  "owasp": ["LLM01", "LLM02", "LLM06", "ASI01", "ASI06", "ASI07"],
+  "controls": ["C14"],
+  "code_paths": ["lab/sims_advanced.py", ".github/workflows/redteam.yml", "tests/test_redteam_suite.py"],
+  "takeaway": "Security regressions are silent until you test for them. Make the red-team suite part of CI.",
+  "design_rule": "Re-run every attack as a suite; track attack-success rate; fail the build on regression.",
+  "steps": [
+    { "id": "step-01", "title": "Why a suite, not one-offs", "file": "step-01.md" },
+    { "id": "step-02", "title": "Run the battery (vulnerable)", "file": "step-02.md" },
+    { "id": "step-03", "title": "Run the battery (secure)", "file": "step-03.md" },
+    { "id": "step-04", "title": "Wire it into CI", "file": "step-04.md" }
+  ]
+}

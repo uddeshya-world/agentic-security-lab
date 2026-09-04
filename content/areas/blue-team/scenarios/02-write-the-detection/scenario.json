@@ -1,0 +1,27 @@
+{
+  "id": "02-write-the-detection",
+  "title": "Write the detection",
+  "order": 2,
+  "difficulty": "intermediate",
+  "est_minutes": 18,
+  "summary": "Turn one incident into a rule. Find the earliest field that separates this run from a normal one, and understand why the obvious rule is the wrong rule.",
+  "owasp": [
+    "LLM06 Excessive Agency"
+  ],
+  "controls": [],
+  "takeaway": "A detection keys on the harmful pattern, not on the common event that happens to appear in it.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "The obvious rule, and why it fails"
+    },
+    {
+      "id": "step-02",
+      "title": "Find the earliest separating field"
+    },
+    {
+      "id": "step-03",
+      "title": "State the rule"
+    }
+  ]
+}

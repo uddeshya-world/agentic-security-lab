@@ -1,0 +1,13 @@
+{
+  "kind": "recall",
+  "prompt": "Why is 'no new message in the sink' weak evidence that the control worked?",
+  "options": [
+    "The sink is slow and messages arrive late",
+    "The sink accumulates across runs and tags nothing with a run id, so a new message is indistinguishable from the old ones",
+    "MailHog does not store message bodies",
+    "Secure mode disables the sink"
+  ],
+  "answer": 1,
+  "pass_message": "Exactly. Absence over an untagged, accumulating store is not a measurement. The positive observation — a control fired, and the log names it — is the evidence that carries the claim.",
+  "fail_message": "Re-read step 3. The problem is not the sink's reliability; it is that nothing in it identifies which run produced which message."
+}

@@ -1,0 +1,36 @@
+name: red-team regression
+
+# Continuous red-team evaluation (Module 6, control C14): every push/PR re-runs
+# the attack battery and fails the build if any module's attack re-opens under
+# SECURE_MODE.
+on:
+  push:
+    branches: [main, "lab/**"]
+  pull_request:
+
+jobs:
+  redteam:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start the lab stack
+        run: docker compose up -d --build db-tool email-tool file-tool mailhog agent
+
+      - name: Wait for the agent to be healthy
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:8000/health >/dev/null; then echo "up"; exit 0; fi
+            sleep 3
+          done
+          echo "agent did not become healthy"; docker compose logs agent; exit 1
+
+      - name: Content-engine unit tests (no Docker needed)
+        run: docker compose exec -T agent python -m pytest tests/test_content_engine.py -q
+
+      - name: Red-team battery (fails on any secure-mode regression)
+        run: docker compose exec -T agent python -m pytest tests/test_redteam_suite.py -q
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

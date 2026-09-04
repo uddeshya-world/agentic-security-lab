@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m11",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Denial of wallet confirmed: the runaway plan executed unchecked — every call individually valid, the aggregate an attack.",
+  "fail_message": "The runaway did not execute. Ensure the graded run used vulnerable mode."
+}

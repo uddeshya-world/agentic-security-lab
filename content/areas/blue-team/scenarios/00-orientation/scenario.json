@@ -1,0 +1,27 @@
+{
+  "id": "00-orientation",
+  "title": "The evidence you actually have",
+  "order": 0,
+  "difficulty": "beginner",
+  "est_minutes": 12,
+  "summary": "Before hunting anything, learn what this environment records and what it does not. Three evidence surfaces, and the blind spot in each.",
+  "owasp": [
+    "LLM02 Sensitive Information Disclosure"
+  ],
+  "controls": [],
+  "takeaway": "You can only detect what something recorded. Find the recorders first.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "Same stack, other side of the glass"
+    },
+    {
+      "id": "step-02",
+      "title": "Confirm the evidence sources are up"
+    },
+    {
+      "id": "step-03",
+      "title": "What is not recorded"
+    }
+  ]
+}

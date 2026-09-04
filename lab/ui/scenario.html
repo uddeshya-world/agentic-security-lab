@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CyberRange — scenario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+  html, body { height: 100%; }
+  body { overflow: hidden; }
+
+  .stage { display: grid; grid-template-columns: 250px minmax(0, 1fr) 400px; height: calc(100vh - 54px); }
+
+  /* ---- rail ----------------------------------------------------------- */
+  .rail { border-right: 1px solid var(--edge); background: var(--plate); overflow-y: auto; }
+  .rail .head { padding: var(--s4) var(--s4) var(--s3); border-bottom: 1px solid var(--edge); }
+  .rail .head .t { font-family: var(--display); font-size: 14px; font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
+  .rail .head .s { font-size: 12px; color: var(--dim); line-height: 1.5; margin-top: var(--s2); }
+  .rail .prog { display: flex; align-items: center; gap: var(--s2); padding: var(--s3) var(--s4); }
+  .rail .prog .meter { flex: 1; }
+  .rail .prog .pct { font-family: var(--mono); font-size: 10.5px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .steps { list-style: none; margin: 0 0 var(--s6); padding: 0; }
+  .steps li {
+    display: grid; grid-template-columns: 20px 1fr; gap: var(--s3); align-items: start;
+    padding: 9px var(--s4); cursor: pointer; border-left: 2px solid transparent;
+  }
+  .steps li:hover { background: var(--shelf); }
+  .steps li.on { border-left-color: var(--halon); background: var(--shelf); }
+  .steps .pip {
+    width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--edge-hi);
+    display: grid; place-items: center; font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 1px;
+  }
+  .steps li.ok .pip { background: var(--halon-bed); border-color: var(--halon-line); color: var(--halon); }
+  .steps .lb { font-size: 13px; line-height: 1.4; color: var(--ash); }
+  .steps li.on .lb { color: var(--chalk); }
+  .steps .kind { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+  .steps li.ok .kind { color: var(--halon-line); }
+
+  /* ---- lesson --------------------------------------------------------- */
+  .lesson { overflow-y: auto; padding: var(--s6) var(--s7) var(--s8); }
+  .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: var(--s4); }
+  .foot { max-width: 70ch; margin-top: var(--s6); }
+
+  /* Run and Check are two different acts, so they are two different blocks.
+     Run makes the attack happen. Check reads what happened. */
+  .act { border: 1px solid var(--edge); border-radius: var(--r-lg); overflow: hidden; margin-bottom: var(--s4); }
+  .act .bar { display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); background: var(--plate); }
+  .act .bar .t { font-family: var(--display); font-size: 13.5px; font-weight: 600; }
+  .act .bar .d { font-size: 12.5px; color: var(--ash); flex: 1; }
+  .act .bar .grow { flex: 1; }
+  .act.run .bar { border-left: 2px solid var(--ember); }
+  .act.verify .bar { border-left: 2px solid var(--halon); }
+  .act .say { padding: 0 var(--s4) var(--s3); font-family: var(--mono); font-size: 11.5px; line-height: 1.55; color: var(--ash); }
+  .act.pass { border-color: var(--halon-line); }
+  .act.pass .say { color: var(--halon-ink); }
+  .act.fail { border-color: var(--ember-line); }
+  .act.fail .say { color: var(--ember-ink); }
+
+  .quiz { padding: var(--s3) var(--s4) var(--s4); display: grid; gap: var(--s2); }
+  .quiz .q { font-size: 14px; color: var(--chalk); margin-bottom: var(--s1); }
+  .quiz label {
+    display: flex; gap: var(--s3); align-items: flex-start; padding: 9px var(--s3);
+    border: 1px solid var(--edge); border-radius: var(--r); cursor: pointer; font-size: 13.5px; color: var(--ash);
+  }
+  .quiz label:hover { border-color: var(--edge-hi); color: var(--chalk); }
+  .quiz input { accent-color: var(--halon); margin-top: 3px; }
+  .quiz input:checked + span { color: var(--chalk); }
+
+  .nav { display: flex; justify-content: space-between; gap: var(--s3); margin-top: var(--s5); }
+
+  /* ---- evidence column ------------------------------------------------
+     This never disappears. If you cannot see the SQL that ran, you did not
+     learn the lesson — so at narrow widths it moves below the lesson rather
+     than being hidden. */
+  .evid { border-left: 1px solid var(--edge); background: var(--plate); display: flex; flex-direction: column; overflow: hidden; }
+  .evid .modebar { display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border-bottom: 1px solid var(--edge); }
+  .evid .modebar .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .evid .modebar .grow { flex: 1; }
+  .evid .tracebox { padding: var(--s2) var(--s4) var(--s3); border-bottom: 1px solid var(--edge); }
+  .evid .tracebox .trace .track { margin-top: var(--s2); }
+  .tabs { display: flex; border-bottom: 1px solid var(--edge); }
+  .tabs button {
+    flex: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    background: none; border: 0; border-bottom: 2px solid transparent; color: var(--dim); padding: 10px 6px; cursor: pointer;
+  }
+  .tabs button.on { color: var(--chalk); border-bottom-color: var(--halon); }
+  .panes { flex: 1; overflow-y: auto; padding: var(--s4); min-height: 0; }
+  .pane { display: none; } .pane.on { display: block; }
+  #p-term.on { display: flex; flex-direction: column; height: 100%; }
+  .termframe { flex: 1; width: 100%; min-height: 320px; border: 1px solid var(--edge); border-radius: var(--r); background: #000; }
+  .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: var(--s2); }
+
+  /* ---- responsive ----------------------------------------------------- */
+  @media (max-width: 1180px) {
+    body { overflow: auto; }
+    .stage { grid-template-columns: 220px minmax(0, 1fr); height: auto; }
+    .rail { height: calc(100vh - 54px); position: sticky; top: 54px; }
+    .lesson { overflow: visible; padding: var(--s5) var(--s5) var(--s6); }
+    /* the evidence moves under the lesson — it is never removed */
+    .evid { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--edge); }
+    .panes { max-height: 560px; }
+    .termframe { min-height: 420px; }
+  }
+  @media (max-width: 780px) {
+    .stage { grid-template-columns: 1fr; }
+    .rail { position: static; height: auto; max-height: 300px; border-right: 0; border-bottom: 1px solid var(--edge); }
+    .lesson { padding: var(--s5) var(--s4) var(--s6); }
+    .cr-nav { padding: 0 var(--s4); gap: var(--s3); overflow-x: auto; }
+    .topline { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cr-nav">
+  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <a class="link" href="/lab/ui/catalog.html">← All scenarios</a>
+  <span class="grow"></span>
+  <span class="tag" id="stackPill"><i class="dot"></i>checking stack</span>
+</header>
+
+<div class="stage">
+
+  <aside class="rail">
+    <div class="head">
+      <div class="t" id="scTitle">Loading…</div>
+      <div class="s" id="scSummary"></div>
+    </div>
+    <div class="prog"><div class="meter"><i id="progBar" style="width:0"></i></div><span class="pct" id="progPct">0%</span></div>
+    <ul class="steps" id="stepList"></ul>
+  </aside>
+
+  <main class="lesson" id="lesson">
+    <div class="crumb" id="crumb"></div>
+    <div class="md" id="body">
+      <div class="skel" style="height:22px;width:46%;margin-bottom:16px"></div>
+      <div class="skel" style="height:12px;width:88%;margin-bottom:8px"></div>
+      <div class="skel" style="height:12px;width:74%"></div>
+    </div>
+    <div class="foot">
+      <div id="acts"></div>
+      <div class="nav">
+        <button class="btn ghost" id="prev">← Previous</button>
+        <button class="btn" id="next">Next →</button>
+      </div>
+    </div>
+  </main>
+
+  <aside class="evid">
+    <div class="modebar">
+      <span class="l">This run</span>
+      <div class="seg" id="modeSeg" role="group" aria-label="Mode for the next run">
+        <button type="button" data-mode="vulnerable" aria-pressed="true">vulnerable</button>
+        <button type="button" data-mode="secure" aria-pressed="false">secure</button>
+      </div>
+      <span class="grow"></span>
+      <span class="l" id="runState"></span>
+    </div>
+
+    <div class="tracebox"><div class="trace" id="trace"></div></div>
+
+    <div class="tabs">
+      <button data-pane="time" class="on">Timeline</button>
+      <button data-pane="forensics">Forensics</button>
+      <button data-pane="term">Terminal</button>
+    </div>
+
+    <div class="panes">
+      <div class="pane on" id="p-time">
+        <div class="timeline" id="timeline">
+          <div class="state"><h4>No run yet</h4><p>Press <b>Run</b> on a step. The attack executes against the real
+            tools and everything it touches shows up here — including the SQL.</p></div>
+        </div>
+      </div>
+      <div class="pane" id="p-forensics">
+        <div class="lbl">Planner output</div><pre class="dump" id="planOut">—</pre>
+        <div class="lbl">Tool result</div><pre class="dump" id="toolOut">—</pre>
+        <div class="lbl">Retrieved context</div><pre class="dump" id="ragOut">—</pre>
+      </div>
+      <div class="pane" id="p-term">
+        <div class="state" id="termNote">
+          <h4>A shell inside the lab network</h4>
+          <p>Commands from the lesson run here unchanged — <code>curl http://127.0.0.1:8101/schema</code>,
+             <code>cat data/…</code>, <code>python -m json.tool</code>. If it stays blank, start it with
+             <code>docker compose up -d ttyd</code> and reopen this tab.</p>
+        </div>
+        <iframe id="termFrame" class="termframe" hidden title="Lab terminal"></iframe>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script src="/lab/ui/cyberrange.js?v=7"></script>
+<script>
+const esc = CR.esc;
+const TTYD = `http://${location.hostname}:7681`;
+const q = new URLSearchParams(location.search);
+const AREA = q.get("area") || "ai-security";
+const SCEN = q.get("id") || "00-orientation";
+
+let data = null, idx = 0;
+let runMode = "vulnerable";   // one control, one meaning: the mode of the next run
+let lastRun = null;           // {sim, mode, result} — what Check will be reading
+
+/* ---- progress --------------------------------------------------------- */
+const progress = () => CR.loadProgress(AREA, SCEN);
+function markPassed(step, kind, mode) {
+  CR.recordPass(AREA, SCEN, step.id, kind, mode);
+  renderRail();
+}
+
+/* ---- rail ------------------------------------------------------------- */
+function renderRail() {
+  const p = progress();
+  const done = data.steps.filter((s) => CR.isPassed(p, s.id)).length;
+  const pct = Math.round((done / data.steps.length) * 100);
+  document.getElementById("progBar").style.width = pct + "%";
+  document.getElementById("progPct").textContent = pct + "%";
+  document.getElementById("stepList").innerHTML = data.steps.map((s, i) => {
+    const ok = CR.isPassed(p, s.id);
+    const kind = !s.has_check ? "read" : s.check_kind === "recall" ? "question" : "graded";
+    return `<li data-i="${i}" class="${i === idx ? "on" : ""} ${ok ? "ok" : ""}">
+      <span class="pip">${ok ? "✓" : i + 1}</span>
+      <span class="lb"><span class="kind">${kind}</span>${esc(s.title || s.id)}</span></li>`;
+  }).join("");
+  document.querySelectorAll(".steps li").forEach((li) => (li.onclick = () => go(+li.dataset.i)));
+}
+
+/* ---- step ------------------------------------------------------------- */
+function renderStep() {
+  const step = data.steps[idx];
+  document.getElementById("crumb").textContent = `${data.title} · step ${idx + 1} of ${data.steps.length}`;
+  const el = document.getElementById("body");
+  const md = (idx === 0 && data.intro_md ? data.intro_md + "\n\n---\n\n" : "")
+    + (step.body_md || "")
+    + (idx === data.steps.length - 1 && data.finish_md ? "\n\n---\n\n" + data.finish_md : "");
+  el.innerHTML = marked.parse(md);
+  CR.enhanceCode(el, sendToTerminal);
+  renderActs(step);
+  document.getElementById("prev").disabled = idx === 0;
+  const last = idx === data.steps.length - 1;
+  document.getElementById("next").textContent = last ? "Finish ✓" : "Next →";
+  document.getElementById("next").className = "btn" + (last ? " assert" : "");
+  document.querySelector(".lesson").scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: "instant" });
+  renderRail();
+}
+
+/* Run and Check rendered as separate acts. A read-only step gets neither, and —
+   unlike before — is not silently marked complete just because you opened it. */
+function renderActs(step) {
+  const host = document.getElementById("acts");
+  host.innerHTML = "";
+
+  if (step.run) {
+    const wanted = step.run.mode && step.run.mode !== "any" ? step.run.mode : null;
+    host.insertAdjacentHTML("beforeend", `
+      <div class="act run" id="actRun">
+        <div class="bar">
+          <span class="t">${esc(step.run.label || "Run it")}</span>
+          <span class="d">Executes against the real tools${wanted ? ` in <b>${esc(wanted)}</b> mode` : ""}. Watch the timeline.</span>
+          <button class="btn attack sm" id="btnRun">Run</button>
+        </div>
+        <div class="say" id="runSay"></div>
+      </div>`);
+    document.getElementById("btnRun").onclick = () => doRun(step);
+    if (wanted && wanted !== runMode) setMode(wanted);
+  }
+
+  if (!step.has_check) {
+    host.insertAdjacentHTML("beforeend", `
+      <div class="act verify">
+        <div class="bar"><span class="t">Nothing to verify here</span>
+          <span class="d">Reading step. Mark it read when you have.</span>
+          <button class="btn sm" id="btnRead">Mark read</button></div>
+      </div>`);
+    document.getElementById("btnRead").onclick = () => {
+      markPassed(step, "read", "any");
+      document.getElementById("btnRead").textContent = "Read ✓";
+      document.getElementById("btnRead").disabled = true;
+    };
+    return;
+  }
+
+  if (step.check_kind === "recall") {
+    const c = step.check || {};
+    host.insertAdjacentHTML("beforeend", `
+      <div class="act verify" id="actCheck">
+        <div class="bar"><span class="t">Answer this</span><span class="grow"></span>
+          <button class="btn assert sm" id="btnCheck">Check answer</button></div>
+        <div class="quiz">
+          <div class="q">${esc(c.prompt || "")}</div>
+          ${(c.options || []).map((o, i) => `
+            <label><input type="radio" name="recall" value="${i}" /><span>${esc(o)}</span></label>`).join("")}
+        </div>
+        <div class="say" id="checkSay"></div>
+      </div>`);
+  } else {
+    const what = {
+      evidence: "Reads the run you just performed and asserts what it left behind.",
+      mailhog: "Looks in the mail sink for the message the attack actually sent.",
+      lab_status: "Asks every tool server whether it is up.",
+      simulate: "Runs the graded lab check.",
+    }[step.check_kind] || "Asserts real lab state.";
+    host.insertAdjacentHTML("beforeend", `
+      <div class="act verify" id="actCheck">
+        <div class="bar"><span class="t">Check</span><span class="d">${what}</span>
+          <button class="btn assert sm" id="btnCheck">Check</button></div>
+        <div class="say" id="checkSay"></div>
+      </div>`);
+  }
+  document.getElementById("btnCheck").onclick = () => doCheck(step);
+}
+
+/* ---- run -------------------------------------------------------------- */
+function setMode(mode) {
+  runMode = mode;
+  document.querySelectorAll("#modeSeg button").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+}
+
+async function doRun(step) {
+  const sim = step.run.simulate;
+  const btn = document.getElementById("btnRun");
+  const say = document.getElementById("runSay");
+  const state = document.getElementById("runState");
+  btn.disabled = true;
+  say.textContent = "";
+  state.innerHTML = `<span class="spinner"></span> running`;
+  showPane("time");
+  try {
+    const forStep = encodeURIComponent(`${AREA}/${SCEN}/${step.id}`);
+    const res = await CR.api(
+      `/lab/simulate/${sim}?secure=${runMode === "secure"}&step=${forStep}`,
+      { method: "POST", body: "{}" });
+    const r = res.result || {};
+    lastRun = { sim, mode: runMode, result: r };
+    renderTimeline(res.events || []);
+    CR.paintTrace(document.getElementById("trace"), res.events || [], r);
+    document.getElementById("planOut").textContent =
+      JSON.stringify(r.evidence?.compromised_plan || r.evidence || {}, null, 2);
+    document.getElementById("toolOut").textContent =
+      JSON.stringify({ detail: r.detail, success: r.success, blocked: r.blocked }, null, 2);
+    document.getElementById("ragOut").textContent = (r.evidence?.previews || []).join("\n\n") || "—";
+    state.textContent = r.success ? "attack landed" : r.blocked ? "contained" : "ran";
+    say.innerHTML = r.success
+      ? `Landed in <b>${esc(runMode)}</b> mode. Read the timeline before you check — the evidence is the lesson.`
+      : `Ran in <b>${esc(runMode)}</b> mode and was stopped. The timeline names the control that did it.`;
+  } catch (e) {
+    state.textContent = "error";
+    say.textContent = "Run failed: " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---- check ------------------------------------------------------------ */
+async function doCheck(step) {
+  const btn = document.getElementById("btnCheck");
+  const box = document.getElementById("actCheck");
+  const say = document.getElementById("checkSay");
+  let answer = null;
+  if (step.check_kind === "recall") {
+    const sel = document.querySelector('input[name="recall"]:checked');
+    if (!sel) { box.className = "act verify fail"; say.textContent = "Pick an answer first."; return; }
+    answer = Number(sel.value);
+  }
+  btn.disabled = true;
+  box.className = "act verify";
+  say.innerHTML = `<span class="spinner"></span> checking`;
+  try {
+    const res = await CR.api(`/scenario/${AREA}/${SCEN}/check/${step.id}`, {
+      method: "POST", body: JSON.stringify({ answer }),
+    });
+    box.className = "act verify " + (res.passed ? "pass" : "fail");
+    say.textContent = (res.passed ? "PASS — " : "NOT YET — ") + (res.message || "");
+    if (res.passed) markPassed(step, res.kind, (step.check && step.check.require_mode) || "any");
+    if (step.check_kind !== "recall") { await hydrate(); }
+    refreshStack();
+  } catch (e) {
+    box.className = "act verify fail";
+    say.textContent = "Check error: " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---- evidence --------------------------------------------------------- */
+async function hydrate() {
+  try {
+    const ev = await CR.api("/lab/events");
+    renderTimeline(ev.events || []);
+    if (lastRun) CR.paintTrace(document.getElementById("trace"), ev.events || [], lastRun.result);
+  } catch { /* the timeline just stays as it was */ }
+}
+
+const KEY = { plan: "PLAN", tool: "TOOL", sql: "SQL", defense: "DEFENSE", result: "RESULT",
+              retrieve: "RAG", explain: "NOTE", teach: "NOTE", user: "USER" };
+
+function renderTimeline(list) {
+  const el = document.getElementById("timeline");
+  if (!list.length) {
+    el.innerHTML = `<div class="state"><h4>Nothing recorded</h4><p>The run produced no events. Check the stack is up.</p></div>`;
+    return;
+  }
+  el.innerHTML = list.map((e) => {
+    const cls = (e.phase || "").toLowerCase();
+    const sql = e.detail?.sql || (cls === "sql" ? (e.message || "").replace(/^SQL:\s*/i, "") : null);
+    return `<div class="ev"><span class="k ${cls}">${KEY[cls] || (e.phase || "LOG").toUpperCase()}</span>
+      <span class="m">${esc(e.message)}${sql && cls === "sql" ? `<span class="sql">${esc(sql)}</span>` : ""}</span></div>`;
+  }).join("");
+}
+
+/* ---- panes / terminal -------------------------------------------------- */
+function showPane(name) {
+  document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.pane === name));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === "p-" + name));
+}
+function openTerminal() {
+  showPane("term");
+  const f = document.getElementById("termFrame");
+  if (f.hidden) { f.src = TTYD; f.hidden = false; document.getElementById("termNote").hidden = true; }
+}
+function sendToTerminal(text) {
+  navigator.clipboard?.writeText(text);
+  openTerminal();
+}
+
+/* ---- stack pill -------------------------------------------------------- */
+async function refreshStack() {
+  const el = document.getElementById("stackPill");
+  try {
+    const s = await CR.api("/lab/status");
+    const tools = s.tools || {};
+    const up = Object.values(tools).filter((t) => t.ok).length;
+    const total = Object.keys(tools).length || 0;
+    if (total && up === total) { el.className = "tag cold"; el.innerHTML = `<i class="dot"></i>stack up · ${up}/${total} tools`; }
+    else { el.className = "tag warn"; el.innerHTML = `<i class="dot"></i>${up}/${total} tools responding`; }
+  } catch {
+    el.className = "tag hot"; el.innerHTML = `<i class="dot"></i>lab not answering`;
+  }
+}
+
+/* ---- boot -------------------------------------------------------------- */
+const go = (i) => { idx = Math.max(0, Math.min(data.steps.length - 1, i)); renderStep(); };
+
+async function init() {
+  document.getElementById("trace").innerHTML = CR.traceHTML("No run recorded yet.");
+  document.querySelectorAll(".tabs button").forEach((b) =>
+    (b.onclick = () => (b.dataset.pane === "term" ? openTerminal() : showPane(b.dataset.pane))));
+  document.querySelectorAll("#modeSeg button").forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
+  document.getElementById("prev").onclick = () => go(idx - 1);
+  document.getElementById("next").onclick = () => {
+    if (idx === data.steps.length - 1) location.href = "/lab/ui/catalog.html";
+    else go(idx + 1);
+  };
+
+  try {
+    data = await CR.api(`/scenario/${AREA}/${SCEN}`);
+    if (data.error) throw new Error(data.error);
+  } catch (e) {
+    document.getElementById("body").innerHTML =
+      `<div class="state bad"><h4>That scenario did not load</h4><p>${esc(e.message)}</p>
+       <p>If you just added it, the content cache is stale — <code>curl -X POST localhost:8000/lab/content/reload</code>.</p></div>`;
+    return;
+  }
+  document.getElementById("scTitle").textContent = data.title;
+  document.getElementById("scSummary").textContent = data.summary || "";
+  renderStep();
+  refreshStack();
+}
+init();
+</script>
+</body>
+</html>

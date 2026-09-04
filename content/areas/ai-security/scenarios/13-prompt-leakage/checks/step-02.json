@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m9",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "System prompt disclosed: tool names, argument shapes and the dump-all example reached the user.",
+  "fail_message": "The prompt was not disclosed. Ensure the graded run used vulnerable mode."
+}

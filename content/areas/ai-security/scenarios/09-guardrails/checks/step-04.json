@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m5",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Guardrails effective: caught ≥80% of attacks with ≤20% false positives, latency measured (see Forensics).",
+  "fail_message": "The guardrail pipeline did not meet the effectiveness bar. Confirm control C13 is active."
+}

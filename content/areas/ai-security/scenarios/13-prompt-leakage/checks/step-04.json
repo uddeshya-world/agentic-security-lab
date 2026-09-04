@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m9",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Leak detected (canary phrases + n-gram overlap) and the response withheld before it reached the user.",
+  "fail_message": "The system prompt still reached the user under secure mode. Confirm control C18 is active."
+}

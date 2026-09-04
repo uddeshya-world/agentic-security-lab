@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m5",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Baseline captured: with guardrails off, every malicious probe passed unfiltered (catch rate 0%).",
+  "fail_message": "Baseline run did not behave as expected. Ensure the graded run used vulnerable mode."
+}

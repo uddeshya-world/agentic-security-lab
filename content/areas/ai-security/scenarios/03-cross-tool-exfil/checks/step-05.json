@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "a3",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Chain broken: the send was denied by the egress allow-list / HITL gate and nothing new left the boundary.",
+  "fail_message": "The exfil chain was not blocked under secure mode. Confirm controls C4 (allow-list) and C5 (HITL) are active."
+}

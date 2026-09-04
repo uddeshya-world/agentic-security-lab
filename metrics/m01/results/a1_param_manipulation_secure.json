@@ -1,0 +1,26 @@
+{
+  "attack_id": "a1_param_manipulation",
+  "name": "Parameter manipulation (SQLi + path traversal)",
+  "layer": "A",
+  "secure_mode": true,
+  "success": false,
+  "blocked": true,
+  "detail": "Secure mode blocked param abuse (sqli=False, path_traversal=False)",
+  "evidence": {
+    "sqli_response": {
+      "result": {
+        "error": "customer_id required in secure mode"
+      },
+      "side_effects": []
+    },
+    "sqli_error": "customer_id required in secure mode",
+    "traversal_response": {
+      "result": {
+        "error": "path '../etc/hostname' escapes workspace jail"
+      },
+      "side_effects": []
+    },
+    "traversal_error": "path '../etc/hostname' escapes workspace jail"
+  },
+  "timestamp": "2026-07-11T08:09:11.210225+00:00"
+}

@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m2",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Clean context delivered: content detector + crowding collapse removed all poison while keeping a legitimate chunk.",
+  "fail_message": "Poison still reached context under secure mode. Confirm the C8 content detector is active."
+}

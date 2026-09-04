@@ -1,0 +1,29 @@
+# Hosted / public demo manifest — the zero-friction catalog surface.
+#
+#   docker compose -f docker-compose.hosted.yml up -d
+#
+# SAFETY BY CONSTRUCTION (advisor invariant #2):
+#   * This manifest contains ONE service: the agent, in LAB_HOSTED mode.
+#   * There are NO tool servers, NO ollama, NO mailhog, NO ttyd here — so the
+#     attack path physically cannot run, regardless of any route or env value.
+#   * LAB_HOSTED=1 additionally REMOVES the attack routes from the served app
+#     (/run, /lab/attack, /lab/simulate, the graded /scenario check, ingestion).
+#   * What remains: the Areas catalog, read-only scenario/step content, the
+#     curriculum/exploit reference JSON, and the static UI.
+#
+# Full hands-on lives in docker-compose.yml (local, real tools). This surface is
+# a taste: browse the catalog, read the lessons, see the design — then run it
+# locally to actually break things.
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: ["uvicorn", "agents.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - LAB_HOSTED=1
+    volumes:
+      # Content is read-only in the hosted build.
+      - ./content:/app/content:ro
+    ports:
+      - "8000:8000"

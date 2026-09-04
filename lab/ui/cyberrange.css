@@ -1,0 +1,321 @@
+/* ==========================================================================
+   CyberRange — shared design system
+   --------------------------------------------------------------------------
+   The whole product is about one thing: how far a single compromised step
+   travels before something stops it. So the visual language is built from that
+   idea rather than applied on top of it.
+
+   Two temperatures carry all the meaning:
+     ember  — the attack propagating. Used for the reach of a run, the Run
+              control, and anything that succeeded when it should not have.
+     halon  — the control that contained it. (Halon is a fire-suppression agent.)
+              Used for the stop mark, passes, and secure mode.
+
+   Nothing else in the palette competes with those two. Chrome is greyscale on a
+   cool charcoal ground so that ember and halon are the only saturated things on
+   screen and always mean the same thing.
+   ========================================================================== */
+
+:root {
+  /* ground */
+  --void:      #0a0c10;
+  --plate:     #12161c;
+  --shelf:     #171c24;
+  --raise:     #1d232c;
+  --edge:      #232a34;
+  --edge-hi:   #364150;
+
+  /* ink */
+  --chalk:     #e9ecf1;
+  --ash:       #8b94a3;
+  --dim:       #5a6371;
+
+  /* the two temperatures */
+  --ember:     #ff6b35;
+  --ember-ink: #ffb598;
+  --ember-bed: #341409;
+  --ember-line:#5e2a14;
+
+  --halon:     #35e0c0;
+  --halon-ink: #8ff0dd;
+  --halon-bed: #072a24;
+  --halon-line:#125045;
+
+  --brass:     #e8b84b;
+  --brass-bed: #2b2210;
+  --brass-line:#4d3d16;
+
+  /* type */
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --body:    "Archivo", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* rhythm — a 4px base, used everywhere. No arbitrary paddings. */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+
+  --r-sm: 3px; --r: 5px; --r-lg: 8px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--chalk);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; border-radius: 2px; }
+
+/* --------------------------------------------------------------------------
+   Type roles
+   -------------------------------------------------------------------------- */
+.display {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.mono { font-family: var(--mono); }
+.num  { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------------------
+   Chrome
+   -------------------------------------------------------------------------- */
+.cr-nav {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: var(--s5);
+  height: 54px; padding: 0 var(--s5);
+  background: rgba(10, 12, 16, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--edge);
+}
+.cr-mark {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-family: var(--display); font-weight: 700; font-size: 15px;
+  letter-spacing: -0.02em; white-space: nowrap;
+}
+/* The mark is the thesis in miniature: a run that travels, and the wall it hits. */
+.cr-mark .glyph {
+  display: inline-block; width: 22px; height: 10px; border-radius: 1px;
+  background:
+    linear-gradient(90deg, var(--ember) 0 62%, transparent 62%),
+    linear-gradient(90deg, transparent 0 70%, var(--halon) 70%);
+  box-shadow: 0 0 12px -2px var(--ember);
+}
+.cr-mark .sub { color: var(--dim); font-family: var(--mono); font-size: 10.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
+.cr-nav .grow { flex: 1; }
+.cr-nav a.link { font-size: 13px; color: var(--ash); padding: var(--s1) 0; border-bottom: 1px solid transparent; }
+.cr-nav a.link:hover { color: var(--chalk); border-bottom-color: var(--edge-hi); }
+
+.shell { max-width: 1180px; margin: 0 auto; padding: 0 var(--s5); }
+
+/* --------------------------------------------------------------------------
+   The blast trace — the signature element.
+   A live instrument, not an illustration: `--reach` is how far the last run
+   travelled (0-1) and `.trace.contained` marks where a control stopped it.
+   -------------------------------------------------------------------------- */
+.trace { --reach: 0; display: block; width: 100%; }
+.trace .track {
+  position: relative; height: 2px; margin: var(--s4) 0 var(--s2);
+  background: var(--edge);
+}
+.trace .flow {
+  position: absolute; inset: 0 auto 0 0; width: calc(var(--reach) * 100%);
+  background: linear-gradient(90deg, var(--ember-line), var(--ember));
+  box-shadow: 0 0 14px -2px var(--ember);
+  transition: width .5s cubic-bezier(.22,.61,.36,1);
+}
+.trace.contained .flow {
+  background: linear-gradient(90deg, var(--ember-line), var(--ember));
+}
+.trace .stopmark {
+  position: absolute; top: -5px; left: calc(var(--reach) * 100%);
+  width: 2px; height: 12px; background: var(--halon);
+  box-shadow: 0 0 10px 0 var(--halon);
+  transition: left .5s cubic-bezier(.22,.61,.36,1);
+  display: none;
+}
+.trace.contained .stopmark { display: block; }
+/* Labels are positioned at the same fractions the rail uses, so the stop mark
+   lands on the stage it names. A grid of equal columns would put them a sixth of
+   the width out of step with a fifth-of-the-width marker. */
+.trace .stages {
+  position: relative; height: 12px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--dim);
+}
+.trace .stages span { position: absolute; top: 0; white-space: nowrap; }
+.trace .stages span.reached { color: var(--ember-ink); }
+.trace .stages span.stopped { color: var(--halon); }
+.trace .caption {
+  font-family: var(--mono); font-size: 11px; color: var(--ash); margin-top: var(--s2);
+}
+.trace .caption b { font-weight: 500; }
+.trace.hot .caption b { color: var(--ember); }
+.trace.contained .caption b { color: var(--halon); }
+
+@media (prefers-reduced-motion: reduce) {
+  .trace .flow, .trace .stopmark { transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Controls
+   -------------------------------------------------------------------------- */
+.btn {
+  font-family: var(--body); font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: 8px 14px; border-radius: var(--r);
+  border: 1px solid var(--edge-hi); background: var(--raise); color: var(--chalk);
+  cursor: pointer; white-space: nowrap;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.btn:hover:not(:disabled) { background: var(--shelf); border-color: var(--ash); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.sm { padding: 5px 10px; font-size: 12px; }
+
+/* Run is the hot control: it makes the attack happen. */
+.btn.attack { background: var(--ember-bed); border-color: var(--ember-line); color: var(--ember-ink); }
+.btn.attack:hover:not(:disabled) { background: var(--ember); border-color: var(--ember); color: #240a02; }
+
+/* Check is the cold one: it asserts containment. */
+.btn.assert { background: var(--halon); border-color: var(--halon); color: #022019; font-weight: 600; }
+.btn.assert:hover:not(:disabled) { background: var(--halon-ink); border-color: var(--halon-ink); }
+
+.btn.ghost { background: transparent; border-color: var(--edge); color: var(--ash); }
+.btn.ghost:hover:not(:disabled) { color: var(--chalk); border-color: var(--edge-hi); background: transparent; }
+
+/* Segmented mode switch — one control, so "secure mode" stops meaning three things. */
+.seg { display: inline-flex; border: 1px solid var(--edge-hi); border-radius: var(--r); overflow: hidden; }
+.seg button {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 6px 11px; border: 0; background: transparent; color: var(--dim); cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--edge-hi); }
+.seg button[aria-pressed="true"][data-mode="vulnerable"] { background: var(--ember-bed); color: var(--ember-ink); }
+.seg button[aria-pressed="true"][data-mode="secure"] { background: var(--halon-bed); color: var(--halon-ink); }
+
+/* --------------------------------------------------------------------------
+   Surfaces, tags, states
+   -------------------------------------------------------------------------- */
+.panel { background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r-lg); }
+.rule { height: 1px; background: var(--edge); border: 0; margin: var(--s6) 0; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: var(--r-sm);
+  border: 1px solid var(--edge); color: var(--ash); white-space: nowrap;
+}
+.tag.hot     { color: var(--ember); border-color: var(--ember-line); background: var(--ember-bed); }
+.tag.cold    { color: var(--halon); border-color: var(--halon-line); background: var(--halon-bed); }
+.tag.warn    { color: var(--brass); border-color: var(--brass-line); background: var(--brass-bed); }
+.tag.quiet   { color: var(--dim); }
+
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+
+.meter { height: 3px; background: var(--edge); border-radius: 2px; overflow: hidden; }
+.meter > i { display: block; height: 100%; background: var(--halon); transition: width .35s ease; }
+
+.spinner {
+  display: inline-block; width: 10px; height: 10px; vertical-align: -1px;
+  border: 2px solid var(--edge-hi); border-top-color: var(--halon); border-radius: 50%;
+  animation: cr-spin .7s linear infinite;
+}
+@keyframes cr-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+/* Empty and error states get direction, not mood. */
+.state { padding: var(--s5); border: 1px dashed var(--edge); border-radius: var(--r-lg); color: var(--ash); font-size: 13px; }
+.state h4 { margin: 0 0 var(--s1); font-family: var(--display); font-size: 14px; color: var(--chalk); letter-spacing: -.01em; }
+.state p { margin: 0; }
+.state code { font-family: var(--mono); font-size: 12px; color: var(--halon-ink); }
+.state.bad { border-style: solid; border-color: var(--ember-line); background: var(--ember-bed); color: var(--ember-ink); }
+
+/* Skeletons — a loading state that has the shape of the content it replaces. */
+.skel { background: linear-gradient(90deg, var(--shelf) 0%, var(--raise) 50%, var(--shelf) 100%);
+        background-size: 200% 100%; animation: cr-shimmer 1.2s linear infinite; border-radius: var(--r-sm); }
+@keyframes cr-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
+/* --------------------------------------------------------------------------
+   Lesson prose
+   -------------------------------------------------------------------------- */
+.md { font-size: 15px; line-height: 1.68; color: #d3d9e2; max-width: 70ch; }
+.md > *:first-child { margin-top: 0; }
+.md h2 { font-family: var(--display); font-size: 25px; font-weight: 600; letter-spacing: -.025em; color: var(--chalk); margin: 0 0 var(--s4); line-height: 1.15; }
+.md h3 { font-family: var(--display); font-size: 16px; font-weight: 600; letter-spacing: -.01em; color: var(--chalk); margin: var(--s6) 0 var(--s2); }
+.md p { margin: 0 0 var(--s3); }
+.md ul, .md ol { margin: 0 0 var(--s3); padding-left: 1.3em; }
+.md li { margin: var(--s1) 0; }
+.md li::marker { color: var(--dim); }
+.md strong { color: var(--chalk); font-weight: 600; }
+.md a { color: var(--halon-ink); border-bottom: 1px solid var(--halon-line); }
+.md blockquote {
+  margin: var(--s4) 0; padding: var(--s3) var(--s4);
+  border-left: 2px solid var(--ember); background: var(--ember-bed);
+  color: var(--ember-ink); border-radius: 0 var(--r) var(--r) 0;
+}
+.md blockquote p:last-child { margin-bottom: 0; }
+.md hr { border: 0; border-top: 1px solid var(--edge); margin: var(--s6) 0; }
+.md table { border-collapse: collapse; width: 100%; font-size: 13px; margin: var(--s4) 0; }
+.md .tablewrap { overflow-x: auto; margin: var(--s4) 0; }
+.md th, .md td { border-bottom: 1px solid var(--edge); padding: 7px 10px; text-align: left; vertical-align: top; }
+.md th { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); font-weight: 500; }
+.md code { font-family: var(--mono); font-size: .87em; background: var(--shelf); border: 1px solid var(--edge); padding: 1px 5px; border-radius: var(--r-sm); color: var(--halon-ink); }
+.md pre {
+  position: relative; margin: 0 0 var(--s4); padding: var(--s4);
+  background: #080a0e; border: 1px solid var(--edge); border-left: 2px solid var(--edge-hi);
+  border-radius: 0 var(--r) var(--r) 0; overflow-x: auto;
+}
+.md pre code { background: none; border: 0; padding: 0; color: #c6cedb; font-size: 12.5px; line-height: 1.6; }
+.codebar { position: absolute; top: 6px; right: 6px; display: flex; gap: var(--s1); opacity: 0; transition: opacity .12s; }
+.md pre:hover .codebar, .md pre:focus-within .codebar { opacity: 1; }
+.codebar button {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: var(--r-sm);
+  border: 1px solid var(--edge-hi); background: var(--plate); color: var(--ash); cursor: pointer;
+}
+.codebar button:hover { color: var(--chalk); border-color: var(--halon); }
+
+/* --------------------------------------------------------------------------
+   Timeline — the evidence. Phase colour follows the same two temperatures.
+   -------------------------------------------------------------------------- */
+.timeline { font-family: var(--mono); font-size: 11.5px; line-height: 1.55; }
+.ev { display: grid; grid-template-columns: 66px 1fr; gap: var(--s2); padding: 6px 0; border-bottom: 1px solid var(--edge); }
+.ev:last-child { border-bottom: 0; }
+.ev .k { font-size: 9.5px; letter-spacing: .08em; color: var(--dim); padding-top: 2px; }
+.ev .k.sql, .ev .k.result { color: var(--ember); }
+.ev .k.defense { color: var(--halon); }
+.ev .k.plan { color: #b79cff; }
+.ev .k.tool { color: var(--chalk); }
+.ev .k.retrieve { color: var(--brass); }
+.ev .m { color: var(--ash); word-break: break-word; }
+.ev .sql {
+  margin-top: 5px; padding: 7px 9px; border-radius: var(--r-sm);
+  background: #080a0e; border: 1px solid var(--ember-line); color: var(--ember-ink);
+  white-space: pre-wrap; word-break: break-word;
+}
+.dump { font-family: var(--mono); font-size: 11px; background: var(--void); border: 1px solid var(--edge);
+        border-radius: var(--r); padding: var(--s3); white-space: pre-wrap; word-break: break-word;
+        color: var(--ash); margin: 0 0 var(--s3); max-height: 280px; overflow: auto; }
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.cr-foot { border-top: 1px solid var(--edge); margin-top: var(--s8); padding: var(--s5) 0 var(--s7); }
+.cr-foot p { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.cr-foot a { color: var(--ash); border-bottom: 1px solid var(--edge); }

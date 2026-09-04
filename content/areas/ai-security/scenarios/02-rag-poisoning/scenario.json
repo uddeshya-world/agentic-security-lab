@@ -1,0 +1,23 @@
+{
+  "id": "02-rag-poisoning",
+  "legacy_id": "a2",
+  "order": 2,
+  "title": "Poison the LLM context (RAG)",
+  "summary": "Stop calling tools yourself. Plant instructions in a document, ask an innocent question, and watch retrieval carry the attacker's words into the model's context.",
+  "difficulty": "medium",
+  "est_minutes": 15,
+  "attack_id": "a2_retrieval_poisoning",
+  "mailhog": false,
+  "owasp": ["LLM01 Prompt Injection", "LLM04 Data Poisoning", "LLM08 Vector Weaknesses", "ASI06 Context Poisoning"],
+  "controls": ["C6", "C7"],
+  "code_paths": ["data/corpus/poisoned/doc_evil_001.txt", "rag/retriever.py", "rag/ingest.py"],
+  "takeaway": "RAG is an input channel for attackers — not trusted system policy.",
+  "design_rule": "Provenance + trust scores; quarantine untrusted sources before they reach the planner.",
+  "steps": [
+    { "id": "step-01", "title": "Indirect injection, explained", "file": "step-01.md" },
+    { "id": "step-02", "title": "Look at the poison document", "file": "step-02.md" },
+    { "id": "step-03", "title": "Poison the store and retrieve", "file": "step-03.md" },
+    { "id": "step-04", "title": "Enable the RAG trust filter", "file": "step-04.md" },
+    { "id": "step-05", "title": "Prove the poison is quarantined", "file": "step-05.md" }
+  ]
+}

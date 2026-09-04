@@ -1,0 +1,25 @@
+# Minimal promptfoo config pointed at the local agent's HTTP endpoint.
+# One trivial passing probe to prove wiring -- not real coverage (see plan
+# section 5, Checkpoint 6, and risk #7: exact integration shape verified
+# at build time).
+description: "Agentic Security Lab -- trivial promptfoo wiring probe"
+
+providers:
+  - id: http
+    config:
+      url: http://localhost:8000/run
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        session_id: "promptfoo-probe"
+        message: "{{prompt}}"
+      transformResponse: "json.final_answer"
+
+prompts:
+  - "What is your return policy?"
+
+tests:
+  - description: "trivial wiring probe -- agent responds at all"
+    assert:
+      - type: not-empty

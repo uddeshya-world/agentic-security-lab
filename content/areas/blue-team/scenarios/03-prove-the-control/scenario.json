@@ -1,0 +1,31 @@
+{
+  "id": "03-prove-the-control",
+  "title": "Prove the control closed it",
+  "order": 3,
+  "difficulty": "intermediate",
+  "est_minutes": 18,
+  "summary": "Re-run the same incident with the control on, confirm it is stopped, and reason carefully about what your evidence proves and what it only suggests.",
+  "owasp": [
+    "LLM02 Sensitive Information Disclosure"
+  ],
+  "controls": [],
+  "takeaway": "Proving something happened is easy. Proving it did not is a different, harder claim — and most SOC reporting confuses the two.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "The measure half"
+    },
+    {
+      "id": "step-02",
+      "title": "Re-run with the control on"
+    },
+    {
+      "id": "step-03",
+      "title": "The absence problem"
+    },
+    {
+      "id": "step-04",
+      "title": "What goes in the report"
+    }
+  ]
+}

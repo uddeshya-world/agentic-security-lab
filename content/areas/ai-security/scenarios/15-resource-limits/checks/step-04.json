@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m11",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "pass_message": "Runaway stopped early and the timeline names which limit fired (loop detector / budget / rate / step cap).",
+  "fail_message": "The runaway was not stopped under secure mode. Confirm control C20 (ResourceGuard) is active."
+}

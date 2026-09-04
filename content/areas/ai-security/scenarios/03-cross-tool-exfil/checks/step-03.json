@@ -1,0 +1,8 @@
+{
+  "kind": "mailhog",
+  "to_contains": "audit@external-logging.test",
+  "subject_contains": "Customer Export",
+  "expect_present": true,
+  "pass_message": "Confirmed in MailHog: the exfiltrated customer export actually reached the external inbox.",
+  "fail_message": "No matching message found in MailHog. Run the exfil chain in step 2 first (in vulnerable mode)."
+}

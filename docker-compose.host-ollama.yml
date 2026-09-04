@@ -1,0 +1,29 @@
+# Use Ollama installed on the Windows host (recommended when Docker GPU is hard
+# but the laptop GPU works with native Ollama).
+#
+# 1) Install Ollama for Windows: https://ollama.com/download
+# 2) In PowerShell:  ollama pull qwen2.5:1.5b-instruct
+# 3) Keep Ollama running (system tray).
+# 4) Start lab WITHOUT the ollama service, pointing agent at the host:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.host-ollama.yml up -d \
+#     mailhog db-tool email-tool file-tool agent
+#
+# Or:  .\run.ps1 -Cmd up-host-ollama
+
+services:
+  # Don't start compose Ollama when using host GPU Ollama
+  ollama:
+    profiles: ["disabled-when-host-ollama"]
+  ollama-init:
+    profiles: ["disabled-when-host-ollama"]
+
+  agent:
+    environment:
+      # Windows Docker Desktop: host machine from container
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b-instruct}
+      - OLLAMA_TIMEOUT_S=${OLLAMA_TIMEOUT_S:-120}
+      - LIVE_ATTACK_LLM_TIMEOUT_S=${LIVE_ATTACK_LLM_TIMEOUT_S:-60}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

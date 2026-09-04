@@ -1,0 +1,22 @@
+{
+  "id": "00-orientation",
+  "legacy_id": "l0",
+  "order": 0,
+  "title": "What is an agent with tools?",
+  "summary": "Orientation. Meet the system you are about to break: planner, executor, three real tools, a RAG store — and the trust boundary that makes all of it exploitable.",
+  "difficulty": "beginner",
+  "est_minutes": 8,
+  "attack_id": null,
+  "mailhog": false,
+  "owasp": [],
+  "controls": [],
+  "code_paths": ["agents/executor.py", "tools/", "SECURITY_NOTES.md"],
+  "takeaway": "Security is not 'trust the model'. Assume the planner can be exploited; put guardrails outside the LLM.",
+  "design_rule": "Defense in depth: RAG → plan validation → least privilege → HITL → tool policy.",
+  "steps": [
+    { "id": "step-01", "title": "The system you are attacking", "file": "step-01.md" },
+    { "id": "step-02", "title": "Confirm the lab is running", "file": "step-02.md" },
+    { "id": "step-03", "title": "Look at a tool's schema", "file": "step-03.md" },
+    { "id": "step-04", "title": "Find the trust boundary", "file": "step-04.md" }
+  ]
+}

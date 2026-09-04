@@ -1,0 +1,22 @@
+{
+  "id": "07-multi-agent",
+  "legacy_id": "m3",
+  "order": 7,
+  "title": "Multi-agent attacks — tampering & rogue agents",
+  "summary": "Module 3. When planner, executor, and reviewer pass messages, the messages themselves become the attack surface. Tamper an unsigned plan in transit and smuggle a rogue tool, then sign messages and allow-list agents.",
+  "difficulty": "hard",
+  "est_minutes": 18,
+  "attack_id": "m3_multi_agent",
+  "mailhog": false,
+  "owasp": ["ASI07 Insecure Inter-Agent Comms", "ASI01 Agent Goal Hijack", "LLM06 Excessive Agency"],
+  "controls": ["C9", "C10"],
+  "code_paths": ["defenses/m03/signing.py", "agents/graph.py", "agents/executor.py"],
+  "takeaway": "Between agents, trust must be authenticated. An unsigned message is an unauthenticated instruction.",
+  "design_rule": "Sign inter-agent messages and verify before acting; allow-list every agent and tool.",
+  "steps": [
+    { "id": "step-01", "title": "The message is the surface", "file": "step-01.md" },
+    { "id": "step-02", "title": "Tamper and smuggle", "file": "step-02.md" },
+    { "id": "step-03", "title": "Sign and allow-list", "file": "step-03.md" },
+    { "id": "step-04", "title": "Prove tampering is caught", "file": "step-04.md" }
+  ]
+}

@@ -1,0 +1,114 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      # Keep model loaded so the next attack is faster
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:-30m}
+      - OLLAMA_NUM_PARALLEL=${OLLAMA_NUM_PARALLEL:-1}
+    # Port 11434 intentionally NOT published to host -- internal only.
+    # Uncomment for host-side debugging:
+    # ports:
+    #   - "127.0.0.1:11434:11434"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      # 1.5b is much faster than 3b on small GPUs / CPU
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b-instruct}
+    entrypoint: ["/bin/sh", "-c", "ollama pull \"$$OLLAMA_MODEL\" && echo PULL_DONE"]
+    restart: "no"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      # Bind localhost only — DO NOT expose this lab to the network.
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+
+  db-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: ["uvicorn", "tools.db_tool.server:app", "--host", "0.0.0.0", "--port", "8101"]
+    environment:
+      - SECURE_MODE=${SECURE_MODE:-false}
+    volumes:
+      - ./data/synthetic_db:/data/synthetic_db
+    ports:
+      - "127.0.0.1:8101:8101"
+
+  email-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: ["uvicorn", "tools.email_tool.server:app", "--host", "0.0.0.0", "--port", "8102"]
+    environment:
+      - SECURE_MODE=${SECURE_MODE:-false}
+      - MAILHOG_SMTP_HOST=mailhog
+      - MAILHOG_SMTP_PORT=1025
+    depends_on:
+      - mailhog
+    ports:
+      - "127.0.0.1:8102:8102"
+
+  file-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: ["uvicorn", "tools.file_tool.server:app", "--host", "0.0.0.0", "--port", "8103"]
+    environment:
+      - SECURE_MODE=${SECURE_MODE:-false}
+      - WORKSPACE_DIR=/workspace
+    volumes:
+      - ./workspace:/workspace
+    ports:
+      - "127.0.0.1:8103:8103"
+
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    command: ["uvicorn", "agents.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      - SECURE_MODE=${SECURE_MODE:-false}
+      - LAB_APPROVE=${LAB_APPROVE:-0}
+      - MAX_PLAN_STEPS=${MAX_PLAN_STEPS:-8}
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b-instruct}
+      - DB_TOOL_URL=http://db-tool:8101
+      - EMAIL_TOOL_URL=http://email-tool:8102
+      - FILE_TOOL_URL=http://file-tool:8103
+      - MAILHOG_API_BASE=http://mailhog:8025
+      - MAILHOG_UI=http://127.0.0.1:8025
+      - OLLAMA_TIMEOUT_S=${OLLAMA_TIMEOUT_S:-180}
+      - LIVE_ATTACK_LLM_TIMEOUT_S=${LIVE_ATTACK_LLM_TIMEOUT_S:-60}
+      - LANGFUSE_HOST=${LANGFUSE_HOST:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+    depends_on:
+      - ollama
+      - db-tool
+      - email-tool
+      - file-tool
+    volumes:
+      - ./data/chroma:/data/chroma
+      - ./data:/data
+      # Full source live-mount (local dev): edit code/content/UI, then
+      # `docker compose restart agent` to pick up Python changes.
+      - ./:/app
+    ports:
+      - "127.0.0.1:8000:8000"
+
+volumes:
+  ollama_data:

@@ -1,0 +1,22 @@
+{
+  "id": "08-memory-poisoning",
+  "legacy_id": "m4",
+  "order": 8,
+  "title": "Memory poisoning — the persistent backdoor",
+  "summary": "Module 4. RAG poison lives for one query; memory poison lives forever. Plant an instruction in long-term memory in one session, watch it steer a brand-new session, then add write validation and provenance signing.",
+  "difficulty": "hard",
+  "est_minutes": 18,
+  "attack_id": "m4_memory",
+  "mailhog": false,
+  "owasp": ["ASI06 Memory & Context Poisoning", "LLM01 Prompt Injection", "ASI01 Agent Goal Hijack"],
+  "controls": ["C11", "C12"],
+  "code_paths": ["defenses/m04/memory_guard.py", "memory/store.py", "memory/schema.sql"],
+  "takeaway": "Memory is an input channel that outlives the session. Validate on write, verify provenance on recall.",
+  "design_rule": "Memory stores facts, never instructions; sign entries and quarantine unsigned/tampered recalls.",
+  "steps": [
+    { "id": "step-01", "title": "Why memory is worse than RAG", "file": "step-01.md" },
+    { "id": "step-02", "title": "Plant a cross-session backdoor", "file": "step-02.md" },
+    { "id": "step-03", "title": "Validate and sign memory", "file": "step-03.md" },
+    { "id": "step-04", "title": "Prove the backdoor is gone", "file": "step-04.md" }
+  ]
+}

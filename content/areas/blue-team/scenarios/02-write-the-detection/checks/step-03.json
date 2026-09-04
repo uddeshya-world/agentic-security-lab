@@ -1,0 +1,13 @@
+{
+  "kind": "recall",
+  "prompt": "Which signal separates this incident from ordinary traffic earliest in the run?",
+  "options": [
+    "An email was sent by the agent",
+    "The database read supplied no scoping predicate (filter=1=1)",
+    "The recipient domain is not one we own",
+    "The run took longer than usual"
+  ],
+  "answer": 1,
+  "pass_message": "Right — it is the first event in the chain that no ordinary request produces, and it describes scope rather than activity. Everything after it is later and noisier.",
+  "fail_message": "Re-read the table in step 2. You are looking for the signal that is both early in the run and rare on a normal day — not the one with the most obvious impact."
+}

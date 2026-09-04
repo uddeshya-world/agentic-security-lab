@@ -1,0 +1,24 @@
+{
+  "id": "01-tool-abuse-sqli",
+  "legacy_id": "a1",
+  "order": 1,
+  "title": "Tool abuse — SQL injection (no LLM needed)",
+  "summary": "Prove the tools are dangerous by themselves. A free-form SQL filter is classic injection — this is exactly the call a steered agent will make.",
+  "difficulty": "easy",
+  "est_minutes": 15,
+  "attack_id": "a1_param_manipulation",
+  "mailhog": false,
+  "owasp": ["LLM06 Excessive Agency", "ASI02 Tool Misuse"],
+  "controls": ["C1", "C2", "C3", "C7"],
+  "code_paths": ["tools/db_tool/queries.py", "defenses/m01/schema_validation.py"],
+  "takeaway": "Tool schemas are a security control surface.",
+  "design_rule": "Parameterize queries; jail paths; validate args before execute.",
+  "steps": [
+    { "id": "step-01", "title": "The vulnerable surface", "file": "step-01.md" },
+    { "id": "step-02", "title": "Fire the SQL injection", "file": "step-02.md" },
+    { "id": "step-03", "title": "Read the SQL that ran", "file": "step-03.md" },
+    { "id": "step-04", "title": "Enable the defense", "file": "step-04.md" },
+    { "id": "step-05", "title": "Prove it is blocked", "file": "step-05.md" },
+    { "id": "step-06", "title": "Optional: make the live LLM do it", "file": "step-06.md" }
+  ]
+}

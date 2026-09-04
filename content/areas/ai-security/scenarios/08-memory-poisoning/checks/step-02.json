@@ -1,0 +1,8 @@
+{
+  "kind": "evidence",
+  "simulate": "m4",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "pass_message": "Cross-session backdoor confirmed: the instruction written in session 1 was recalled into a new session 2.",
+  "fail_message": "The backdoor did not persist. Ensure the graded run used vulnerable mode."
+}
