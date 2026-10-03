@@ -21,7 +21,7 @@ jobs:
       - name: Fast guards (no Docker needed)
         run: |
           python -m pip install --quiet pytest==8.3.4
-          python -m pytest tests/test_credential.py tests/test_ui_theme.py tests/test_owasp_2026_consistency.py -q
+          python -m pytest tests/test_credential.py tests/test_ui_theme.py tests/test_owasp_2026_consistency.py tests/test_playground.py -q
 
       - name: Build and start the lab stack
         run: docker compose up -d --build db-tool email-tool file-tool mailhog agent

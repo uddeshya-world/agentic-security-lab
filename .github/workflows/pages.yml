@@ -1,0 +1,62 @@
+name: playground (GitHub Pages)
+
+# Publishes ONLY the client-side playground and its assets. Nothing else in
+# lab/ui is copied: the hosted surface must never carry the lesson engine,
+# /run, attack routes, graded checks or badge issuing (PLAN.md §3.2).
+on:
+  push:
+    branches: [master]
+    paths: ["lab/ui/play.html", "lab/ui/assets/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  PLAYGROUND_URL: https://uddeshya-world.github.io/agentic-security-lab/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the static site
+        run: |
+          mkdir -p _site/assets
+          cp lab/ui/assets/* _site/assets/
+          sed -e "s|{{PLAYGROUND_URL}}|${PLAYGROUND_URL}|g" \
+              -e 's|data-build="local"|data-build="hosted"|' \
+              lab/ui/play.html > _site/play.html
+          # The shared URL is the site root, so the root must carry the Open
+          # Graph tags itself; a redirect page would show no preview card.
+          cp _site/play.html _site/index.html
+          touch _site/.nojekyll
+
+      - name: Safety checks on the published bundle
+        run: |
+          set -e
+          ! grep -R "{{PLAYGROUND_URL}}" _site
+          ! grep -R -E "fetch\(|XMLHttpRequest|/run|/lab/attack|/credential/" _site --include=*.html
+          ls -R _site
+          test "$(find _site -name '*.html' | wc -l)" -eq 2
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
