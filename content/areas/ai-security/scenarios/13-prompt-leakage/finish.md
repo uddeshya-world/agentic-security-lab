@@ -1,7 +1,7 @@
 ## What you proved
 
 - A leaked system prompt is **reconnaissance**: in this lab it hands over every
-  tool name, argument shape, and a working dump-all payload (**LLM07**).
+  tool name, argument shape, and a working dump-all payload (**LLM08**).
 - **C18** detects disclosure on the output path using canary phrases plus n-gram
   overlap, and withholds the response — failing closed.
 - Detection is damage control. The durable posture: treat the prompt as public,

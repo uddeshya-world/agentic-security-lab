@@ -7,5 +7,5 @@
 - Defense in depth: scoping the read *and* gating the send means either control
   alone breaks the chain.
 
-**Next:** *Exploit the agent* — the capstone. Poison enters via RAG, the planner
-emits this exact chain on its own, and the executor decides whether it runs.
+**Next:** *Data guards / DLP* — allow-listing the recipient is not enough if the
+payload is an SSN. Classify the data on four channels.

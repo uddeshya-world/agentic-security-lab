@@ -1,22 +1,49 @@
 {
   "id": "12-governance",
   "legacy_id": "m8",
-  "order": 12,
+  "order": 15,
   "title": "Governance & policy-as-code",
   "summary": "Module 8. Make security expressible and auditable. Replace the always-allow policy stub with a real engine that gates every action by blast radius, denies external egress, and writes a queryable audit trail.",
-  "difficulty": "medium",
+  "difficulty": "intermediate",
   "est_minutes": 16,
   "attack_id": "m8_governance",
   "mailhog": false,
-  "owasp": ["LLM06 Excessive Agency", "ASI02 Tool Misuse", "ASI03 Privilege Abuse"],
-  "controls": ["C16", "C17"],
-  "code_paths": ["policy/engine.py", "policy/opa_seam.py", "agents/executor.py"],
+  "owasp": [
+    "LLM03:2026 Excessive Agency",
+    "ASI03 Identity and Privilege Abuse"
+  ],
+  "controls": [
+    "C16",
+    "C17"
+  ],
+  "code_paths": [
+    "policy/engine.py",
+    "policy/opa_seam.py",
+    "agents/executor.py"
+  ],
   "takeaway": "Security that lives in scattered if-statements can't be audited. Make it policy-as-code with an audit trail.",
   "design_rule": "Evaluate every action against a decision matrix by blast radius; log who/what/decision/why/when.",
   "steps": [
-    { "id": "step-01", "title": "From if-statements to policy", "file": "step-01.md" },
-    { "id": "step-02", "title": "The stub allows everything", "file": "step-02.md" },
-    { "id": "step-03", "title": "Policy-as-code + audit", "file": "step-03.md" },
-    { "id": "step-04", "title": "Prove it gates and logs", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "From if-statements to policy",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "The stub allows everything",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Policy-as-code + audit",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Prove it gates and logs",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "operate"
 }

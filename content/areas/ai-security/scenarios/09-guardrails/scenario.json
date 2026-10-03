@@ -1,22 +1,49 @@
 {
   "id": "09-guardrails",
   "legacy_id": "m5",
-  "order": 9,
+  "order": 13,
   "title": "Production guardrails & observability",
   "summary": "Module 5. Move from ad-hoc defenses to a measured guardrail layer. Run input/output scanners over a labeled probe set and report the numbers that matter — catch rate, false-positive rate, p50/p95 latency.",
-  "difficulty": "medium",
+  "difficulty": "intermediate",
   "est_minutes": 16,
   "attack_id": "m5_guardrails",
   "mailhog": false,
-  "owasp": ["LLM01 Prompt Injection", "LLM02 Sensitive Info Disclosure", "LLM05 Improper Output Handling"],
-  "controls": ["C13"],
-  "code_paths": ["guardrails/pipeline.py", "guardrails/llmguard_seam.py", "guardrails/nemo_seam.py"],
+  "owasp": [
+    "LLM01:2026 Prompt Injection",
+    "LLM02:2026 Sensitive Information Disclosure",
+    "LLM10:2026 Improper Output Handling"
+  ],
+  "controls": [
+    "C13"
+  ],
+  "code_paths": [
+    "guardrails/pipeline.py",
+    "guardrails/llmguard_seam.py",
+    "guardrails/nemo_seam.py"
+  ],
   "takeaway": "A guardrail you can't measure isn't a control. Report catch rate, false positives, and latency.",
   "design_rule": "Scan input and output; benchmark against a labeled set; track the effectiveness dashboard.",
   "steps": [
-    { "id": "step-01", "title": "From seams to a real layer", "file": "step-01.md" },
-    { "id": "step-02", "title": "Attacks with guardrails off", "file": "step-02.md" },
-    { "id": "step-03", "title": "Turn the pipeline on", "file": "step-03.md" },
-    { "id": "step-04", "title": "Read the effectiveness numbers", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "From seams to a real layer",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Attacks with guardrails off",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Turn the pipeline on",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Read the effectiveness numbers",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "operate"
 }

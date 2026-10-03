@@ -3,6 +3,10 @@
   "simulate": "m5",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the measured catch rate is at least 80% of the malicious probes",
+    "the measured false-positive rate on benign probes stayed at or below 20%"
+  ],
   "pass_message": "Guardrails effective: caught ≥80% of attacks with ≤20% false positives, latency measured (see Forensics).",
   "fail_message": "The guardrail pipeline did not meet the effectiveness bar. Confirm control C13 is active."
 }

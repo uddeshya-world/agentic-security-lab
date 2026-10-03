@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "The planner asks for all customers. The signed-in user is Alice. Where must customer_id come from?",
+  "options": [
+    "The planner's tool arguments",
+    "The system prompt",
+    "The authenticated session principal",
+    "The RAG chunk that mentioned Alice"
+  ],
+  "answer": 2,
+  "asserts": [
+    "you can name where the executor is required to source the customer_id from"
+  ],
+  "pass_message": "Right. Session is the principal. The model does not get to name who it is acting as.",
+  "fail_message": "If the model supplies the id, a hijacked plan can supply someone else's — or 1=1."
+}

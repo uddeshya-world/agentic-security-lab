@@ -1,0 +1,22 @@
+{
+  "id": "17-data-guards",
+  "order": 5,
+  "track": "core",
+  "title": "Data guards — DLP for agents",
+  "summary": "You just emailed the customer table. Allow-listing a domain is not DLP. Classify the data and block or mask it on four channels: prompt, RAG, model output, and tool results.",
+  "difficulty": "intermediate",
+  "est_minutes": 20,
+  "attack_id": "data_guards",
+  "mailhog": false,
+  "owasp": ["LLM02:2026 Sensitive Information Disclosure", "LLM10:2026 Improper Output Handling", "ASI03 Identity and Privilege Abuse"],
+  "controls": ["C21", "C4", "C13"],
+  "code_paths": ["guardrails/pipeline.py"],
+  "takeaway": "DLP inspects the payload. Destination allow-lists inspect the envelope. Agents need both, on every hop data moves.",
+  "design_rule": "Restricted → block; confidential → mask. Apply on input, context, output, and tool results — not only the chat transcript.",
+  "steps": [
+    { "id": "step-01", "title": "Allow-list is not DLP", "file": "step-01.md" },
+    { "id": "step-02", "title": "Four channels", "file": "step-02.md" },
+    { "id": "step-03", "title": "Turn the guards on", "file": "step-03.md" },
+    { "id": "step-04", "title": "What DLP is not", "file": "step-04.md" }
+  ]
+}

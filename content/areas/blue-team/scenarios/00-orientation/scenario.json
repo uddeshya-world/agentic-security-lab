@@ -6,9 +6,9 @@
   "est_minutes": 12,
   "summary": "Before hunting anything, learn what this environment records and what it does not. Three evidence surfaces, and the blind spot in each.",
   "owasp": [
-    "LLM02 Sensitive Information Disclosure"
+    "LLM02:2026 Sensitive Information Disclosure"
   ],
-  "controls": [],
+  "controls": ["D1"],
   "takeaway": "You can only detect what something recorded. Find the recorders first.",
   "steps": [
     {

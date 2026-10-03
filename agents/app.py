@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from agents.graph import run_agent
-from lab import content, credential, events, runlog
+from lab import content, credential, events, ledger, runlog
 from lab.checks import run_check
 from lab.exploits import get_exploit, list_exploits
 from lab.lessons import get_lesson, get_lessons
@@ -222,17 +222,22 @@ def scenario_check(area_id: str, scenario_id: str, step_id: str, _req: CheckRequ
     step = content.get_step(area_id, scenario_id, step_id)
     if step is None:
         return {"ok": False, "passed": False, "message": "step not found", "kind": "error"}
-    return run_check(
-        step.get("check"),
+    check = step.get("check")
+    result = run_check(
+        check,
         answer=(_req.answer if _req else None),
         step_key=f"{area_id}/{scenario_id}/{step_id}",
     )
+    # The badge is built from this ledger, so only a pass graded here counts.
+    if check and result.get("passed"):
+        ledger.record_pass(area_id, scenario_id, step_id, check.get("kind"), check.get("require_mode"))
+    return result
 
 
 class CredentialRequest(BaseModel):
     learner: str | None = None
-    # The browser's record of which graded checks passed. Treated as a claim to be
-    # checked for completeness against the content tree, never as proof.
+    # The browser's record of which graded checks passed. Only used to explain a
+    # mismatch; the badge is graded and signed from the server-side ledger.
     passed: list[dict] = []
 
 

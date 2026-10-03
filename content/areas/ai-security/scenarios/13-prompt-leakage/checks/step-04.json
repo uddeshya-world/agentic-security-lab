@@ -3,6 +3,10 @@
   "simulate": "m9",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the leak detector flagged the response before it reached the user",
+    "the response the user actually received does not contain the system prompt text"
+  ],
   "pass_message": "Leak detected (canary phrases + n-gram overlap) and the response withheld before it reached the user.",
   "fail_message": "The system prompt still reached the user under secure mode. Confirm control C18 is active."
 }

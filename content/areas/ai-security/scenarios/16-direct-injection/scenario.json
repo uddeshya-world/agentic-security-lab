@@ -1,0 +1,22 @@
+{
+  "id": "16-direct-injection",
+  "order": 2,
+  "track": "core",
+  "title": "Direct prompt injection & jailbreak",
+  "summary": "The user is the attacker. No poison document. A chat message steers the planner into the same dump you just did by hand — and the executor still has to say no.",
+  "difficulty": "beginner",
+  "est_minutes": 15,
+  "attack_id": "direct_pi",
+  "mailhog": false,
+  "owasp": ["LLM01:2026 Prompt Injection", "LLM03:2026 Excessive Agency"],
+  "controls": ["C2", "C7"],
+  "code_paths": ["agents/planner.py", "agents/executor.py"],
+  "takeaway": "Direct injection uses the chat box. Indirect injection uses retrieval. Same payload, different channel — both are LLM01.",
+  "design_rule": "Assume the planner can be steered. Authorization lives in the executor, not in the prompt.",
+  "steps": [
+    { "id": "step-01", "title": "Two channels, one risk", "file": "step-01.md" },
+    { "id": "step-02", "title": "Steer the planner from chat", "file": "step-02.md" },
+    { "id": "step-03", "title": "Prove the executor still holds", "file": "step-03.md" },
+    { "id": "step-04", "title": "Name the channel", "file": "step-04.md" }
+  ]
+}

@@ -3,6 +3,10 @@
   "simulate": "m3",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the signature check rejected the tampered message before it ran",
+    "the registry allow-list refused the rogue tool"
+  ],
   "pass_message": "Tampering caught by the signature check and the rogue tool refused by the allow-list.",
   "fail_message": "Tampering or the rogue tool got through under secure mode. Confirm controls C9 and C10 are active."
 }

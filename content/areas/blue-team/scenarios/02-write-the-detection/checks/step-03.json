@@ -8,6 +8,9 @@
     "The run took longer than usual"
   ],
   "answer": 1,
+  "asserts": [
+    "you can pick the earliest, rarest signal in the chain rather than the most visible one"
+  ],
   "pass_message": "Right — it is the first event in the chain that no ordinary request produces, and it describes scope rather than activity. Everything after it is later and noisier.",
   "fail_message": "Re-read the table in step 2. You are looking for the signal that is both early in the run and rare on a normal day — not the one with the most obvious impact."
 }

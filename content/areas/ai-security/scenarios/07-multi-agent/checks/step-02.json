@@ -3,6 +3,10 @@
   "simulate": "m3",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "the tampered inter-agent message ran with the recipient rewritten to the attacker",
+    "the rogue tool was accepted with no registry allow-list check"
+  ],
   "pass_message": "Tampered plan executed (email routed to attacker) and the rogue tool was accepted — no authentication, no allow-list.",
   "fail_message": "The tampering/rogue-tool attack did not land. Ensure the graded run used vulnerable mode."
 }

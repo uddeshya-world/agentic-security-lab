@@ -10,16 +10,16 @@ fake credentials throughout.
 
 ## Weakness -> OWASP mapping
 
-| # | Weakness | Location | OWASP LLM Top 10 (2025) | OWASP Agentic ASI (2026) |
+| # | Weakness | Location | OWASP LLM Top 10 (2026) | OWASP Agentic ASI (2026) |
 |---|---|---|---|---|
-| 1 | Tools execute with broad privileges, no approval gate | `tools/*/server.py`, `agents/executor.py` | LLM06 Excessive Agency | ASI02 Tool Misuse, ASI03 Privilege Abuse |
-| 2 | Permissive tool schemas; db tool concatenates raw SQL fragment | `tools/db_tool/queries.py::query_vulnerable` | LLM06, LLM02 | ASI02 |
-| 3 | File tool joins path naively (path traversal) | `tools/file_tool/server.py::_resolve_vulnerable` | LLM06 | ASI02 |
+| 1 | Tools execute with broad privileges, no approval gate | `tools/*/server.py`, `agents/executor.py` | LLM03 Excessive Agency | ASI02 Tool Misuse, ASI03 Privilege Abuse |
+| 2 | Permissive tool schemas; db tool concatenates raw SQL fragment | `tools/db_tool/queries.py::query_vulnerable` | LLM03, LLM02 | ASI02 |
+| 3 | File tool joins path naively (path traversal) | `tools/file_tool/server.py::_resolve_vulnerable` | LLM03 | ASI02 |
 | 4 | Email tool: no recipient allow-list | `tools/email_tool/server.py` | LLM02 | ASI02 |
-| 5 | RAG retrieves top-k with no trust checks | `rag/retriever.py`, planner prompt | LLM08, LLM04, LLM01 | ASI01, ASI06 |
-| 6 | Planner and executor fully trust each other | `agents/planner.py`, `agents/executor.py` | LLM01, LLM06 | ASI07, ASI01 |
+| 5 | RAG retrieves top-k with no trust checks | `rag/retriever.py`, planner prompt | LLM09, LLM05, LLM01 | ASI01, ASI06 |
+| 6 | Planner and executor fully trust each other | `agents/planner.py`, `agents/executor.py` | LLM01, LLM03 | ASI07, ASI01 |
 | 7 | Memory writes unvalidated | `memory/store.py`, `agents/graph.py` | LLM02 | ASI06 |
-| 8 | Guardrails / OPA seams are no-op or unused for real policy | `guardrails/`, `policy/opa_seam.py` | LLM05, LLM10 | ASI08, ASI09 |
+| 8 | Guardrails / OPA seams are no-op or unused for real policy | `guardrails/`, `policy/opa_seam.py` | LLM10, LLM06 | ASI08, ASI09 |
 
 _Exact OWASP category numbering/names spot-checked against the live OWASP
 Gen AI Security Project pages as of build time; frameworks evolve._

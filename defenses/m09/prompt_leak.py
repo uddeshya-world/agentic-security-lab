@@ -1,4 +1,4 @@
-"""LLM07 defense: system-prompt leakage detection.
+"""LLM08 defense: system-prompt leakage detection (Hidden Context Exposure).
 
 An agent's system prompt is not a secret and is not a security boundary — but it
 is still reconnaissance. Leaking it hands an attacker the exact tool names, the

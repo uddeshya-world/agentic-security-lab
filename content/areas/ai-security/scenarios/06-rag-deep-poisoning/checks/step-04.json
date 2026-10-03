@@ -3,6 +3,10 @@
   "simulate": "m2",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the content detector caught the false-provenance chunk that trust labels alone missed",
+    "at least one legitimate chunk still reached the delivered context"
+  ],
   "pass_message": "Clean context delivered: content detector + crowding collapse removed all poison while keeping a legitimate chunk.",
   "fail_message": "Poison still reached context under secure mode. Confirm the C8 content detector is active."
 }

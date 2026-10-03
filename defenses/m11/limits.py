@@ -1,6 +1,6 @@
-"""LLM10 defense: resource limits — step cap, budget, loop detection, rate limit.
+"""LLM06 defense: resource limits — step cap, budget, loop detection, rate limit.
 
-The lab already caps plan length (``MAX_PLAN_STEPS``), which is why LLM10 was only
+The lab already caps plan length (``MAX_PLAN_STEPS``), which is why LLM06 was only
 *partially* covered. A step cap alone does not stop:
 
 - **denial of wallet** — many cheap-looking steps that each burn tokens/API spend;

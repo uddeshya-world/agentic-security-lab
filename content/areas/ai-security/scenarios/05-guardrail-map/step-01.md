@@ -1,17 +1,21 @@
-## Six layers, one data path
+## Eight hops, one data path
 
 ```
-user ─▶ [1] RAG ─▶ [2] PLANNER ─▶ [3] SCHEMA ─▶ [4] PRIVILEGE ─▶ [5] HITL ─▶ [6] TOOL POLICY ─▶ world
-        C6           C7             C2             C1               C5           C4
+user ─▶ [1] INPUT DLP ─▶ [2] RAG + CONTEXT DLP ─▶ [3] PLANNER ─▶ [4] IDENTITY
+         C21                  C6 + C21                   C7            session
+         ─▶ [5] SCHEMA ─▶ [6] PRIVILEGE ─▶ [7] TOOL DLP + HITL + EGRESS ─▶ [8] OUTPUT DLP ─▶ world
+              C2              C1               C21 + C5 + C4                    C21
 ```
 
-| # | Layer | Threat it stops | Control | Lab implementation |
-|---|-------|-----------------|---------|--------------------|
-| 1 | Context / RAG | indirect prompt injection | C6 trust filter | `rag/retriever.py` |
-| 2 | Planner output | model emits malicious calls | C7 re-validate plan | `agents/executor.py` |
-| 3 | Schema / args | injection-shaped parameters | C2 allow-list | `defenses/m01/schema_validation.py` |
-| 4 | Least privilege | over-broad reads/writes | C1 scoped SQL, path jail | `defenses/m01/least_privilege.py` |
-| 5 | Side-effect / HITL | unattended email/write | C5 approval gate | `defenses/m01/approval_gate.py` |
-| 6 | Tool policy | valid call, wrong target | C4 egress allow-list | `tools/email_tool/server.py` |
+| # | Layer | Threat it stops | Control | Lab |
+|---|-------|-----------------|---------|-----|
+| 1 | Input DLP | SSN/PAN/secrets in the prompt | C21 classify → block | `scan_data(channel='input')` |
+| 2 | RAG + context DLP | Indirect PI; PII in chunks | C6 + C21 | `rag/retriever.py` |
+| 3 | Planner output | Model authors a harmful plan | C7 never trust the plan | `agents/executor.py` |
+| 4 | Identity | Confused deputy, wrong principal | Session `customer_id` | A6 |
+| 5 | Schema / args | `filter=1=1`, `../` | C2 allow-list | `schema_validation.py` |
+| 6 | Least privilege | Over-broad reads | C1 parameterized SQL, path jail | `least_privilege.py` |
+| 7 | Tool DLP + HITL + egress | PII in results; unattended send; wrong domain | C21 + C5 + C4 | A4 + A5 |
+| 8 | Output DLP | Model recites PII | C21 mask/block | `scan_data(channel='output')` |
 
-Read it twice. Every attack in this Area was one hop with no control on it.
+Read it twice. Every Core attack in this Area was one hop with no control on it.

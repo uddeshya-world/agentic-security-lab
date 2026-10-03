@@ -42,8 +42,25 @@
   --halon-line:#125045;
 
   --brass:     #e8b84b;
+  --brass-ink: #f0dda8;
   --brass-bed: #2b2210;
   --brass-line:#4d3d16;
+
+  /* Derived roles. These exist as tokens rather than literals so the light
+     theme is a matter of redefining values, never of hunting hex codes. */
+  --sunk:      #080a0e;   /* recessed wells: code blocks, payload boxes */
+  --prose:     #d3d9e2;   /* long-form body copy, slightly softer than chalk */
+  --code-ink:  #c6cedb;   /* code text inside a sunk well */
+  --plan:      #b79cff;   /* the planner's voice in an event log */
+  --on-ember:  #240a02;   /* text on a solid ember fill */
+  --on-halon:  #022019;   /* text on a solid halon fill */
+  --term-bg:   #05070a;   /* a terminal is dark in both themes, on purpose */
+  --nav-bg:    rgba(10, 12, 16, .92);   /* translucent bar over scrolling content */
+  --veil:      rgba(4, 6, 9, .78);      /* dialog backdrop */
+  --tint:      rgba(255, 122, 60, .07); /* ember wash on hover */
+  --tint-hi:   rgba(255, 122, 60, .3);  /* ember wash, focus strength */
+  --scrim:     rgba(6, 8, 11, .72);
+  --drop:      rgba(0, 0, 0, .7);
 
   /* type */
   --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -54,7 +71,87 @@
   --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
 
-  --r-sm: 3px; --r: 5px; --r-lg: 8px;
+  /* Radius ladder. Small values are deliberate: this is an instrument panel,
+     not a consumer app. --r-xl is reserved for the few floating surfaces
+     (dialogs, toasts) that need to read as detached from the grid. */
+  --r-xs: 2px; --r-sm: 3px; --r: 5px; --r-lg: 8px; --r-xl: 14px; --r-full: 999px;
+
+  /* Type scale. Every font-size in the product comes from this ramp; a page
+     that needs a size not listed here is a page that has lost the rhythm. */
+  --fs-2xs:   10px;   /* instrument micro-labels — the player rail only */
+  --fs-xs:    11px;   /* mono metadata, kickers */
+  --fs-sm:    12px;
+  --fs-md:    13px;   /* dense UI: tags, table cells, callout body */
+  --fs-base:  15px;   /* body copy */
+  --fs-lg:    17px;
+  --fs-xl:    20px;   /* card titles */
+  --fs-2xl:   24px;
+  --fs-3xl:   32px;   /* section heads */
+  --fs-hero:  clamp(34px, 6.2vw, 60px);
+
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
+
+  --lh-tight:  1.05;  /* hero and display only */
+  --lh-snug:   1.25;  /* headings */
+  --lh-normal: 1.6;   /* body and prose */
+
+  --tr-hero:  -.04em;
+  --tr-tight: -.02em;
+  --tr-caps:   .14em;  /* the uppercase-mono eyebrow, everywhere */
+
+  /* Layout maxima. The reading measure is in ch because prose width should
+     follow the font, not the viewport. */
+  --content-max: 1180px;
+  --reading-max: 76ch;
+  --nav-h:       60px;
+
+  /* motion — two speeds, applied everywhere. Interaction is fast, entrance is
+     slow; nothing in this file uses a third duration. */
+  --t-fast: 150ms;
+  --t-slow: 550ms;
+  --ease:   cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* --------------------------------------------------------------------
+     Elevation. Three stacked layers per shadow — a tight contact shadow, a
+     soft spread, and a hairline ring that does the work a 1px border would
+     do but without taking up layout. Depth reads as distance from the plate
+     rather than as a drop shadow, which is why every layer is low-opacity.
+     -------------------------------------------------------------------- */
+  --sh-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 0 0 1px rgba(255, 255, 255, .03);
+  --sh-md: 0 1px 2px rgba(0, 0, 0, .38), 0 4px 10px rgba(0, 0, 0, .16), 0 0 0 1px rgba(255, 255, 255, .03);
+  --sh-lg: 0 2px 4px rgba(0, 0, 0, .42), 0 8px 20px rgba(0, 0, 0, .24), 0 0 0 1px rgba(255, 255, 255, .05);
+
+  /* --------------------------------------------------------------------
+     Semantic aliases. Components reference these, never the raw palette, so
+     a surface can be re-pointed in one place. The state group is the one
+     that matters: it names what the product actually measures.
+     -------------------------------------------------------------------- */
+  --surface-page:   var(--void);
+  --surface-card:   var(--plate);
+  --surface-raised: var(--shelf);
+  --surface-sunk:   var(--sunk);
+  --glass-panel:    var(--nav-bg);
+
+  --text-1: var(--chalk);   /* primary */
+  --text-2: var(--ash);     /* secondary */
+  --text-3: var(--dim);     /* metadata */
+
+  --line:        var(--edge);
+  --line-strong: var(--edge-hi);
+
+  /* The pedagogy in token form. vuln is the attack that landed; secure is the
+     control that contained it. Never use these two for decoration — on this
+     product a colour is a claim about what happened. Colour is never the only
+     carrier: .state pairs each with a glyph and a word (see the state block). */
+  --state-vuln:        var(--ember);
+  --state-vuln-bed:    var(--ember-bed);
+  --state-vuln-line:   var(--ember-line);
+  --state-secure:      var(--halon);
+  --state-secure-bed:  var(--halon-bed);
+  --state-secure-line: var(--halon-line);
+  --state-pass:        var(--halon);
+  --state-fail:        var(--ember);
+  --state-pending:     var(--brass);
 }
 
 * { box-sizing: border-box; }
@@ -71,6 +168,28 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; border-radius: 2px; }
+
+/* --------------------------------------------------------------------------
+   Motion — scroll reveal.
+   Pages/JS add [data-reveal] (and an optional [data-reveal-delay="1|2|3"] for
+   stagger); cyberrange.js adds .is-in via IntersectionObserver on entry.
+   Content must never be able to get stuck at opacity 0, so reduced-motion
+   (and, per the JS contract, a missing observer) shows it immediately.
+   -------------------------------------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-slow) var(--ease),
+              transform var(--t-slow) var(--ease);
+}
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal-delay="1"] { transition-delay:  60ms; }
+[data-reveal-delay="2"] { transition-delay: 120ms; }
+[data-reveal-delay="3"] { transition-delay: 180ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
 
 /* --------------------------------------------------------------------------
    Type roles
@@ -95,11 +214,48 @@ a { color: inherit; text-decoration: none; }
 /* --------------------------------------------------------------------------
    Chrome
    -------------------------------------------------------------------------- */
+
+/* The scope strip. It sits above the nav and scrolls away, because it is read
+   once per visit rather than consulted. It says two things: the estate is
+   synthetic, and whether the defenses are currently on. The second half is
+   filled from /health, so this is a reading rather than a slogan -- if the
+   endpoint does not answer, that half stays out and the strip still makes
+   sense. Brass, because a caveat is what it is. */
+.cr-announce {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: 7px var(--s5);
+  background: var(--brass-bed);
+  border-bottom: 1px solid var(--brass-line);
+  font-family: var(--mono); font-size: var(--fs-xs); line-height: 1.4;
+  color: var(--brass-ink);
+}
+.cr-announce[hidden] { display: none; }
+.cr-announce .scope { letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--brass); flex: none; }
+.cr-announce .said { min-width: 0; }
+.cr-announce .grow { flex: 1; }
+/* The live half. `.mode` only gets a value once /health answers. */
+.cr-announce .mode { flex: none; display: none; align-items: center; gap: 6px; }
+.cr-announce .mode.is-known { display: inline-flex; }
+.cr-announce .mode .dot { background: var(--ember); }
+.cr-announce .mode.secure .dot { background: var(--halon); }
+.cr-announce .mode.secure { color: var(--halon); }
+.cr-announce .x {
+  flex: none; width: 20px; height: 20px; padding: 0; line-height: 1;
+  background: none; border: 0; border-radius: var(--r-sm);
+  color: var(--brass-line); font-size: var(--fs-md); cursor: pointer;
+}
+.cr-announce .x:hover { color: var(--brass); background: var(--brass-line); }
+
+@media (max-width: 720px) {
+  .cr-announce { padding: 7px var(--s4); gap: var(--s2); }
+  .cr-announce .said { display: none; }
+}
+
 .cr-nav {
   position: sticky; top: 0; z-index: 40;
   display: flex; align-items: center; gap: var(--s5);
   height: 54px; padding: 0 var(--s5);
-  background: rgba(10, 12, 16, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--edge);
 }
@@ -118,8 +274,56 @@ a { color: inherit; text-decoration: none; }
 }
 .cr-mark .sub { color: var(--dim); font-family: var(--mono); font-size: 10.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
 .cr-nav .grow { flex: 1; }
-.cr-nav a.link { font-size: 13px; color: var(--ash); padding: var(--s1) 0; border-bottom: 1px solid transparent; }
+.cr-links { display: flex; align-items: center; gap: var(--s5); }
+.cr-nav a.link {
+  font-size: 13px; color: var(--ash); padding: var(--s1) 0; border-bottom: 1px solid transparent;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
 .cr-nav a.link:hover { color: var(--chalk); border-bottom-color: var(--edge-hi); }
+/* The current-page marker the nav has been missing. */
+.cr-nav a.link.is-active { color: var(--chalk); border-bottom-color: var(--halon); }
+
+/* A real-signal dot — e.g. an Area whose status is `authoring` — never decorative. */
+.pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--brass); flex: none; }
+
+.cr-burger {
+  display: none; align-items: center; justify-content: center;
+  width: 32px; height: 32px; padding: 0;
+  background: transparent; border: 1px solid var(--edge-hi); border-radius: var(--r);
+  color: var(--chalk); font-size: 15px; line-height: 1; cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.cr-burger:hover { background: var(--shelf); border-color: var(--ash); }
+
+/* Mobile nav: below 720px the links collapse into a panel the burger opens.
+   The burger itself is hidden at 721px and up. */
+@media (max-width: 720px) {
+  /* The panel below is deliberately full-bleed, which it achieves by pulling
+     itself out past the nav's horizontal padding. That overhang was making every
+     page scroll sideways by 9px -- even with the menu closed, because an
+     absolutely positioned box still counts toward scrollWidth. Clip the overhang
+     horizontally; `clip` (not `hidden`) leaves the panel free to drop down. */
+  .cr-nav { overflow-x: clip; }
+  .cr-burger { display: inline-flex; }
+  .cr-links {
+    position: absolute; top: 100%; left: calc(-1 * var(--s5)); right: calc(-1 * var(--s5));
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--plate); border-bottom: 1px solid var(--edge);
+    padding: 0 var(--s5);
+    max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+    transition: max-height var(--t-slow) var(--ease), opacity var(--t-slow) var(--ease);
+  }
+  .cr-nav.is-open .cr-links {
+    max-height: 420px; opacity: 1; visibility: visible; padding: var(--s3) var(--s5) var(--s4);
+  }
+  .cr-nav .cr-links a.link { padding: var(--s2) 0; border-bottom: 1px solid var(--edge); }
+  .cr-nav .cr-links a.link:last-child { border-bottom: 0; }
+  .cr-nav .cr-links a.link.is-active { border-bottom-color: var(--halon); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-links { transition: none; }
+}
 
 .shell { max-width: 1180px; margin: 0 auto; padding: 0 var(--s5); }
 
@@ -181,18 +385,32 @@ a { color: inherit; text-decoration: none; }
   padding: 8px 14px; border-radius: var(--r);
   border: 1px solid var(--edge-hi); background: var(--raise); color: var(--chalk);
   cursor: pointer; white-space: nowrap;
-  transition: background .12s, border-color .12s, color .12s;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease),
+              color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
-.btn:hover:not(:disabled) { background: var(--shelf); border-color: var(--ash); }
+.btn:hover:not(:disabled) { background: var(--shelf); border-color: var(--ash); transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(0); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn.sm { padding: 5px 10px; font-size: 12px; }
 
+/* Utility: lift a whole card/tile on hover without touching its host page.
+   [class] bumps specificity above a single-class page rule (e.g. catalog.html's
+   .tile) so this transition survives being combined with it, e.g. class="tile
+   lift" — a bare .lift would tie on specificity and could lose the `transform`
+   half of its transition to a later same-specificity shorthand. */
+.lift[class] { transition: transform var(--t-fast) var(--ease); }
+.lift:hover { transform: translateY(-2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover:not(:disabled), .btn:active:not(:disabled), .lift:hover { transform: none; }
+}
+
 /* Run is the hot control: it makes the attack happen. */
 .btn.attack { background: var(--ember-bed); border-color: var(--ember-line); color: var(--ember-ink); }
-.btn.attack:hover:not(:disabled) { background: var(--ember); border-color: var(--ember); color: #240a02; }
+.btn.attack:hover:not(:disabled) { background: var(--ember); border-color: var(--ember); color: var(--on-ember); }
 
 /* Check is the cold one: it asserts containment. */
-.btn.assert { background: var(--halon); border-color: var(--halon); color: #022019; font-weight: 600; }
+.btn.assert { background: var(--halon); border-color: var(--halon); color: var(--on-halon); font-weight: 600; }
 .btn.assert:hover:not(:disabled) { background: var(--halon-ink); border-color: var(--halon-ink); }
 
 .btn.ghost { background: transparent; border-color: var(--edge); color: var(--ash); }
@@ -219,11 +437,25 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
   padding: 2px 7px; border-radius: var(--r-sm);
   border: 1px solid var(--edge); color: var(--ash); white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
 }
 .tag.hot     { color: var(--ember); border-color: var(--ember-line); background: var(--ember-bed); }
 .tag.cold    { color: var(--halon); border-color: var(--halon-line); background: var(--halon-bed); }
 .tag.warn    { color: var(--brass); border-color: var(--brass-line); background: var(--brass-bed); }
 .tag.quiet   { color: var(--dim); }
+
+/* Card/tile and table-row hover states are authored per-page (catalog.html's
+   .tile, index.html's .attack-card, area.html's .slate). This file loads
+   before each page's inline <style>, so at equal specificity the page's own
+   rule wins: .slate tbody tr has no local `transition` today, so the line
+   below actually takes effect; .tile (catalog.html, .12s) and .attack-card
+   (index.html, .15s) already declare their own `transition` and keep it —
+   the line below is a harmless no-op for them until that page-owned
+   declaration is moved to var(--t-fast)/var(--ease), which is out of this
+   file's scope. */
+.slate tbody tr { transition: background var(--t-fast) var(--ease); }
+.tile, .attack-card { transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease); }
 
 .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
 
@@ -254,7 +486,7 @@ a { color: inherit; text-decoration: none; }
 /* --------------------------------------------------------------------------
    Lesson prose
    -------------------------------------------------------------------------- */
-.md { font-size: 15px; line-height: 1.68; color: #d3d9e2; max-width: 70ch; }
+.md { font-size: 15px; line-height: 1.68; color: var(--prose); max-width: 70ch; }
 .md > *:first-child { margin-top: 0; }
 .md h2 { font-family: var(--display); font-size: 25px; font-weight: 600; letter-spacing: -.025em; color: var(--chalk); margin: 0 0 var(--s4); line-height: 1.15; }
 .md h3 { font-family: var(--display); font-size: 16px; font-weight: 600; letter-spacing: -.01em; color: var(--chalk); margin: var(--s6) 0 var(--s2); }
@@ -278,10 +510,10 @@ a { color: inherit; text-decoration: none; }
 .md code { font-family: var(--mono); font-size: .87em; background: var(--shelf); border: 1px solid var(--edge); padding: 1px 5px; border-radius: var(--r-sm); color: var(--halon-ink); }
 .md pre {
   position: relative; margin: 0 0 var(--s4); padding: var(--s4);
-  background: #080a0e; border: 1px solid var(--edge); border-left: 2px solid var(--edge-hi);
+  background: var(--sunk); border: 1px solid var(--edge); border-left: 2px solid var(--edge-hi);
   border-radius: 0 var(--r) var(--r) 0; overflow-x: auto;
 }
-.md pre code { background: none; border: 0; padding: 0; color: #c6cedb; font-size: 12.5px; line-height: 1.6; }
+.md pre code { background: none; border: 0; padding: 0; color: var(--code-ink); font-size: 12.5px; line-height: 1.6; }
 .codebar { position: absolute; top: 6px; right: 6px; display: flex; gap: var(--s1); opacity: 0; transition: opacity .12s; }
 .md pre:hover .codebar, .md pre:focus-within .codebar { opacity: 1; }
 .codebar button {
@@ -300,18 +532,231 @@ a { color: inherit; text-decoration: none; }
 .ev .k { font-size: 9.5px; letter-spacing: .08em; color: var(--dim); padding-top: 2px; }
 .ev .k.sql, .ev .k.result { color: var(--ember); }
 .ev .k.defense { color: var(--halon); }
-.ev .k.plan { color: #b79cff; }
+.ev .k.plan { color: var(--plan); }
 .ev .k.tool { color: var(--chalk); }
 .ev .k.retrieve { color: var(--brass); }
 .ev .m { color: var(--ash); word-break: break-word; }
 .ev .sql {
   margin-top: 5px; padding: 7px 9px; border-radius: var(--r-sm);
-  background: #080a0e; border: 1px solid var(--ember-line); color: var(--ember-ink);
+  background: var(--sunk); border: 1px solid var(--ember-line); color: var(--ember-ink);
   white-space: pre-wrap; word-break: break-word;
 }
 .dump { font-family: var(--mono); font-size: 11px; background: var(--void); border: 1px solid var(--edge);
         border-radius: var(--r); padding: var(--s3); white-space: pre-wrap; word-break: break-word;
         color: var(--ash); margin: 0 0 var(--s3); max-height: 280px; overflow: auto; }
+
+/* ==========================================================================
+   Catalogue & player components
+   --------------------------------------------------------------------------
+   Everything below is shared by more than one page. A component that only one
+   page uses stays in that page's <style>; the moment a second page needs it,
+   it moves here. Each one is built from the semantic aliases (--surface-*,
+   --text-*, --line, --state-*), never from the raw palette, so re-pointing a
+   surface is a one-line change at the token tier.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Eyebrow row — mono, uppercase, wide-tracked. The product's most-repeated
+   typographic move: it labels a region without competing with the heading.
+   -------------------------------------------------------------------------- */
+.metarow {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2);
+  font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase;
+  color: var(--text-3); margin: 0;
+}
+.metarow > * + *::before { content: "\00b7"; margin-right: var(--s2); color: var(--line-strong); }
+.metarow b { color: var(--text-2); font-weight: var(--fw-medium); }
+
+/* --------------------------------------------------------------------------
+   Finder — the search-and-filter header that sits above a grid. The field is
+   the affordance; the chip row below it is the actual filter, and the match
+   count on the right is what tells you the filter did something.
+   -------------------------------------------------------------------------- */
+.finder {
+  background: var(--surface-card); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: var(--s5); box-shadow: var(--sh-sm);
+}
+.finder-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3);
+  font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3);
+  margin-bottom: var(--s3);
+}
+.finder input[type="search"], .finder input[type="text"] {
+  width: 100%; box-sizing: border-box;
+  background: var(--surface-raised); border: 1px solid var(--line);
+  border-radius: var(--r); padding: var(--s3) var(--s4);
+  font-family: var(--body); font-size: var(--fs-base); color: var(--text-1);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.finder input::placeholder { color: var(--text-3); }
+.finder input:focus { outline: none; border-color: var(--line-strong); background: var(--surface-card); }
+
+/* Chip row. A chip is a filter, so it reports its own count — a chip that
+   would return nothing says so before you click it. */
+.cr-chipbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); margin-top: var(--s4); }
+.cr-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--body); font-size: var(--fs-md); font-weight: var(--fw-medium);
+  padding: 5px var(--s3); border-radius: var(--r-full);
+  background: transparent; border: 1px solid transparent; color: var(--text-2);
+  cursor: pointer; white-space: nowrap;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+.cr-chip:hover { background: var(--surface-raised); color: var(--text-1); }
+.cr-chip[aria-pressed="true"] { background: var(--surface-raised); border-color: var(--line-strong); color: var(--text-1); }
+.cr-chip .n { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
+.cr-chip[aria-pressed="true"] .n { color: var(--text-2); }
+.cr-chipbar .count {
+  margin-left: auto; font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Check result — the graded verdict after a step's Check runs.
+
+   This is the one component where colour must not be the only signal: it
+   reports a security outcome, and a learner who cannot separate ember from
+   halon still has to be able to read whether the attack landed. So every
+   variant carries three redundant carriers — a glyph, a word, and the hue.
+   -------------------------------------------------------------------------- */
+.check {
+  display: flex; gap: var(--s3); align-items: flex-start;
+  border: 1px solid var(--line); border-left-width: 3px;
+  border-radius: var(--r); background: var(--surface-raised);
+  padding: var(--s4); font-size: var(--fs-md); line-height: var(--lh-normal);
+  color: var(--text-2);
+}
+.check .glyph {
+  flex: none; width: 18px; height: 18px; margin-top: 1px;
+  display: grid; place-items: center; border-radius: var(--r-full);
+  font-family: var(--mono); font-size: var(--fs-xs); font-weight: var(--fw-bold);
+  border: 1px solid currentColor;
+}
+.check .verdict {
+  display: block; font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase;
+  font-weight: var(--fw-semibold); margin-bottom: 3px;
+}
+.check p { margin: 0; }
+.check code { font-family: var(--mono); font-size: var(--fs-sm); color: var(--code-ink); }
+
+.check.pass    { border-left-color: var(--state-pass);    background: var(--halon-bed); color: var(--halon-ink); }
+.check.pass    .glyph, .check.pass    .verdict { color: var(--state-pass); }
+.check.fail    { border-left-color: var(--state-fail);    background: var(--ember-bed); color: var(--ember-ink); }
+.check.fail    .glyph, .check.fail    .verdict { color: var(--state-fail); }
+.check.pending { border-left-color: var(--state-pending); background: var(--brass-bed); color: var(--brass-ink); }
+.check.pending .glyph, .check.pending .verdict { color: var(--state-pending); }
+
+/* --------------------------------------------------------------------------
+   Mode banner — which SECURE_MODE the run used. Same redundancy rule as the
+   check: the word carries it, the colour only reinforces.
+   -------------------------------------------------------------------------- */
+.modebanner {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase;
+  padding: 4px var(--s3); border-radius: var(--r-sm); border: 1px solid transparent;
+}
+.modebanner.vulnerable { color: var(--state-vuln);   background: var(--state-vuln-bed);   border-color: var(--state-vuln-line); }
+.modebanner.secure     { color: var(--state-secure); background: var(--state-secure-bed); border-color: var(--state-secure-line); }
+
+/* --------------------------------------------------------------------------
+   Stat — the before/after number a scenario produces. The delta is the point,
+   so it gets the emphasis and the raw figures stay quiet beside it.
+   -------------------------------------------------------------------------- */
+.cr-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--s3); }
+.cr-stat {
+  background: var(--surface-card); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: var(--s4); box-shadow: var(--sh-sm);
+}
+.cr-stat .label {
+  font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3);
+}
+.cr-stat .value {
+  font-family: var(--display); font-size: var(--fs-3xl); font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-tight); line-height: var(--lh-tight); color: var(--text-1);
+  margin-top: var(--s2);
+}
+.cr-stat .value.vuln   { color: var(--state-vuln); }
+.cr-stat .value.secure { color: var(--state-secure); }
+.cr-stat .foot { margin-top: var(--s1); font-size: var(--fs-sm); color: var(--text-2); }
+
+/* --------------------------------------------------------------------------
+   Step rail — the scenario player's progress spine. A step reports its state
+   the same three ways the check does: shape, word, colour.
+   -------------------------------------------------------------------------- */
+.steprail { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.steprail li > a, .steprail li > button {
+  width: 100%; display: flex; align-items: center; gap: var(--s3); text-align: left;
+  padding: var(--s2) var(--s3); border-radius: var(--r); border: 1px solid transparent;
+  background: transparent; color: var(--text-2); font-family: var(--body);
+  font-size: var(--fs-md); cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.steprail li > a:hover, .steprail li > button:hover { background: var(--surface-raised); color: var(--text-1); }
+.steprail .is-current > a, .steprail .is-current > button {
+  background: var(--surface-raised); border-color: var(--line-strong); color: var(--text-1);
+  font-weight: var(--fw-medium);
+}
+.steprail .idx {
+  flex: none; width: 20px; height: 20px; display: grid; place-items: center;
+  border-radius: var(--r-full); border: 1px solid var(--line-strong);
+  font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3);
+}
+.steprail .is-done .idx { border-color: var(--state-pass); color: var(--state-pass); }
+.steprail .is-failed .idx { border-color: var(--state-fail); color: var(--state-fail); }
+.steprail .sr-state {
+  margin-left: auto; font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3);
+}
+.steprail .is-done .sr-state { color: var(--state-pass); }
+.steprail .is-failed .sr-state { color: var(--state-fail); }
+
+/* --------------------------------------------------------------------------
+   Dialog & toast — the only two surfaces allowed to float above the grid, so
+   they are the only two that use --r-xl and --sh-lg.
+   -------------------------------------------------------------------------- */
+.dialog-backdrop {
+  position: fixed; inset: 0; background: var(--veil); z-index: 60;
+  display: grid; place-items: center; padding: var(--s5);
+}
+.dialog {
+  width: min(480px, 100%); background: var(--surface-card);
+  border: 1px solid var(--line); border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg); padding: var(--s6);
+}
+.dialog h3 {
+  margin: 0 0 var(--s2); font-family: var(--display); font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); color: var(--text-1);
+}
+.dialog p { margin: 0 0 var(--s5); font-size: var(--fs-md); color: var(--text-2); }
+.dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; }
+
+.toast {
+  position: fixed; right: var(--s5); bottom: var(--s5); z-index: 70;
+  display: flex; align-items: center; gap: var(--s3);
+  background: var(--glass-panel); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); border-radius: var(--r-full);
+  box-shadow: var(--sh-lg); padding: var(--s2) var(--s4);
+  font-size: var(--fs-md); color: var(--text-1);
+}
+.toast .dot.live { color: var(--state-secure); }
+
+/* --------------------------------------------------------------------------
+   Skeleton compositions. .skel supplies the shimmer; these give it the shape
+   of the thing it stands in for, so the page does not reflow on arrival.
+   -------------------------------------------------------------------------- */
+.skel-line { height: 11px; border-radius: var(--r-sm); }
+.skel-line + .skel-line { margin-top: var(--s2); }
+.skel-line.w40 { width: 40%; } .skel-line.w60 { width: 60%; } .skel-line.w80 { width: 80%; }
+.skel-card {
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s5); background: var(--surface-card);
+}
 
 /* --------------------------------------------------------------------------
    Footer
@@ -319,3 +764,393 @@ a { color: inherit; text-decoration: none; }
 .cr-foot { border-top: 1px solid var(--edge); margin-top: var(--s8); padding: var(--s5) 0 var(--s7); }
 .cr-foot p { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--dim); }
 .cr-foot a { color: var(--ash); border-bottom: 1px solid var(--edge); }
+
+/* --------------------------------------------------------------------------
+   Hero atmosphere.
+
+   Two things move in the hero:
+
+     typewriter  the headline, cycling this product's real attack surfaces
+     blast trace the instrument -- still the signature element, still the only
+                 thing in the hero showing live state
+
+   -------------------------------------------------------------------------- */
+/* The hero's own content has to sit above the background grid. */
+.hero { position: relative; z-index: 1; }
+
+/* Typewriter. The caret is a real element rather than a border on the word, so
+   it holds its place while the text length changes and never nudges the layout. */
+.tw { white-space: nowrap; }
+.tw-word { color: var(--ember); }
+.tw-caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.82em;
+  margin-left: 4px;
+  vertical-align: baseline;
+  transform: translateY(0.06em);
+  background: var(--ember);
+  animation: cr-caret 1.05s steps(1, end) infinite;
+}
+@keyframes cr-caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* The JS never starts the field or the cycling; this covers the caret, which
+     is pure CSS, and leaves a static cursor mark rather than a blinking one. */
+  .tw-caret { animation: none; opacity: .5; }
+}
+
+/* --------------------------------------------------------------------------
+   Search. The nav trigger reads as an input so it is recognisable, but it is a
+   button -- the real field lives in the overlay, which keeps the nav from
+   overflowing between 720px and 1000px once there are five links.
+   -------------------------------------------------------------------------- */
+.cr-search-btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  height: 30px; padding: 0 var(--s3);
+  background: var(--void); border: 1px solid var(--edge); border-radius: var(--r);
+  color: var(--dim); font-family: var(--body); font-size: 12.5px; cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.cr-search-btn:hover { border-color: var(--edge-hi); color: var(--ash); }
+.cr-search-btn kbd {
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+  border: 1px solid var(--edge); border-radius: 3px; padding: 1px 4px; margin-left: var(--s2);
+}
+@media (max-width: 900px) { .cr-search-btn .label, .cr-search-btn kbd { display: none; } }
+
+.cr-search { position: fixed; inset: 0; z-index: 60; }
+.cr-sr-backdrop { position: absolute; inset: 0; background: var(--scrim); }
+.cr-sr-panel {
+  position: relative; margin: 9vh auto 0; max-width: 680px; width: calc(100% - var(--s5) * 2);
+  background: var(--plate); border: 1px solid var(--edge-hi); border-radius: var(--r-lg);
+  box-shadow: 0 24px 64px -12px var(--drop); overflow: hidden;
+}
+.cr-sr-panel input {
+  width: 100%; border: 0; border-bottom: 1px solid var(--edge); background: transparent;
+  color: var(--chalk); font-family: var(--body); font-size: 15px; padding: var(--s4) var(--s5);
+}
+.cr-sr-panel input:focus { outline: none; border-bottom-color: var(--halon); }
+.cr-sr-panel input::placeholder { color: var(--dim); }
+
+.cr-sr-list { max-height: 52vh; overflow: auto; }
+.cr-sr-row {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
+  padding: var(--s3) var(--s5); border-bottom: 1px solid var(--edge); text-decoration: none;
+  transition: background var(--t-fast) var(--ease);
+}
+.cr-sr-row:hover, .cr-sr-row:focus-visible { background: var(--shelf); }
+.cr-sr-main { min-width: 0; }
+/* One line each. A wrapping title turns a 12-row list into a scroll, and the
+   whole point of the overlay is to scan it at a glance. */
+.cr-sr-title { display: block; color: var(--chalk); font-size: 14px;
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cr-sr-sub { display: block; color: var(--dim); font-family: var(--mono); font-size: 10.5px;
+             margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cr-sr-chips { display: flex; gap: 3px; flex: none; }
+.cr-sr-chips .tag { white-space: nowrap; }
+@media (max-width: 700px) { .cr-sr-chips { display: none; } }
+
+.cr-sr-empty { padding: var(--s5); color: var(--ash); font-size: 13.5px; line-height: 1.6; }
+.cr-sr-empty b { color: var(--chalk); font-family: var(--mono); font-size: 12px; }
+.cr-sr-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: var(--s2) var(--s5); background: var(--shelf);
+  font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: .06em;
+}
+.cr-sr-foot kbd { border: 1px solid var(--edge-hi); border-radius: 3px; padding: 0 4px; }
+
+/* ==========================================================================
+   Light theme.
+
+   This product is dark-first: the palette above IS the design, and bare :root
+   stays dark so nothing has to be re-derived. Light is a redefinition of the
+   same tokens, applied in two places that must stay identical:
+
+     1. the user's system preference, when they have not chosen explicitly
+     2. an explicit choice, which must beat the system preference either way
+
+   The token NAMES read backwards in light mode -- `--void` becomes the
+   lightest surface and `--chalk` the darkest ink -- but their ROLES are what
+   matter and those hold exactly: --void is always the page ground, --chalk is
+   always the strongest ink, and the ground ramp void -> plate -> shelf ->
+   raise -> edge -> edge-hi always runs from page to nearest.
+
+   Ember and halon are the only saturated things on screen and always mean the
+   same thing (propagating / contained), so they are not dropped in light mode
+   -- they are darkened until they carry their meaning against a light ground.
+   `#ff6b35` and `#35e0c0` are unreadable as text on white; these are not.
+
+   `tests/test_ui_theme.py` fails the build if the two blocks below drift apart.
+   ========================================================================== */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --void:      #f4f6f9;
+    --plate:     #ffffff;
+    --shelf:     #eef1f6;
+    --raise:     #e4e8ef;
+    --edge:      #d7dce5;
+    --edge-hi:   #b0b9c7;
+
+    --chalk:     #11151c;
+    --ash:       #4e586a;
+    --dim:       #7a8496;
+
+    --ember:     #c8410d;
+    --ember-ink: #8e2c06;
+    --ember-bed: #fdece3;
+    --ember-line:#f2c2a8;
+
+    --halon:     #06806a;
+    --halon-ink: #045a4a;
+    --halon-bed: #e0f6f1;
+    --halon-line:#9fdfd1;
+
+    --brass:     #8a6206;
+    --brass-ink: #63460a;
+    --brass-bed: #fdf3d9;
+    --brass-line:#e4cf93;
+
+    --sunk:      #f0f3f8;
+    --prose:     #232934;
+    --code-ink:  #2b3240;
+    --plan:      #5b34c4;
+    --on-ember:  #fff3ed;
+    --on-halon:  #eafaf6;
+    --nav-bg:    rgba(255, 255, 255, .93);
+    --veil:      rgba(20, 26, 34, .42);
+    --tint:      rgba(200, 65, 13, .06);
+    --tint-hi:   rgba(200, 65, 13, .28);
+    --term-bg:   #05070a;
+    --scrim:     rgba(17, 21, 28, .46);
+    --drop:      rgba(28, 36, 48, .18);
+
+    --sh-sm: 0 1px 2px rgba(59, 59, 59, .09), 0 0 0 1px rgba(59, 59, 59, .04);
+    --sh-md: 0 1px 2px rgba(59, 59, 59, .09), 0 2px 4px rgba(59, 59, 59, .05), 0 0 0 1px rgba(59, 59, 59, .04);
+    --sh-lg: 0 2px 4px rgba(59, 59, 59, .05), 0 4px 8px rgba(59, 59, 59, .09), 0 8px 16px rgba(59, 59, 59, .10), 0 0 0 1px rgba(59, 59, 59, .04);
+
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"] {
+  --void:      #f4f6f9;
+  --plate:     #ffffff;
+  --shelf:     #eef1f6;
+  --raise:     #e4e8ef;
+  --edge:      #d7dce5;
+  --edge-hi:   #b0b9c7;
+
+  --chalk:     #11151c;
+  --ash:       #4e586a;
+  --dim:       #7a8496;
+
+  --ember:     #c8410d;
+  --ember-ink: #8e2c06;
+  --ember-bed: #fdece3;
+  --ember-line:#f2c2a8;
+
+  --halon:     #06806a;
+  --halon-ink: #045a4a;
+  --halon-bed: #e0f6f1;
+  --halon-line:#9fdfd1;
+
+  --brass:     #8a6206;
+  --brass-ink: #63460a;
+  --brass-bed: #fdf3d9;
+  --brass-line:#e4cf93;
+
+  --sunk:      #f0f3f8;
+  --prose:     #232934;
+  --code-ink:  #2b3240;
+  --plan:      #5b34c4;
+  --on-ember:  #fff3ed;
+  --on-halon:  #eafaf6;
+  --nav-bg:    rgba(255, 255, 255, .93);
+  --veil:      rgba(20, 26, 34, .42);
+  --tint:      rgba(200, 65, 13, .06);
+  --tint-hi:   rgba(200, 65, 13, .28);
+  --term-bg:   #05070a;
+  --scrim:     rgba(17, 21, 28, .46);
+  --drop:      rgba(28, 36, 48, .18);
+
+  --sh-sm: 0 1px 2px rgba(59, 59, 59, .09), 0 0 0 1px rgba(59, 59, 59, .04);
+  --sh-md: 0 1px 2px rgba(59, 59, 59, .09), 0 2px 4px rgba(59, 59, 59, .05), 0 0 0 1px rgba(59, 59, 59, .04);
+  --sh-lg: 0 2px 4px rgba(59, 59, 59, .05), 0 4px 8px rgba(59, 59, 59, .09), 0 8px 16px rgba(59, 59, 59, .10), 0 0 0 1px rgba(59, 59, 59, .04);
+
+  color-scheme: light;
+}
+
+/* The logo glow is built for a dark ground. On light it reads as a smudge,
+   so it goes. */
+:root[data-theme="light"] .cr-mark .glyph,
+:root:not([data-theme="dark"]) .cr-mark .glyph { box-shadow: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cr-mark .glyph { box-shadow: 0 0 12px -2px var(--ember); }
+}
+
+/* --------------------------------------------------------------------------
+   Theme toggle. Two states only -- the control reports what it will switch to,
+   which is why the label changes rather than staying a fixed icon.
+   -------------------------------------------------------------------------- */
+.cr-theme {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  background: transparent; border: 1px solid var(--edge); border-radius: var(--r);
+  color: var(--ash); cursor: pointer; line-height: 1;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.cr-theme:hover { border-color: var(--edge-hi); color: var(--chalk); }
+.cr-theme svg { width: 15px; height: 15px; display: block; }
+.cr-theme .moon { display: none; }
+.cr-theme .sun { display: block; }
+/* Show the icon for the mode the button switches TO. */
+:root[data-theme="light"] .cr-theme .moon { display: block; }
+:root[data-theme="light"] .cr-theme .sun { display: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .cr-theme .moon { display: block; }
+  :root:not([data-theme="dark"]) .cr-theme .sun { display: none; }
+}
+
+/* ==========================================================================
+   Technical treatments.
+
+   The subject is a data path with a control on every hop, so the decoration is
+   drawn from measuring instruments and engineering drawings rather than from
+   marketing: hairline rules, corner ticks, a travelling beam. Every one of
+   these is built from tokens, so they follow the theme.
+   ========================================================================== */
+
+/* Scroll progress. A single hairline; it reports position, nothing else. */
+.cr-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 70;
+  transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--ember), var(--halon));
+  pointer-events: none;
+}
+
+/* Static technical grid. CSS only, no animation loop. Masked so it fades
+   before it reaches the content. */
+.gridfield {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--edge) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--edge) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: .35;
+  -webkit-mask-image: radial-gradient(120% 70% at 50% 0%, #000 0%, transparent 72%);
+          mask-image: radial-gradient(120% 70% at 50% 0%, #000 0%, transparent 72%);
+}
+
+/* Corner ticks. A frame that reads as a crop mark rather than a border. */
+.ticked { position: relative; }
+.ticked::before, .ticked::after {
+  content: ""; position: absolute; width: 10px; height: 10px; pointer-events: none;
+  border-color: var(--edge-hi); border-style: solid; border-width: 0;
+}
+.ticked::before { top: -1px; left: -1px; border-top-width: 1px; border-left-width: 1px; }
+.ticked::after { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* A hairline that runs the width of a section and stops. */
+.rule { height: 1px; background: var(--edge); margin: var(--s6) 0; }
+.rule.lead {
+  background: linear-gradient(90deg, var(--edge-hi) 0, var(--edge) 30%, transparent 100%);
+}
+
+/* Gradient hairline border, used on the one element per page that should read
+   as live rather than printed. */
+.gradborder {
+  position: relative; border: 1px solid transparent; border-radius: var(--r-lg);
+  background:
+    linear-gradient(var(--plate), var(--plate)) padding-box,
+    linear-gradient(135deg, var(--ember-line), var(--edge) 45%, var(--halon-line)) border-box;
+}
+
+/* --------------------------------------------------------------------------
+   The hop list -- the eight-hop data path, scrubbed by scroll.
+
+   Unlit hops are dimmed, never hidden: the whole map has to be readable to
+   someone who does not scroll, and to anyone on reduced motion.
+   -------------------------------------------------------------------------- */
+.hops-sec { position: relative; }
+.hops-wrap { display: grid; grid-template-columns: 3px minmax(0, 1fr); gap: var(--s5); }
+
+.hop-rail { position: relative; background: var(--edge); border-radius: 2px; overflow: hidden; }
+.hop-rail i {
+  position: absolute; top: 0; left: 0; width: 100%; height: 0;
+  background: linear-gradient(180deg, var(--ember), var(--halon));
+}
+
+.hops { list-style: none; margin: 0; padding: 0; }
+.hop {
+  display: grid; grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: var(--s4); align-items: start;
+  padding: var(--s4) 0; border-bottom: 1px solid var(--edge);
+  opacity: .38;
+  transition: opacity var(--t-slow) var(--ease);
+}
+.hop:last-child { border-bottom: 0; }
+.hop.is-lit { opacity: 1; }
+
+.hop-n {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  letter-spacing: .1em; padding-top: 3px;
+}
+.hop.is-lit .hop-n { color: var(--ember); }
+
+.hop-name { display: block; font-size: 15.5px; color: var(--chalk); }
+.hop-threat { display: block; color: var(--ash); font-size: 13px; line-height: 1.55; margin-top: 3px; }
+.hop-code {
+  display: block; font-family: var(--mono); font-size: 10.5px; color: var(--dim);
+  margin-top: var(--s2); word-break: break-word;
+}
+
+.hop-ctrls { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.hop-c {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+  padding: 2px 6px; border-radius: var(--r-sm);
+  border: 1px solid var(--edge); color: var(--dim);
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+              background var(--t-fast) var(--ease);
+}
+.hop.is-lit .hop-c {
+  border-color: var(--halon-line); color: var(--halon-ink); background: var(--halon-bed);
+}
+
+@media (max-width: 620px) {
+  .hops-wrap { grid-template-columns: minmax(0, 1fr); }
+  .hop-rail { display: none; }
+  .hop { grid-template-columns: 34px minmax(0, 1fr); }
+  .hop-ctrls { grid-column: 2; justify-content: flex-start; margin-top: var(--s2); }
+}
+
+/* --------------------------------------------------------------------------
+   Masked word reveal. The clip lives on the span so the word slides out from
+   behind a hard edge rather than fading in.
+   -------------------------------------------------------------------------- */
+.wr { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.wr i { display: inline-block; font-style: inherit; will-change: transform; }
+
+/* --------------------------------------------------------------------------
+   Live figures. Real counts only -- every one is read from /catalog or
+   /lab/curriculum at render time.
+   -------------------------------------------------------------------------- */
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 1px;
+        background: var(--edge); border: 1px solid var(--edge); border-radius: var(--r-lg); overflow: hidden; }
+.fig { background: var(--plate); padding: var(--s4) var(--s4) var(--s3); }
+.fig b {
+  display: block; font-family: var(--display); font-size: 27px; letter-spacing: -.03em;
+  color: var(--chalk); line-height: 1.1;
+}
+.fig b .unit { font-size: 15px; color: var(--dim); letter-spacing: 0; }
+.fig span {
+  display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--dim); margin-top: var(--s2);
+}
+.fig em { display: block; font-style: normal; font-size: 11.5px; color: var(--ash); margin-top: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hop { opacity: 1; transition: none; }
+  .cr-progress { transition: none; }
+}

@@ -1,7 +1,9 @@
 # Roadmap (post v1.0)
 
 **v1.0 scope:** Module 0 foundation + Module 1 tool abuse (prove → defend → measure).  
-Everything below is **not** implemented. Do not treat folder seams as finished features.
+Modules 2–8 were added after v1.0 at lab scale (see the status column). Folder seams
+that are still stubs — real NeMo / LLM Guard / OPA backends — are listed in
+`SECURITY_NOTES.md` and are not finished features.
 
 | Module | Topic | Status |
 |--------|--------|--------|

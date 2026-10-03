@@ -3,6 +3,10 @@
   "simulate": "m7",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "a tool with no signed manifest was invoked anyway",
+    "it ran with the agent's own privileges, not a scoped credential"
+  ],
   "pass_message": "Rogue tool ran: with no attestation, the unmanifested backdoor tool was invoked with the agent's privileges.",
   "fail_message": "The rogue tool did not run. Ensure the graded run used vulnerable mode."
 }

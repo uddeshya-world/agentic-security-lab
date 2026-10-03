@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
 <style>
   .page { max-width: 780px; margin: 0 auto; padding: var(--s7) var(--s5) var(--s8); }
   .page h1 { font-family: var(--display); font-size: 30px; letter-spacing: -.03em; margin: var(--s3) 0 var(--s3); }
@@ -32,7 +32,7 @@
   table.tx td.mode-secure { color: var(--halon); }
   table.tx td.mode-vulnerable { color: var(--ember); }
   .scroll { max-height: 420px; overflow: auto; border: 1px solid var(--edge); border-radius: var(--r); }
-  .caveat { margin-top: var(--s5); padding: var(--s4); border: 1px solid var(--brass-line); background: var(--brass-bed); border-radius: var(--r); color: #f0dda8; font-size: 13px; line-height: 1.6; }
+  .caveat { margin-top: var(--s5); padding: var(--s4); border: 1px solid var(--brass-line); background: var(--brass-bed); border-radius: var(--r); color: var(--brass-ink); font-size: 13px; line-height: 1.6; }
   .caveat b { color: var(--brass); }
 </style>
 </head>
@@ -40,9 +40,17 @@
 
 <header class="cr-nav">
   <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <nav class="cr-links" id="crlinks">
+    <a class="link" href="/lab/ui/catalog.html">Range</a>
+    <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link is-active" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
   <span class="grow"></span>
-  <a class="link" href="/lab/ui/catalog.html">Range</a>
-  <a class="link" href="/lab/ui/index.html">Sandbox console</a>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+  <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
 </header>
 
 <main class="page">
@@ -67,7 +75,7 @@
   <p>Local only · synthetic records · fake credentials.</p>
 </footer>
 
-<script src="/lab/ui/cyberrange.js?v=7"></script>
+<script src="/lab/ui/cyberrange.js?v=16"></script>
 <script>
 const esc = CR.esc;
 
@@ -82,7 +90,7 @@ function render(res) {
   const counts = tx.reduce((m, r) => ((m[r.mode || "any"] = (m[r.mode || "any"] || 0) + 1), m), {});
 
   out.innerHTML = `
-    <div class="verdict">
+    <div class="verdict" data-reveal>
       <div class="head">
         <span class="tag ${res.valid ? "cold" : "hot"}"><i class="dot"></i>${res.valid ? "signature valid" : "signature invalid"}</span>
         <h2>${esc(a.badge?.name || "Badge")}</h2>

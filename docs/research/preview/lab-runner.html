@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab Runner — Indirect injection → tool fire</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <script>
+    /* Applied before first paint so navigation never flashes the wrong ground.
+       No stored choice means follow the system, which the CSS already does. */
+    (function () {
+      try {
+        var m = localStorage.getItem("aisl.theme");
+        if (m === "light" || m === "dark") document.documentElement.setAttribute("data-theme", m);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    .runner-top {
+      border-bottom: 1px solid var(--ga-divider);
+      background: var(--ga-surface);
+    }
+    .runner-top-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: var(--text-sm);
+      color: var(--ga-fg2);
+    }
+    .breadcrumb a:hover { text-decoration: underline; color: var(--ga-ink-900); }
+    .threat-diagram {
+      background: var(--ga-bg);
+      border: 1px solid var(--ga-divider);
+      border-radius: var(--ga-r-md);
+      padding: 16px;
+      font-size: 13px;
+    }
+    .threat-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .threat-node {
+      background: var(--ga-surface);
+      border: 1px solid var(--ga-border);
+      border-radius: var(--ga-r-md);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .threat-arrow { color: var(--ga-ink-400); }
+  </style>
+</head>
+<body>
+  <div class="announce" role="region" aria-label="Announcement">
+    <span class="label" style="color: inherit;">Synthetic only</span>
+    <span>Authorized training estate · No real credentials · No production egress</span>
+    <button class="announce-dismiss" type="button" aria-label="Dismiss">×</button>
+  </div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AI</span>
+        <span>AI Security Lab</span>
+        <span class="beta">Beta</span>
+      </a>
+      <nav class="nav-links">
+        <a href="labs.html" class="active">Labs</a>
+        <a href="index.html#roadmap">Roadmap</a>
+        <a href="#evidence">Evidence locker</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme"></button>
+        <button class="btn btn-chip btn-sm" type="button">Reset lab</button>
+        <a class="btn btn-secondary btn-sm" href="labs.html">Exit</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Runner chrome -->
+  <div class="runner-top">
+    <div class="runner-top-inner">
+      <div class="breadcrumb">
+        <a href="labs.html">Labs</a>
+        <span>/</span>
+        <a href="labs.html">LLM / Agentic</a>
+        <span>/</span>
+        <span style="color: var(--ga-fg1); font-weight: 500;">Indirect injection → tool fire</span>
+      </div>
+      <span class="badge badge-free">Free lab</span>
+      <span class="badge badge-exploit">Threat · Injection</span>
+      <span class="badge">Container</span>
+      <span class="badge">~45 min</span>
+      <div style="margin-left: auto;">
+        <span class="label">Lab ID · SYN-AGENT-07</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="runner-shell" style="flex: 1;">
+    <!-- Left rail -->
+    <aside class="runner-rail">
+      <div>
+        <p class="label label-dark" style="margin-bottom: 8px;">Workspace</p>
+        <a class="rail-link active" href="#brief">Mission brief</a>
+        <a class="rail-link" href="#threat">Threat model</a>
+        <a class="rail-link" href="#terminal">Terminal</a>
+        <a class="rail-link" href="#tests">Test runner</a>
+        <a class="rail-link" href="#evidence">Evidence capture</a>
+        <a class="rail-link" href="#refs">References</a>
+      </div>
+      <div>
+        <p class="label label-dark" style="margin-bottom: 8px;">Curriculum</p>
+        <a class="rail-link" href="#">01 · Injection surfaces</a>
+        <a class="rail-link active" href="#">02 · Tool fire chain ←</a>
+        <a class="rail-link" href="#">03 · MCP deputy</a>
+        <a class="rail-link" href="#">04 · Approval theater</a>
+      </div>
+      <div style="margin-top: auto;">
+        <div class="safety-banner" style="flex-direction: column; align-items: flex-start;">
+          <strong class="mono" style="font-size: 10px; letter-spacing: 0.1em;">AUTHORIZED USE ONLY</strong>
+          <span>Synthetic target · Kill switch armed · Egress allowlist</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="runner-main">
+      <!-- Synthetic banner -->
+      <div class="safety-banner">
+        <strong>Synthetic target</strong>
+        <span>·</span>
+        <span>Authorized use only</span>
+        <span>·</span>
+        <span>No real credentials</span>
+        <span>·</span>
+        <span class="mono">egress: allowlist · kill: armed</span>
+      </div>
+
+      <!-- Rule-of-Two HUD -->
+      <div class="rot-hud" role="status" aria-label="Rule of Two HUD">
+        <span class="label" style="color: var(--ga-panel-ink-dim); margin-right: 4px;">Rule-of-Two</span>
+        <div class="rot-seg">
+          <span class="rot-pip on" title="Untrusted input"></span>
+          <span>Untrusted input</span>
+        </div>
+        <div class="rot-seg">
+          <span class="rot-pip on" title="Capable model"></span>
+          <span>Capable model</span>
+        </div>
+        <div class="rot-seg">
+          <span class="rot-pip" title="Change sink — blocked until lesson"></span>
+          <span>Change sink <span class="mono" style="color:var(--ga-panel-ink-dim);">(gated)</span></span>
+        </div>
+        <div style="margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--ga-panel-ink-dim);">
+          trifecta 1·1·0 · unsupervised (1,1,1) blocked
+        </div>
+      </div>
+
+      <!-- Scope gate -->
+      <section class="scope-gate" id="scope">
+        <div class="panel-title">
+          <div>
+            <p class="label label-dark" style="margin-bottom: 4px;">Scope gate · Required before Start</p>
+            <h2 class="heading-lg" style="font-size: 18px;">Confirm synthetic estate</h2>
+          </div>
+          <span class="badge badge-policy">Gate</span>
+        </div>
+        <ul class="scope-list">
+          <li><span class="ok mono">IN</span> Target ID <strong>SYN-AGENT-07</strong> — toy RAG + tool proxy</li>
+          <li><span class="ok mono">IN</span> Allowed: prompt/content injection, tool-call observation, evidence capture</li>
+          <li><span class="no mono">OUT</span> Real APIs, personal accounts, production keys, external hosts</li>
+          <li><span class="no mono">OUT</span> Export of full harness configs beyond lab boundary</li>
+        </ul>
+        <label class="check-row">
+          <input type="checkbox" id="scope-ack" />
+          <span>I understand this is an authorized synthetic training estate. I will not use techniques outside this lab.</span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="aup-ack" />
+          <span>I accept the Acceptable Use Policy. Abuse suspends access and may revoke cert eligibility.</span>
+        </label>
+        <div class="row" style="margin-top: 16px;">
+          <button class="btn btn-primary" type="button" id="start-lab">Acknowledge &amp; Start →</button>
+          <button class="btn btn-secondary" type="button">View AUP</button>
+        </div>
+      </section>
+
+      <div class="runner-panels">
+        <!-- Left column: brief + threat + terminal -->
+        <div class="stack" style="gap: var(--space-4);">
+          <section class="card" id="brief" style="padding: var(--space-4);">
+            <p class="label label-dark" style="margin-bottom: 8px;">Mission brief</p>
+            <h2 class="heading-lg" style="font-size: 18px; margin-bottom: 10px;">Indirect injection → tool fire</h2>
+            <p class="muted" style="margin: 0 0 12px; font-size: 14px;">
+              An agent with tool access reads untrusted content (email / doc / retrieved chunk).
+              Your job: demonstrate that crafted content can cause a tool invocation, then
+              produce a scored evidence artifact naming the failure mode.
+            </p>
+            <p class="label" style="margin-bottom: 6px;">Objectives</p>
+            <ul style="margin: 0; padding-left: 18px; font-size: 14px; color: var(--ga-fg1);">
+              <li>Trigger a tool call from untrusted input (synthetic)</li>
+              <li>Capture request/response transcript (redacted)</li>
+              <li>Name the control gap (model-layer ≠ system PEP)</li>
+            </ul>
+          </section>
+
+          <section class="card" id="threat" style="padding: var(--space-4);">
+            <p class="label label-dark" style="margin-bottom: 8px;">Threat model · Synthetic</p>
+            <div class="threat-diagram">
+              <span class="mono" style="font-size: 11px; color: var(--ga-fg2);">DATA FLOW</span>
+              <div class="threat-flow">
+                <span class="threat-node">Untrusted doc</span>
+                <span class="threat-arrow">→</span>
+                <span class="threat-node">Retriever</span>
+                <span class="threat-arrow">→</span>
+                <span class="threat-node">Agent (capable)</span>
+                <span class="threat-arrow">→</span>
+                <span class="threat-node" style="border-color: var(--ga-threat-hot-border); background: var(--ga-threat-hot-bg);">Tool proxy</span>
+                <span class="threat-arrow">→</span>
+                <span class="threat-node">Sink (gated)</span>
+              </div>
+              <p class="muted" style="margin: 12px 0 0; font-size: 12px;">
+                Interaction surfaces are trust boundaries. Least Privilege ≠ Least Agency.
+                Change sink remains gated for this lesson (Rule-of-Two).
+              </p>
+            </div>
+          </section>
+
+          <section class="card" id="terminal" style="padding: 0; overflow: hidden;">
+            <div class="terminal" style="border: none; border-radius: var(--ga-r-lg);">
+              <div class="terminal-bar">
+                <span class="terminal-dot r"></span>
+                <span class="terminal-dot y"></span>
+                <span class="terminal-dot g"></span>
+                <span style="margin-left: 8px;">labctl · syn-agent-07 · container</span>
+              </div>
+              <div class="terminal-body"><span class="dim"># waiting for scope acknowledge…</span>
+<span class="prompt">learner@syn-07:~$</span> <span class="dim">_</span>
+
+<span class="dim"># after Start:</span>
+<span class="dim"># labctl status · labctl inject --fixture mail-03</span>
+<span class="dim"># labctl observe tools · labctl evidence draft</span></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right column: tests + evidence -->
+        <div class="stack" style="gap: var(--space-4);">
+          <section class="card" id="tests" style="padding: var(--space-4);">
+            <div class="panel-title">
+              <p class="label label-dark">Test runner</p>
+              <button class="btn btn-secondary btn-sm" type="button">Run tests</button>
+            </div>
+            <div class="test-row">
+              <span>T1 · Tool call observed</span>
+              <span class="test-pending mono">pending</span>
+            </div>
+            <div class="test-row">
+              <span>T2 · Untrusted source cited</span>
+              <span class="test-pending mono">pending</span>
+            </div>
+            <div class="test-row">
+              <span>T3 · Failure mode labeled</span>
+              <span class="test-pending mono">pending</span>
+            </div>
+            <div class="test-row">
+              <span>T4 · No egress outside allowlist</span>
+              <span class="test-pass mono">pass</span>
+            </div>
+            <p class="muted" style="margin: 12px 0 0; font-size: 12px;">
+              Rubric: pass = artifact + family ID + named failure mode.
+            </p>
+          </section>
+
+          <section class="card" id="evidence" style="padding: var(--space-4);">
+            <div class="panel-title">
+              <p class="label label-dark">Evidence capture</p>
+              <span class="badge">Family · AGENT-INJ-02</span>
+            </div>
+            <div class="evidence-box">
+              Drop redacted transcript / hash bundle here<br />
+              <span class="mono" style="font-size: 11px;">default: hashes · redacted · pass-fail</span>
+            </div>
+            <div class="row" style="margin-top: 12px; flex-wrap: wrap;">
+              <button class="btn btn-primary btn-sm" type="button">Save to locker →</button>
+              <button class="btn btn-secondary btn-sm" type="button">Draft writeup</button>
+            </div>
+            <p class="muted" style="margin: 12px 0 0; font-size: 12px;">
+              Full dump requires Pro + attested purpose. Screenshots alone do not score for cert.
+            </p>
+          </section>
+
+          <section class="card" id="refs" style="padding: var(--space-4);">
+            <p class="label label-dark" style="margin-bottom: 10px;">Why this matters</p>
+            <p style="margin: 0 0 10px; font-size: 14px;">
+              Model-layer refusals are not a system PEP. Employers map this to continuous
+              authorization and interaction-surface inventory (ZTMM / ASI).
+            </p>
+            <a class="btn btn-ghost btn-sm" href="#" style="padding-left: 0;">Playbook · Agent tool fire →</a>
+          </section>
+        </div>
+      </div>
+
+      <!-- Bottom CTAs -->
+      <div class="row" style="justify-content: space-between; flex-wrap: wrap; padding-bottom: var(--space-5);">
+        <a class="btn btn-secondary" href="labs.html">← Back to labs</a>
+        <div class="row">
+          <button class="btn btn-secondary" type="button">Hints</button>
+          <button class="btn btn-primary" type="button">Submit evidence →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var start = document.getElementById('start-lab');
+      var scope = document.getElementById('scope-ack');
+      var aup = document.getElementById('aup-ack');
+      if (!start) return;
+      start.addEventListener('click', function () {
+        if (!scope.checked || !aup.checked) {
+          start.textContent = 'Check both boxes first';
+          setTimeout(function () { start.textContent = 'Acknowledge & Start →'; }, 1600);
+          return;
+        }
+        start.textContent = 'Lab started →';
+        start.disabled = true;
+        var body = document.querySelector('.terminal-body');
+        if (body) {
+          body.innerHTML =
+            '<span class="dim"># scope accepted · sandbox leased 45m</span>\n' +
+            '<span class="prompt">learner@syn-07:~$</span> labctl status\n' +
+            'target: SYN-AGENT-07  <span class="warn">synthetic · authorized</span>\n' +
+            'rule-of-two: untrusted=1  capable=1  sink=0\n' +
+            'egress: allowlist ok · kill: armed\n' +
+            '<span class="prompt">learner@syn-07:~$</span> _';
+        }
+      });
+    })();
+  </script>
+  <script src="theme.js"></script>
+</body>
+</html>

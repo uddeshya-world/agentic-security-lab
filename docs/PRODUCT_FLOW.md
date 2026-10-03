@@ -146,33 +146,36 @@ LLM emits this" confirmation. Reliable teaching engine; honest bonus.
 
 ---
 
-## 6. The 16-scenario curriculum
+## 6. The 19-scenario curriculum
 
-Values read verbatim from each `scenario.json`. Total: **255 minutes, 69 steps, 31 graded checks.**
+Values read verbatim from each `scenario.json`. Total: **308 minutes, 81 steps, 43 graded checks.**
 
 | # | Scenario | You attack | You build | OWASP / ASI (as declared) | Controls | Min |
 |---|---|---|---|---|---|---|
 | 0 | What is an agent with tools? | nothing — you map the data path and find the trust boundary | — | — | — | 8 |
-| 1 | Tool abuse — SQL injection (no LLM needed) | `db_tool`'s free-form `filter` → `WHERE 1=1` | parameterized/scoped query + schema allow-list | LLM06 Excessive Agency · ASI02 Tool Misuse | C1 C2 C3 C7 | 15 |
-| 2 | Poison the LLM context (RAG) | plant a poisoned shipping FAQ; benign question retrieves it | RAG trust/provenance filter | LLM01 · LLM04 · LLM08 · ASI06 | C6 C7 | 15 |
-| 3 | Cross-tool exfiltration (dump → email) | chain `db_tool` → `email_tool` to an external address | egress allow-list + human-in-the-loop gate | LLM02 Sensitive Info Disclosure · LLM06 · ASI02 | C1 C4 C5 C7 | 18 |
-| 4 | Exploit the agent (RAG → planner → tools) | full kill chain through the real executor | all six layers at once; re-inject the plan | LLM01 · LLM06 · ASI01 Goal Hijack · ASI02 · ASI07 | C1 C2 C4 C5 C6 C7 | 25 |
-| 5 | Guardrail map — what to build and where | no attack — you design from memory | the six-layer control map | LLM01 · LLM06 · ASI02 | C1–C7 | 12 |
-| 6 | Deep RAG poisoning — crowding & false provenance | flood top-k with near-duplicates; mislabel poison as `trust=seed` | content-aware poison detector | LLM01 · LLM04 · LLM08 · ASI06 | C6 C8 | 20 |
-| 7 | Multi-agent attacks — tampering & rogue agents | rewrite an unsigned plan in transit; smuggle an unregistered tool | HMAC-signed messages + agent/tool allow-list | ASI07 · ASI01 · LLM06 | C9 C10 | 18 |
-| 8 | Memory poisoning — the persistent backdoor | write an instruction into long-term memory; recall it in a fresh session | memory write validation + provenance signing | ASI06 Memory & Context Poisoning · LLM01 · ASI01 | C11 C12 | 18 |
-| 9 | Production guardrails & observability | run a labeled probe set with scanners off | measured input/output pipeline: catch rate, FP rate, p50/p95 | LLM01 · LLM02 · LLM05 Improper Output Handling | C13 | 16 |
-| 10 | Red-team evaluation pipeline | every module's attack as one battery | attack-success-rate suite wired into CI | LLM01 · LLM02 · LLM06 · ASI01 · ASI06 · ASI07 | C14 | 15 |
-| 11 | Supply chain — rogue tools & MCP servers | register an unmanifested tool; tamper a manifest to escalate | signed capability manifests + startup attestation | LLM03 Supply Chain · ASI02 · LLM06 | C15 | 16 |
-| 12 | Governance & policy-as-code | the always-allow policy stub | blast-radius decision matrix + queryable audit trail | LLM06 · ASI02 · ASI03 Privilege Abuse | C16 C17 | 16 |
-| 13 | System prompt leakage | make the planner recite tool names, arg shapes, the dump-all example | outbound leak detection (and why the real fix is upstream) | LLM07 System Prompt Leakage · LLM01 | C18 | 14 |
-| 14 | Misinformation — groundedness & citations | a confident refund policy supported by no source | groundedness/citation enforcement | LLM09 Misinformation · LLM04 | C19 | 15 |
-| 15 | Unbounded consumption — denial of wallet | one valid tool call, repeated 40 times | step cap + cost budget + loop detection + rate limit | LLM10 Unbounded Consumption · ASI04 Resource Overload | C20 | 14 |
+| 1 | Tool abuse — SQL injection (no LLM needed) | `db_tool`'s free-form `filter` → `WHERE 1=1` | parameterized/scoped query + schema allow-list | LLM03:2026 Excessive Agency · ASI02 Tool Misuse | C1 C2 C3 C7 | 15 |
+| 2 | Poison the LLM context (RAG) | plant a poisoned shipping FAQ; benign question retrieves it | RAG trust/provenance filter | LLM01:2026 Prompt Injection · LLM05:2026 Data and Model Poisoning · LLM09:2026 Vector and Embedding Weaknesses · ASI06 Memory and Context Poisoning | C6 C7 | 15 |
+| 3 | Cross-tool exfiltration (dump → email) | chain `db_tool` → `email_tool` to an external address | egress allow-list + human-in-the-loop gate | LLM02:2026 Sensitive Information Disclosure · LLM03:2026 Excessive Agency · ASI02 Tool Misuse | C1 C4 C5 C7 | 18 |
+| 4 | Exploit the agent (RAG → planner → tools) | full kill chain through the real executor | all six layers at once; re-inject the plan | LLM01:2026 Prompt Injection · LLM03:2026 Excessive Agency · ASI01 Agent Goal Hijack · ASI02 Tool Misuse | C1 C2 C4 C5 C6 C7 | 25 |
+| 5 | Guardrail map — what to build and where | no attack — you design from memory | the six-layer control map | LLM01:2026 Prompt Injection · LLM02:2026 Sensitive Information Disclosure · LLM03:2026 Excessive Agency · ASI02 Tool Misuse · ASI03 Identity and Privilege Abuse | C1 C2 C3 C4 C5 C6 C7 C21 | 15 |
+| 6 | Deep RAG poisoning — crowding & false provenance | flood top-k with near-duplicates; mislabel poison as `trust=seed` | content-aware poison detector | LLM01:2026 Prompt Injection · LLM05:2026 Data and Model Poisoning · LLM09:2026 Vector and Embedding Weaknesses · ASI06 Memory and Context Poisoning | C6 C8 | 20 |
+| 7 | Multi-agent attacks — tampering & rogue agents | rewrite an unsigned plan in transit; smuggle an unregistered tool | HMAC-signed messages + agent/tool allow-list | ASI07 Insecure Inter-Agent Communication · ASI01 Agent Goal Hijack · ASI10 Rogue Agents | C9 C10 | 18 |
+| 8 | Memory poisoning — the persistent backdoor | write an instruction into long-term memory; recall it in a fresh session | memory write validation + provenance signing | ASI06 Memory and Context Poisoning · LLM01:2026 Prompt Injection · ASI01 Agent Goal Hijack | C11 C12 | 18 |
+| 9 | Production guardrails & observability | run a labeled probe set with scanners off | measured input/output pipeline: catch rate, FP rate, p50/p95 | LLM01:2026 Prompt Injection · LLM02:2026 Sensitive Information Disclosure · LLM10:2026 Improper Output Handling | C13 | 16 |
+| 10 | Red-team evaluation pipeline | every module's attack as one battery | attack-success-rate suite wired into CI | LLM01:2026 Prompt Injection · LLM02:2026 Sensitive Information Disclosure · LLM03:2026 Excessive Agency | C14 | 15 |
+| 11 | Supply chain — rogue tools & MCP servers | register an unmanifested tool; tamper a manifest to escalate | signed capability manifests + startup attestation | LLM04:2026 Supply Chain · ASI04 Agentic Supply Chain · ASI10 Rogue Agents | C15 | 16 |
+| 12 | Governance & policy-as-code | the always-allow policy stub | blast-radius decision matrix + queryable audit trail | LLM03:2026 Excessive Agency · ASI03 Identity and Privilege Abuse | C16 C17 | 16 |
+| 13 | System prompt leakage | make the planner recite tool names, arg shapes, the dump-all example | outbound leak detection (and why the real fix is upstream) | LLM08:2026 Hidden Context Exposure · LLM01:2026 Prompt Injection | C18 | 14 |
+| 14 | Misinformation — groundedness & citations | a confident refund policy supported by no source | groundedness/citation enforcement | LLM07:2026 Misinformation · LLM05:2026 Data and Model Poisoning | C19 | 15 |
+| 15 | Unbounded consumption — denial of wallet | one valid tool call, repeated 40 times | step cap + cost budget + loop detection + rate limit | LLM06:2026 Unbounded Consumption | C20 | 14 |
+| 16 | Direct prompt injection & jailbreak | a chat message — not a poisoned document — steers the planner into the same dump | executor-side policy: the plan is a proposal, never an authorization | — | LLM01:2026 Prompt Injection · LLM03:2026 Excessive Agency | C2 C7 | 15 |
+| 17 | Data guards — DLP for agents | email the customer table past a domain allow-list | four-channel DLP: classify, then mask or block on prompt, RAG, output, tool results | — | LLM02:2026 Sensitive Information Disclosure · LLM10:2026 Improper Output Handling · ASI03 Identity and Privilege Abuse | C21 C4 C13 | 20 |
+| 18 | Agent identity & confused deputy | a hijacked plan spends the tool's broad credential on everyone's rows | bind `customer_id` from the session, not from the model | — | ASI03 Identity and Privilege Abuse · LLM03:2026 Excessive Agency | C1 C7 | 15 |
 
 `lab/curriculum.py` also publishes the honest denominator: all ten LLM Top 10 categories covered,
-and the ASI list deliberately includes **uncovered** themes — ASI11 (approval fatigue), ASI12 (RCE via
-tools), ASI13 (deceptive agent behaviour) are marked `covered: False`, ASI10 `partial`. The coverage
-number isn't self-selected.
+and the ASI list is the full official ASI01–ASI10 with the **uncovered** entries left in — ASI05
+(unexpected code execution), ASI08 (cascading failures) and ASI09 (human-agent trust exploitation)
+are marked `covered: False`. The coverage number isn't self-selected.
 
 ---
 

@@ -55,37 +55,41 @@ exit code — the platform's technical differentiator.
 
 ---
 
-## 3. Flagship — AI & Agent Security  **[SHIPPING]**
+## 3. Flagship — AI & Agent Security  **[SHIPPING — curriculum reconstructed 2026-09-05]**
 
 The full agentic system (LangGraph planner + executor, SQL/email/file tools,
 RAG, memory) — deliberately vulnerable, then hardened behind `SECURE_MODE`.
 
-**Certs / frameworks:** OWASP Top 10 for LLM Applications (2025) · OWASP Agentic
-Security Initiative (ASI, 2026) · MITRE ATLAS.
+**Canonical syllabus:** [AI-AGENT-SECURITY-CURRICULUM.md](AI-AGENT-SECURITY-CURRICULUM.md)
+(evidence from SANS SEC546/545/411, PortSwigger LLM path, 8kSec roadmap,
+HTB AI Red Teamer, TryHackMe, Microsoft Learn, OWASP LLM 2026 + ASI 2026).
+
+**Certs / frameworks:** OWASP Top 10 for LLM Applications **(2026)** · OWASP Top 10
+for Agentic Applications **(2026)** · MITRE ATLAS.
 **Roles:** AI Security Engineer · LLM/ML Red Teamer · AI AppSec · AI Platform
 Security Architect.
-**Native credential:** *AI Security Practitioner*.
+**Native credential:** *AI Security Practitioner* — **Core track only**, not all labs.
 
-### Shipping scenarios (Module 1)
+### Core (required for the badge) — ~2.5 h
+
 | # | Scenario | You learn |
 |---|----------|-----------|
-| 0 | What is an agent with tools? | the data path and the trust boundary |
-| 1 | Tool abuse — SQL injection | tool schemas are a control surface |
-| 2 | Poison the LLM context (RAG) | retrieved text becomes instructions |
-| 3 | Cross-tool exfiltration | impact is a chain; side-effect tools need stronger gates |
-| 4 | Exploit the agent end-to-end | RAG→planner→executor; defense in depth |
-| 5 | Guardrail map | design the six controls from memory |
+| A0 | What is an agent with tools? | data path and trust boundary |
+| A1 | Tool abuse — SQL injection | tool schemas are a control surface |
+| A2 | **Direct prompt injection** *(add)* | user-as-attacker, distinct from RAG |
+| A3 | Poison the LLM context (RAG) | retrieved text becomes instructions |
+| A4 | Cross-tool exfiltration | impact is a chain; side-effect tools need stronger gates |
+| A5 | **Data guards / DLP** *(add)* | classify + mask/block on prompt, RAG, output, tool |
+| A6 | **Agent identity / confused deputy** *(add)* | agent creds ≠ user; session is the principal |
+| A7 | Exploit the agent end-to-end | RAG→planner→executor; defense in depth |
+| A8 | Guardrail map *(rewrite)* | DLP + identity hops on the same drawing |
 
-### Authored next (Modules 2–8, from the prompt pack)
-| Module | Topic | Flagship scenario |
-|--------|-------|-------------------|
-| 2 | RAG poisoning (deep) | metadata/embedding-space attacks; provenance scoring; poison detector |
-| 3 | Multi-agent / orchestrator | trust-boundary violation; message tampering; rogue-agent registry; signed inter-agent messages |
-| 4 | State & memory poisoning | cross-session backdoor; trust decay; tamper detection; safe reset |
-| 5 | Guardrails & observability | NeMo/LLM Guard pipeline; latency budget; catch-rate/FP dashboard |
-| 6 | Red-team evaluation pipeline | DeepTeam + Promptfoo + Garak in CI; regression gates |
-| 7 | Supply chain for agents | malicious MCP server; poisoned data source; signing + SBOM + startup attestation |
-| 8 | Governance / policy-as-code | OPA/Rego on every tool call; HITL decision matrix; audit trails; secure-by-default template |
+### Advanced — persistence · operate
+
+Deep RAG, memory, multi-agent, MCP/supply chain, measured guardrails, red-team CI,
+policy-as-code, hidden context (LLM08:2026), grounding, denial of wallet (LLM06:2026).
+
+**Not this Area:** ASI05 RCE, ML privacy/evasion, browser/computer-use agents, MLOps platforms.
 
 ---
 

@@ -3,6 +3,10 @@
   "simulate": "m11",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "the runaway plan's calls all executed with no budget or loop check stopping them",
+    "the executed count matches the full runaway plan, not a capped subset"
+  ],
   "pass_message": "Denial of wallet confirmed: the runaway plan executed unchecked — every call individually valid, the aggregate an attack.",
   "fail_message": "The runaway did not execute. Ensure the graded run used vulnerable mode."
 }

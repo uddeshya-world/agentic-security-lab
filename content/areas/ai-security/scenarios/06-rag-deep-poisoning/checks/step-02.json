@@ -3,6 +3,10 @@
   "simulate": "m2",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "crowding chunks filled most of the top-k retrieval slots",
+    "the false-provenance chunk survived the trust-label filter"
+  ],
   "pass_message": "Poison dominated retrieval — crowding filled top-k and the false-provenance chunk survived the trust filter.",
   "fail_message": "The poison did not dominate. Ensure the graded run used vulnerable mode."
 }

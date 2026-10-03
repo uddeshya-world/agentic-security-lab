@@ -8,6 +8,9 @@
     "Secure mode disables the sink"
   ],
   "answer": 1,
+  "asserts": [
+    "you can explain what is wrong with using absence of a new message as your only evidence"
+  ],
   "pass_message": "Exactly. Absence over an untagged, accumulating store is not a measurement. The positive observation — a control fired, and the log names it — is the evidence that carries the claim.",
   "fail_message": "Re-read step 3. The problem is not the sink's reliability; it is that nothing in it identifies which run produced which message."
 }

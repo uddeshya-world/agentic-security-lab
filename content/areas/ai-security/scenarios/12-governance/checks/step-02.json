@@ -3,6 +3,10 @@
   "simulate": "m8",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "the external-egress action ran with no policy check in front of it",
+    "the action left no audit entry recording the decision"
+  ],
   "pass_message": "Governance gap confirmed: the external-egress critical action executed with no policy and no audit.",
   "fail_message": "The critical action did not run. Ensure the graded run used vulnerable mode."
 }

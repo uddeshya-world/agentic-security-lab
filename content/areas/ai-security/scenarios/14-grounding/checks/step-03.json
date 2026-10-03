@@ -3,6 +3,10 @@
   "simulate": "m10",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the unsupported claim was withheld from the response the user received",
+    "the grounded claim that shipped carries a citation to its source"
+  ],
   "pass_message": "Groundedness enforced: the unsupported claim was withheld and the grounded claim shipped with a citation.",
   "fail_message": "The unsupported claim still shipped under secure mode. Confirm control C19 is active."
 }

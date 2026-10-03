@@ -1,21 +1,54 @@
 {
   "id": "05-guardrail-map",
   "legacy_id": "g1",
-  "order": 5,
+  "order": 8,
   "title": "Guardrail map — what to build and where",
   "summary": "No attack. Turn everything you broke and fixed into a design checklist: threat → guardrail → where it lives in the lab. This is the interview answer.",
-  "difficulty": "medium",
-  "est_minutes": 12,
+  "difficulty": "intermediate",
+  "est_minutes": 15,
   "attack_id": "g1_guardrail_map",
   "mailhog": false,
-  "owasp": ["LLM01", "LLM06", "ASI02"],
-  "controls": ["C1", "C2", "C3", "C4", "C5", "C6", "C7"],
-  "code_paths": ["defenses/m01/schema_validation.py", "defenses/m01/least_privilege.py", "defenses/m01/approval_gate.py", "rag/retriever.py"],
-  "takeaway": "Secure mode is not a safe LLM. It is policy enforced outside the LLM, on every hop of the data path.",
-  "design_rule": "Draw user → RAG → planner → executor → tools and put a control on each hop.",
+  "owasp": [
+    "LLM01:2026 Prompt Injection",
+    "LLM02:2026 Sensitive Information Disclosure",
+    "LLM03:2026 Excessive Agency",
+    "ASI02 Tool Misuse",
+    "ASI03 Identity and Privilege Abuse"
+  ],
+  "controls": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C21"
+  ],
+  "code_paths": [
+    "defenses/m01/schema_validation.py",
+    "defenses/m01/least_privilege.py",
+    "defenses/m01/approval_gate.py",
+    "rag/retriever.py"
+  ],
+  "takeaway": "Secure mode is not a safe LLM. It is policy enforced outside the LLM, on every hop — including data and identity.",
+  "design_rule": "Draw user → DLP → RAG → planner → identity → executor → tools and put a control on each hop.",
   "steps": [
-    { "id": "step-01", "title": "The six-layer map", "file": "step-01.md" },
-    { "id": "step-02", "title": "Review it against the lab", "file": "step-02.md" },
-    { "id": "step-03", "title": "The exam question", "file": "step-03.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "The eight-hop map",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Review it against the lab",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "The exam question",
+      "file": "step-03.md"
+    }
+  ],
+  "track": "core"
 }

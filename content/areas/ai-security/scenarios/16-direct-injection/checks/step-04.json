@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "In this lab the harmful instruction arrived through which channel?",
+  "options": [
+    "A retrieved shipping FAQ (indirect / RAG)",
+    "The user chat message (direct)",
+    "A memory entry from a previous session",
+    "A signed MCP tool manifest"
+  ],
+  "answer": 1,
+  "asserts": [
+    "you can identify which channel carried the harmful instruction in this run"
+  ],
+  "pass_message": "Right. Direct injection is the chat box. Indirect is content the agent reads.",
+  "fail_message": "You did not retrieve a document in this lab. The instruction was in the user prompt."
+}

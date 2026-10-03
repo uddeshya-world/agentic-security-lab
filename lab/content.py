@@ -120,7 +120,9 @@ def _run_spec(step: dict[str, Any]) -> dict[str, Any] | None:
 def _client_check(step: dict[str, Any]) -> dict[str, Any] | None:
     """The part of a check spec the browser is allowed to see.
 
-    A recall question ships its prompt and its options. It never ships ``answer``.
+    A recall question ships its prompt and its options. It never ships ``answer``,
+    and it never ships ``asserts`` either — for a recall check, the asserts describe
+    what the question is testing, which is the answer key by another name.
     """
     check = step.get("check")
     if not check:
@@ -133,6 +135,7 @@ def _client_check(step: dict[str, Any]) -> dict[str, Any] | None:
     else:
         out["require_mode"] = check.get("require_mode") or "any"
         out["expect"] = check.get("expect")
+        out["asserts"] = check.get("asserts") or []
     return out
 
 
@@ -202,6 +205,17 @@ def list_exploits_raw() -> list[dict[str, Any]]:
     return out
 
 
+def _check_kind_counts(scenario: dict[str, Any]) -> dict[str, int]:
+    """Count graded steps by check kind for one scenario."""
+    counts: dict[str, int] = {}
+    for step in scenario.get("steps") or []:
+        if not step.get("has_check"):
+            continue
+        kind = (step.get("check") or {}).get("kind") or "manual"
+        counts[kind] = counts.get(kind, 0) + 1
+    return counts
+
+
 def catalog_payload() -> dict[str, Any]:
     """Killercoda-style Area tiles: what it teaches, who it is for, what it maps to."""
     areas = []
@@ -234,8 +248,14 @@ def catalog_payload() -> dict[str, Any]:
                         "est_minutes": s.get("est_minutes"),
                         "summary": s.get("summary"),
                         "owasp": s.get("owasp") or [],
+                        "track": s.get("track") or "core",
                         "step_count": len(s.get("steps") or []),
                         "graded_steps": sum(1 for st in s.get("steps") or [] if st.get("has_check")),
+                        # Per-kind counts so the catalog can describe a scenario's real
+                        # composition. A `recall` check is answered from the reading; every
+                        # other kind asserts lab state the learner had to produce by running
+                        # the attack first. Without this split the tile can only say "graded".
+                        "check_kinds": _check_kind_counts(s),
                     }
                     for s in scenarios
                 ],
@@ -270,6 +290,7 @@ def scenario_payload(area_id: str, scenario_id: str) -> dict[str, Any] | None:
         "difficulty": scen.get("difficulty"),
         "est_minutes": scen.get("est_minutes"),
         "owasp": scen.get("owasp") or [],
+        "track": scen.get("track") or "core",
         "controls": scen.get("controls") or [],
         "attack_id": scen.get("attack_id"),
         "mailhog": scen.get("mailhog", False),

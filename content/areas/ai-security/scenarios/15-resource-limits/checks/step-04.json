@@ -3,6 +3,10 @@
   "simulate": "m11",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the run stopped well short of the full runaway plan",
+    "the timeline names which limit (loop detector, budget, rate, or step cap) fired"
+  ],
   "pass_message": "Runaway stopped early and the timeline names which limit fired (loop detector / budget / rate / step cap).",
   "fail_message": "The runaway was not stopped under secure mode. Confirm control C20 (ResourceGuard) is active."
 }

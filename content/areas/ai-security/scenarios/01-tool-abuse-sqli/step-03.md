@@ -14,7 +14,7 @@ and returned real (synthetic) rows. Note three things:
 - The `note` field literally says the filter was concatenated into SQL.
 
 This is what an auditor would call *sensitive information disclosure*
-(**LLM02**) enabled by *excessive agency* (**LLM06**) — the tool can do far more
+(**LLM02**) enabled by *excessive agency* (**LLM03**) — the tool can do far more
 than the task needs.
 
 Answer the question below from the timeline — not from memory — then fix it.

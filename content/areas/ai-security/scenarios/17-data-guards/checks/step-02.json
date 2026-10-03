@@ -1,0 +1,12 @@
+{
+  "kind": "evidence",
+  "simulate": "data_guards",
+  "require_mode": "vulnerable",
+  "expect": "success",
+  "asserts": [
+    "the run's forensics show restricted data crossing at least one of the four channels unmasked",
+    "no data-guard action (block or mask) appears in the timeline for the leaking hop"
+  ],
+  "pass_message": "No data guard: restricted PII (SSN/PAN) crossed prompt, RAG, output and tool channels.",
+  "fail_message": "The leak did not register. The graded run forces vulnerable mode — check the timeline for DATA GUARD / raw payload lines."
+}

@@ -1,0 +1,12 @@
+{
+  "kind": "evidence",
+  "simulate": "data_guards",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "asserts": [
+    "each of the four channels shows a block or mask verdict in the timeline, not allow",
+    "the control that fired inspects the payload, not the recipient allow-list"
+  ],
+  "pass_message": "All four channels classified the payload and blocked or masked it. Destination allow-list was not the control that fired.",
+  "fail_message": "A channel still allowed restricted data. Confirm scan_data is running under secure mode."
+}

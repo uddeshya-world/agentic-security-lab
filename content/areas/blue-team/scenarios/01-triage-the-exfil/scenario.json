@@ -6,10 +6,10 @@
   "est_minutes": 20,
   "summary": "Run the cross-tool exfiltration, then answer the five questions every triage has to answer, using only what the environment recorded.",
   "owasp": [
-    "LLM02 Sensitive Information Disclosure",
-    "LLM06 Excessive Agency"
+    "LLM02:2026 Sensitive Information Disclosure",
+    "LLM03:2026 Excessive Agency"
   ],
-  "controls": [],
+  "controls": ["D1", "D2"],
   "takeaway": "Impact is a chain. Triage means naming every link, and saying plainly which links the evidence does not cover.",
   "steps": [
     {

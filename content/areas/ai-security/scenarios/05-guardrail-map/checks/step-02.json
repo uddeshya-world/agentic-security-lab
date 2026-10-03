@@ -3,6 +3,10 @@
   "simulate": "g1",
   "require_mode": "any",
   "expect": "ran",
-  "pass_message": "Guardrail map generated: the six-layer taxonomy printed from the lab's own control catalog.",
+  "asserts": [
+    "the run printed the lab's own eight-hop guardrail taxonomy, not a generic list",
+    "the taxonomy includes the DLP and identity hops, not just tool policy"
+  ],
+  "pass_message": "Guardrail map generated: the eight-hop taxonomy (including DLP and identity) printed from the lab's own control catalog.",
   "fail_message": "The guardrail map did not run. Ensure the agent service is up."
 }

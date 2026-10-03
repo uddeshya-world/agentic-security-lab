@@ -3,6 +3,10 @@
   "simulate": "a3",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the identical exfil payload did not complete under secure mode",
+    "the timeline names the specific control that produced the block"
+  ],
   "pass_message": "Same payload, opposite outcome, and the timeline names the control that produced it. That is a measurement, not an anecdote.",
   "fail_message": "The chain was not stopped. Set the mode switch to secure, press Run, and check again — the check grades the run you performed."
 }

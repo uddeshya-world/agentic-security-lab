@@ -15,4 +15,4 @@ Three supply-chain attacks this module covers:
   attestation gate stops it, because an unreviewed component never runs).
 
 The control is provenance for components, the way an SBOM and image signing give
-provenance for dependencies (**LLM03 — supply chain**).
+provenance for dependencies (**LLM04 — supply chain**).

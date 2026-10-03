@@ -6,9 +6,9 @@
   "est_minutes": 18,
   "summary": "Turn one incident into a rule. Find the earliest field that separates this run from a normal one, and understand why the obvious rule is the wrong rule.",
   "owasp": [
-    "LLM06 Excessive Agency"
+    "LLM03:2026 Excessive Agency"
   ],
-  "controls": [],
+  "controls": ["D3", "D2"],
   "takeaway": "A detection keys on the harmful pattern, not on the common event that happens to appear in it.",
   "steps": [
     {

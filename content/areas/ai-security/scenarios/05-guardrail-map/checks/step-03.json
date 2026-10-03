@@ -1,13 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "Which control keeps untrusted retrieved text out of the planner's context in the first place?",
+  "prompt": "The planner asks for all customers. The signed-in user is Alice. Which control stops the confused deputy?",
   "options": [
-    "Schema validation on the tool call",
-    "Human-in-the-loop approval",
-    "RAG trust / provenance filter",
-    "Egress domain allow-list"
+    "Recipient domain allow-list",
+    "Binding customer_id from the session principal",
+    "Output DLP masking emails in the answer",
+    "RAG trust metadata on the corpus"
   ],
-  "answer": 2,
-  "pass_message": "Right. It is the earliest layer on the path — it stops indirect injection before the planner ever sees the poison.",
-  "fail_message": "Each of these is a real layer, but only one sits between retrieval and the planner. Re-read the four-point answer above."
+  "answer": 1,
+  "asserts": [
+    "you can identify which control layer stops this specific confused-deputy scenario"
+  ],
+  "pass_message": "Right. Identity is a different hop from DLP and from egress. The model does not get to name the principal.",
+  "fail_message": "Allow-list and DLP do not decide *whose* row is in scope. Re-read the identity layer on the map."
 }

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Labs — AI Security Lab</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <script>
+    /* Applied before first paint so navigation never flashes the wrong ground.
+       No stored choice means follow the system, which the CSS already does. */
+    (function () {
+      try {
+        var m = localStorage.getItem("aisl.theme");
+        if (m === "light" || m === "dark") document.documentElement.setAttribute("data-theme", m);
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    .labs-hero {
+      text-align: center;
+      padding: var(--space-7) 0 var(--space-5);
+    }
+    .labs-hero h1 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 8px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="announce" role="region" aria-label="Announcement">
+    <span class="label" style="color: inherit;">Safety</span>
+    <span>All labs run on synthetic targets · Authorized training only</span>
+    <a href="lab-runner.html">See runner UX →</a>
+    <button class="announce-dismiss" type="button" aria-label="Dismiss">×</button>
+  </div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">AI</span>
+        <span>AI Security Lab</span>
+        <span class="beta">Beta</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="labs.html" class="active">Labs</a>
+        <a href="index.html#daily">Daily Intel</a>
+        <a href="index.html#playbooks">Playbooks</a>
+        <a href="index.html#study">Study</a>
+        <a href="index.html#roadmap">Roadmap</a>
+        <a href="index.html#pricing">Pricing</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" type="button" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+        <a class="btn btn-secondary btn-sm" href="#signin">Sign in</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-bottom: var(--space-8);">
+    <div class="labs-hero">
+      <p class="label label-dark">Technical systems you can touch</p>
+      <h1>Labs</h1>
+      <p class="muted" style="margin: 12px auto 0; max-width: 420px;">
+        Browser-local, container, and cloud-sandbox modalities. Search by threat, skill, or cert objective.
+      </p>
+    </div>
+
+    <!-- Search / filters -->
+    <div class="card-soft search-card" style="margin-bottom: var(--space-5);">
+      <div class="row" style="justify-content: space-between;">
+        <span class="label label-dark">Find a lab</span>
+        <span class="label">Press / to focus</span>
+      </div>
+      <div class="search-field">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--ga-ink-400); flex-shrink: 0;"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="lab-search" placeholder="prompt injection, SSRF, MCP, model exfil, IAM, RAAP…" aria-label="Search labs" />
+      </div>
+      <div class="filter-row" role="tablist" aria-label="Lab filters">
+        <button class="btn btn-chip active" type="button">All 12</button>
+        <button class="btn btn-chip" type="button">Browser 3</button>
+        <button class="btn btn-chip" type="button">Container 5</button>
+        <button class="btn btn-chip" type="button">Cloud sandbox 4</button>
+        <button class="btn btn-chip" type="button">Free preview</button>
+        <button class="btn btn-chip" type="button">Detection</button>
+        <button class="btn btn-chip" type="button">Agentic</button>
+      </div>
+    </div>
+
+    <!-- 3-col lab cards -->
+    <div class="grid-3">
+      <!-- 1 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Indirect injection → tool fire</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Untrusted content causes a capable agent to invoke a tool. Capture the chain.</p>
+          <div class="lab-meta">
+            <span class="badge badge-exploit">Threat · Injection</span>
+            <span class="badge">45 min</span>
+            <span class="badge">Container</span>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Agentic control</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="10" height="10" rx="1.5"/><path d="M10 10h10v10H10z"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">MCP registry confused deputy</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Schema trust abuse: tool description steers the agent past intended policy.</p>
+          <div class="lab-meta">
+            <span class="badge badge-exploit">Threat · MCP</span>
+            <span class="badge">60 min</span>
+            <span class="badge">Container</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Tool governance</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 4.5v2M19.5 12h-2M12 19.5v-2M4.5 12h2"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">RAG memory poison</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Poisoned retrieval with lasting side-effects across sessions. Blue fix required.</p>
+          <div class="lab-meta">
+            <span class="badge badge-exploit">Threat · Poison</span>
+            <span class="badge">50 min</span>
+            <span class="badge">Browser</span>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · AppSec AI</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Human approval theater</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Fluent summary vs raw-action JSON. Build a RAAP approval artifact.</p>
+          <div class="lab-meta">
+            <span class="badge badge-policy">Threat · UX</span>
+            <span class="badge">40 min</span>
+            <span class="badge">Browser</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Human-in-loop</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><path d="m6.5 6.5 11 11"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Exfil via allowed egress</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Data leaves under policy-compliant channels. Prove detection + block.</p>
+          <div class="lab-meta">
+            <span class="badge badge-crypto">Threat · Exfil</span>
+            <span class="badge">55 min</span>
+            <span class="badge">Cloud sandbox</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Egress control</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/><path d="M10 7h4M7 10v4M17 10v4M10 17h4"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Campaign-graph fuse</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Auth + tools + egress into one kill-chain timeline. Shared Detection/IR scenario.</p>
+          <div class="lab-meta">
+            <span class="badge badge-detection">Threat · Campaign</span>
+            <span class="badge">75 min</span>
+            <span class="badge">Container</span>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Blue path</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.2 8.3-8 10-4.8-1.7-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Laddered sync-contain</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Contain without killing shared fabric. Multi-plane completeness + latency score.</p>
+          <div class="lab-meta">
+            <span class="badge badge-policy">Threat · IR</span>
+            <span class="badge">70 min</span>
+            <span class="badge">Cloud sandbox</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Containment</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="3.5"/><path d="m10.5 12.5 8-8M15 5l4 4M17 11l2 2"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Short-lived agent cred + revoke</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">SPIFFE / NHI lease. Prove revoke drill and residual-risk note.</p>
+          <div class="lab-meta">
+            <span class="badge badge-crypto">Threat · Identity</span>
+            <span class="badge">45 min</span>
+            <span class="badge">Cloud sandbox</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · ZT IA</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Peer-GO ≠ authZ</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">PDP rule transcript: peer goal-orientation is not authorization.</p>
+          <div class="lab-meta">
+            <span class="badge badge-defense">Threat · AuthZ</span>
+            <span class="badge">35 min</span>
+            <span class="badge">Container</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · ZT AC-3</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+
+      <!-- 10 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="m16 16 2 2 3-4"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Prompt surface trust boundary</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Inventory interaction surfaces, assign control owners, and produce a deny-by-default release note.</p>
+          <div class="lab-meta">
+            <span class="badge badge-policy">Threat · Boundary</span>
+            <span class="badge">35 min</span>
+            <span class="badge">Browser</span>
+            <span class="badge badge-free">Free</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · AppSec AI</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 11 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4v10l-8 4-8-4V7l8-4Z"/><path d="m4 7 8 4 8-4M12 11v10"/><path d="m9 15 2 2 4-4"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">Signed agent artifact gate</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Validate provenance, dependency drift, and approval evidence before a synthetic agent package ships.</p>
+          <div class="lab-meta">
+            <span class="badge badge-defense">Threat · Supply chain</span>
+            <span class="badge">55 min</span>
+            <span class="badge">Container</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Release gate</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12 -->
+      <article class="card lab-card">
+        <div class="lab-card-pattern"></div>
+        <div class="lab-card-body">
+          <div class="lab-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H12a4 4 0 0 1 4 4v5.5M15 18h-3a4 4 0 0 1-4-4V8.5"/><path d="m16 8 2-2 2 2"/></svg></div>
+          <h2 class="heading-lg" style="font-size: 17px;">CI policy drift sentinel</h2>
+          <p class="muted" style="margin: 0; font-size: 13px;">Detect an agent permission change that bypasses branch protection and write the release-block evidence.</p>
+          <div class="lab-meta">
+            <span class="badge badge-detection">Threat · Change control</span>
+            <span class="badge">45 min</span>
+            <span class="badge">Cloud sandbox</span>
+          </div>
+          <div class="lab-card-footer">
+            <span class="label">Skill · Detection</span>
+            <a class="btn btn-primary btn-sm" href="lab-runner.html">Open lab →</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html">
+            <span class="brand-mark">AI</span>
+            <span>AI Security Lab</span>
+          </a>
+          <p class="muted" style="font-size: 13px; margin: 12px 0 0; max-width: 240px;">
+            Synthetic targets only. No real credentials. No real-world attack instructions.
+          </p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <a href="labs.html">Labs</a>
+          <a href="index.html">Home</a>
+          <a href="lab-runner.html">Lab runner</a>
+        </div>
+        <div>
+          <h4>Modalities</h4>
+          <a href="#">Browser-local</a>
+          <a href="#">Container</a>
+          <a href="#">Cloud sandbox</a>
+        </div>
+        <div>
+          <h4>Trust</h4>
+          <a href="#">Acceptable use</a>
+          <a href="#">Safety banner</a>
+          <a href="#">Verify cert</a>
+        </div>
+        <div>
+          <h4>Account</h4>
+          <a href="#">Sign in</a>
+          <a href="#">Evidence locker</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI Security Lab</span>
+        <span class="mono" style="font-size: 11px;">12 labs · mockup</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="presence">
+    <span class="presence-dot"></span>
+    <span>42 studying</span>
+  </div>
+
+  <script>
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('lab-search').focus();
+      }
+    });
+  </script>
+  <script src="theme.js"></script>
+</body>
+</html>

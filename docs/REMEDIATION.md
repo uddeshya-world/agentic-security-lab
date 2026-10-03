@@ -41,13 +41,13 @@ User / RAG / web
 
 | ID | Control | OWASP / ASI |
 |----|---------|-------------|
-| C1 | Parameterized / scoped DB | LLM02, LLM06, ASI02 |
-| C2 | Tool arg schema allow-list at executor | LLM06, ASI02, ASI07 |
-| C3 | Filesystem jail | LLM06, ASI02 |
-| C4 | Email/egress domain allow-list | LLM02, ASI02 |
-| C5 | HITL for side-effect tools | LLM06, ASI02 |
-| C6 | RAG trust / provenance filter | LLM01, LLM04, LLM08, ASI01, ASI06 |
-| C7 | Never treat planner output as authz | LLM01, LLM06, ASI07 |
+| C1 | Parameterized / scoped DB | LLM02:2026, LLM03:2026, ASI02 |
+| C2 | Tool arg schema allow-list at executor | LLM03:2026, ASI02, ASI07 |
+| C3 | Filesystem jail | LLM03:2026, ASI02 |
+| C4 | Email/egress domain allow-list | LLM02:2026, ASI02 |
+| C5 | HITL for side-effect tools | LLM03:2026, ASI02 |
+| C6 | RAG trust / provenance filter | LLM01:2026, LLM05:2026, LLM09:2026, ASI01, ASI06 |
+| C7 | Never treat planner output as authz | LLM01:2026, LLM03:2026, ASI07 |
 
 ## How to practice in the UI
 

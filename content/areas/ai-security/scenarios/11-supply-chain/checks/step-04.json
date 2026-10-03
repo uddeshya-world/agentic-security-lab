@@ -3,6 +3,10 @@
   "simulate": "m7",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "attestation refused the tool that had no manifest",
+    "attestation also refused the manifest that was escalated after signing"
+  ],
   "pass_message": "Attestation held: the rogue tool (no manifest) and the tampered/over-scoped tool were both refused.",
   "fail_message": "A rogue component still ran under secure mode. Confirm control C15 (attestation) is active."
 }

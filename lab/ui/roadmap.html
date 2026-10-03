@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CyberRange — roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<style>
+  .page { max-width: 1000px; margin: 0 auto; padding: var(--s7) var(--s5) var(--s8); }
+  .page h1 { font-family: var(--display); font-size: 32px; letter-spacing: -.03em; margin: var(--s3) 0 var(--s3); }
+  .page .lede { color: var(--ash); font-size: 15px; line-height: 1.65; margin: 0 0 var(--s6); max-width: 68ch; }
+
+  .stage { margin-bottom: var(--s7); }
+  .stagehead { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s4); padding-bottom: var(--s2); border-bottom: 1px solid var(--edge); }
+  .stagehead h2 { font-family: var(--display); font-size: 19px; letter-spacing: -.02em; margin: 0; }
+  .stagehead .count { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+
+  .item { display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: var(--s4); align-items: start; padding: var(--s4) 0; border-bottom: 1px solid var(--edge); }
+  .item:last-child { border-bottom: 0; }
+  .item .code { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--dim); padding-top: 3px; }
+  .item .nm { font-size: 15px; color: var(--chalk); }
+  .item .nm .note { display: block; color: var(--ash); font-size: 13px; margin-top: 3px; line-height: 1.55; }
+  .item .nm .role { display: block; color: var(--dim); font-family: var(--mono); font-size: 10.5px; margin-top: var(--s2); }
+  .item .meta { text-align: right; font-family: var(--mono); font-size: 10.5px; color: var(--dim); white-space: nowrap; }
+
+  /* Live Areas are links; planned ones deliberately are not -- a card you cannot
+     open is a lie, so the difference has to be visible before you click. */
+  a.item { text-decoration: none; transition: background var(--t-fast) var(--ease); }
+  a.item:hover { background: var(--shelf); }
+  .item.planned .nm { color: var(--ash); }
+  .item.planned { cursor: default; }
+
+  .stat { display: flex; gap: var(--s6); flex-wrap: wrap; margin: 0 0 var(--s6); }
+  .stat div { min-width: 96px; }
+  .stat b { display: block; font-family: var(--display); font-size: 24px; color: var(--chalk); letter-spacing: -.02em; }
+  .stat span { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+  @media (max-width: 620px) {
+    .item { grid-template-columns: 40px minmax(0,1fr); }
+    .item .meta { grid-column: 2; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cr-nav">
+  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <nav class="cr-links" id="crlinks">
+    <a class="link" href="/lab/ui/catalog.html">Range</a>
+    <a class="link is-active" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
+  <span class="grow"></span>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+  <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
+</header>
+
+<main class="page">
+  <div class="eyebrow">what exists · what is being written · what is planned</div>
+  <h1>Roadmap</h1>
+  <p class="lede">
+    The whole curriculum, in the order it becomes real. Areas at the top are built and open now;
+    the rest are designed at expert depth in <code>docs/CURRICULUM.md</code> but nothing is written
+    yet, so they do not open. Nothing on this page is a release date — there aren't any.
+  </p>
+
+  <div class="stat" id="stat" data-reveal></div>
+
+  <section class="stage" id="liveStage" data-reveal>
+    <div class="stagehead"><h2>Open now</h2><span class="count" id="liveCount"></span></div>
+    <div id="live"></div>
+  </section>
+
+  <section class="stage" id="authoringStage" data-reveal hidden>
+    <div class="stagehead"><h2>Being written</h2><span class="count" id="authoringCount"></span></div>
+    <div id="authoring"></div>
+  </section>
+
+  <section class="stage" data-reveal>
+    <div class="stagehead"><h2>Planned</h2><span class="count" id="plannedCount"></span></div>
+    <div id="planned"></div>
+  </section>
+</main>
+
+<footer class="cr-foot page">
+  <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
+</footer>
+
+<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script>
+const esc = CR.esc;
+
+/** Three-letter code for an Area. Separators are stripped first: a raw
+    slice of "ai-security" gives "AI-", which reads as a truncation bug. */
+function areaCode(id) {
+  return String(id || "").replace(/[^a-z0-9]/gi, "").slice(0, 3).toUpperCase();
+}
+
+function liveRow(a) {
+  const scen = (a.scenarios || []).length;
+  const mins = a.estimated_minutes || 0;
+  const h = Math.floor(mins / 60), m = mins % 60;
+  const time = h ? `~${h}h ${m}m` : `~${m}m`;
+  return `
+    <a class="item" href="/lab/ui/area.html?id=${encodeURIComponent(a.id)}">
+      <span class="code">${esc(areaCode(a.id))}</span>
+      <span class="nm">${esc(a.title)}
+        <span class="note">${esc(a.blurb || "")}</span>
+        <span class="role">${(a.roles || []).slice(0, 3).map(esc).join(" · ")}</span>
+      </span>
+      <span class="meta">${scen} scenarios<br />${time}</span>
+    </a>`;
+}
+
+function authoringRow(a) {
+  const scen = (a.scenarios || []).length;
+  return `
+    <div class="item planned">
+      <span class="code">${esc(areaCode(a.id))}</span>
+      <span class="nm">${esc(a.title)}
+        <span class="note">${esc(a.blurb || "")}</span>
+        <span class="role">${(a.roles || []).slice(0, 3).map(esc).join(" · ")}</span>
+      </span>
+      <span class="meta"><span class="pip"></span> being written<br />${scen} so far</span>
+    </div>`;
+}
+
+function plannedRow(r) {
+  return `
+    <div class="item planned">
+      <span class="code">${esc(r.code)}</span>
+      <span class="nm">${esc(r.title)}
+        <span class="note">${esc(r.note)}</span>
+        <span class="role">${esc(r.role || "")}</span>
+      </span>
+      <span class="meta">${esc(r.certs)}</span>
+    </div>`;
+}
+
+async function init() {
+  let areas = [];
+  try {
+    const cat = await CR.api("/catalog");
+    areas = cat.areas || [];
+  } catch (e) {
+    // The planned list is static, so it still renders with no backend. Say so
+    // rather than showing an empty page that looks broken.
+    document.getElementById("liveStage").hidden = true;
+  }
+
+  const live = areas.filter((a) => a.status === "available");
+  const authoring = areas.filter((a) => a.status !== "available");
+  const planned = CR.roadmapGaps(areas);
+
+  document.getElementById("live").innerHTML = live.map(liveRow).join("");
+  document.getElementById("liveCount").textContent = `${live.length} area${live.length === 1 ? "" : "s"}`;
+
+  if (authoring.length) {
+    document.getElementById("authoringStage").hidden = false;
+    document.getElementById("authoring").innerHTML = authoring.map(authoringRow).join("");
+    document.getElementById("authoringCount").textContent =
+      `${authoring.length} area${authoring.length === 1 ? "" : "s"}`;
+  }
+
+  document.getElementById("planned").innerHTML = planned.map(plannedRow).join("");
+  document.getElementById("plannedCount").textContent = `${planned.length} areas`;
+
+  // Every figure here is counted from /catalog at render time.
+  const scen = areas.reduce((n, a) => n + (a.scenarios || []).length, 0);
+  const total = live.length + authoring.length + planned.length;
+  document.getElementById("stat").innerHTML = `
+    <div><b>${live.length}</b><span>open now</span></div>
+    <div><b>${scen}</b><span>scenarios written</span></div>
+    <div><b>${total}</b><span>areas planned</span></div>`;
+
+  CR.revealScan(document);
+}
+init();
+</script>
+</body>
+</html>

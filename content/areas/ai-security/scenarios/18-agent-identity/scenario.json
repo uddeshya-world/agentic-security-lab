@@ -1,0 +1,22 @@
+{
+  "id": "18-agent-identity",
+  "order": 6,
+  "track": "core",
+  "title": "Agent identity & confused deputy",
+  "summary": "The tool credential can read the whole table. The signed-in user is Alice. A hijacked plan asking for everyone is a confused deputy — unless the executor binds customer_id from the session, not from the model.",
+  "difficulty": "intermediate",
+  "est_minutes": 15,
+  "attack_id": "agent_identity",
+  "mailhog": false,
+  "owasp": ["ASI03 Identity and Privilege Abuse", "LLM03:2026 Excessive Agency"],
+  "controls": ["C1", "C7"],
+  "code_paths": ["agents/executor.py", "defenses/m01/least_privilege.py"],
+  "takeaway": "The agent's service identity is not the user's authorization. Scope comes from the session principal.",
+  "design_rule": "Never let planner arguments widen access. Bind tenant and row scope from the authenticated session.",
+  "steps": [
+    { "id": "step-01", "title": "Two identities", "file": "step-01.md" },
+    { "id": "step-02", "title": "The deputy dumps everyone", "file": "step-02.md" },
+    { "id": "step-03", "title": "Bind the session", "file": "step-03.md" },
+    { "id": "step-04", "title": "Who is the principal?", "file": "step-04.md" }
+  ]
+}

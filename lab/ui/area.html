@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CyberRange — Area</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<style>
+  /* ---- crumb ------------------------------------------------------------ */
+  .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s5); display: flex; gap: 8px; align-items: center; }
+  .crumb a { color: var(--dim); }
+  .crumb a:hover { color: var(--chalk); }
+  .crumb span.sep { color: var(--edge-hi); }
+  .crumb span.here { color: var(--ash); }
+
+  /* ---- head -------------------------------------------------------------- */
+  .ahead { display: flex; gap: var(--s4); align-items: flex-start; padding-bottom: var(--s5); }
+  .ahead .icon { font-size: 40px; line-height: 1; }
+  .ahead h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4vw, 38px); letter-spacing: -.03em; margin: 0 0 var(--s2); line-height: 1.08; }
+  .ahead .chips { display: flex; flex-wrap: wrap; gap: var(--s1); margin-bottom: var(--s3); }
+  .ahead .long { color: var(--ash); font-size: 14.5px; line-height: 1.65; max-width: 74ch; margin: 0; }
+
+  /* ---- stat chips --------------------------------------------------------- */
+  .statrow { display: flex; flex-wrap: wrap; gap: var(--s6); padding: var(--s4) 0; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); margin-bottom: var(--s6); }
+  .statrow div { display: flex; flex-direction: column; gap: 2px; }
+  .statrow .n { font-family: var(--mono); font-size: 19px; font-weight: 500; color: var(--chalk); font-variant-numeric: tabular-nums; }
+  .statrow .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+
+  /* ---- callout primitive --------------------------------------------------
+     One shape, three tones, built from tokens already in the frozen palette.
+     halon = informational, brass = caveat, ember = warning. */
+  .callout { display: flex; gap: var(--s3); padding: var(--s4); border-radius: var(--r); border: 1px solid var(--edge); border-left: 3px solid var(--edge-hi); background: var(--shelf); margin-bottom: var(--s6); }
+  .callout .body { font-size: 13px; line-height: 1.65; color: var(--ash); }
+  .callout .body b { color: var(--chalk); font-weight: 600; }
+  .callout.halon { border-left-color: var(--halon); background: var(--halon-bed); }
+  .callout.halon .body { color: var(--halon-ink); }
+  .callout.halon .body b { color: var(--halon); }
+  .callout.brass { border-left-color: var(--brass); background: var(--brass-bed); }
+  .callout.brass .body { color: var(--chalk); }
+  .callout.brass .body b { color: var(--brass); }
+  .callout.ember { border-left-color: var(--ember); background: var(--ember-bed); }
+  .callout.ember .body { color: var(--ember-ink); }
+  .callout.ember .body b { color: var(--ember); }
+
+  /* ---- section scaffolding -------------------------------------------- */
+  .sechead { display: flex; align-items: baseline; gap: var(--s3); margin: 0 0 var(--s4); }
+  .sechead h2 { font-family: var(--display); font-size: 15px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
+  .sechead .hint { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  section.blk { margin-bottom: var(--s7); }
+
+  /* ---- outcomes / prerequisites two-up ---------------------------------- */
+  .twoup { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s6); }
+  .twoup ul { list-style: none; margin: 0; padding: 0; }
+  .twoup li { display: flex; gap: var(--s3); align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ash); line-height: 1.55; }
+  .twoup li:last-child { border-bottom: 0; }
+  .twoup li::before { flex: none; font-family: var(--mono); font-size: 11px; margin-top: 2px; }
+  .outcomes li::before { content: "→"; color: var(--halon-line); }
+  .checklist li::before {
+    content: "✓"; width: 15px; height: 15px; border-radius: 3px; border: 1px solid var(--edge-hi);
+    display: inline-flex; align-items: center; justify-content: center; color: var(--dim); font-size: 9px;
+  }
+
+  /* ---- track table (as catalog.html's, moved here) ----------------------- */
+  .track-block { margin-bottom: var(--s6); }
+  .track-block:last-child { margin-bottom: 0; }
+  .trackbar { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s3) 0; }
+  .trackbar .th { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--halon); }
+  .trackbar .hint { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .trackbar .grow { flex: 1; }
+  .trackbar .meta { font-family: var(--mono); font-size: 11px; color: var(--ash); }
+
+  .slate { width: 100%; border-collapse: collapse; }
+  .slate th {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--dim); font-weight: 500; text-align: left; padding: var(--s3) var(--s3);
+    border-bottom: 1px solid var(--edge);
+  }
+  .slate td { border-bottom: 1px solid var(--edge); padding: 0; }
+  .slate tr:last-child td { border-bottom: 0; }
+  .slate td .cell { padding: 10px var(--s3); display: block; }
+  .slate tbody tr[data-href] { cursor: pointer; }
+  .slate tbody tr[data-href]:hover { background: var(--shelf); }
+  .slate tbody tr[data-href]:hover .t { color: var(--halon-ink); }
+  .slate tbody tr.locked { cursor: not-allowed; opacity: .55; }
+  .slate .ord { font-family: var(--mono); font-size: 11px; color: var(--dim); width: 44px; font-variant-numeric: tabular-nums; }
+  .slate .ord.done { color: var(--halon); }
+  .slate .t { font-size: 13.5px; color: var(--chalk); }
+  .slate .s { font-size: 12px; color: var(--dim); margin-top: 2px; display: -webkit-box;
+              -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .slate .owasp { display: flex; flex-wrap: wrap; gap: 3px; }
+  .slate .n { font-family: var(--mono); font-size: 11px; color: var(--ash); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .slate .hiderow { display: none; }
+
+  /* ---- find bar -----------------------------------------------------------
+     A panel rather than a bare input, because the chips below it are part of
+     the same control and need to read that way. Every chip is a count taken
+     from the Area's own scenarios -- a filter that would return nothing is
+     never offered. */
+  .findbar { background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r-lg); padding: var(--s4); margin-bottom: var(--s4); }
+  .findbar .fhead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s3); }
+  .findbar .fhead .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .findbar .fhead .count { font-family: var(--mono); font-size: 11px; color: var(--ash); font-variant-numeric: tabular-nums; }
+
+  .findbar .field { display: flex; align-items: center; gap: var(--s2); background: var(--shelf); border: 1px solid var(--edge); border-radius: var(--r); padding: 0 10px; }
+  .findbar .field:focus-within { border-color: var(--halon); }
+  .findbar .field svg { flex: none; width: 15px; height: 15px; color: var(--dim); }
+  .findbar .field input {
+    flex: 1; min-width: 0; font-family: var(--mono); font-size: 12.5px; background: none;
+    border: 0; padding: 9px 0; color: var(--chalk);
+  }
+  .findbar .field input:focus { outline: none; }
+  .findbar .field input::placeholder { color: var(--dim); }
+  .findbar .field .clear {
+    flex: none; background: none; border: 0; padding: 0 2px; cursor: pointer;
+    font-family: var(--mono); font-size: 13px; color: var(--dim);
+  }
+  .findbar .field .clear:hover { color: var(--chalk); }
+
+  .chips-row { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s3); }
+  .fchip {
+    font-family: var(--mono); font-size: 11px; line-height: 1;
+    background: var(--shelf); border: 1px solid var(--edge); border-radius: var(--r-full);
+    color: var(--ash); padding: 6px 11px; cursor: pointer;
+    transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+  }
+  .fchip:hover { border-color: var(--edge-hi); color: var(--chalk); }
+  .fchip .n { color: var(--dim); margin-left: 5px; font-variant-numeric: tabular-nums; }
+  .fchip[aria-pressed="true"] { background: var(--halon-bed); border-color: var(--halon-line); color: var(--halon); }
+  .fchip[aria-pressed="true"] .n { color: var(--halon-ink); }
+  .fchip:focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; }
+
+  /* Shown only when a filter combination matches nothing. */
+  .nomatch { padding: var(--s5) 0; font-size: 13px; color: var(--ash); }
+  .nomatch button { background: none; border: 0; padding: 0; color: var(--halon); cursor: pointer; font: inherit; text-decoration: underline; }
+
+  /* ---- credential block --------------------------------------------------- */
+  .credcard { display: grid; grid-template-columns: minmax(0,1fr) 260px; gap: var(--s6); padding: var(--s5); }
+  .credcard h3 { font-family: var(--display); font-size: 18px; letter-spacing: -.02em; margin: 0 0 var(--s2); }
+  .credcard p { color: var(--ash); font-size: 13.5px; line-height: 1.65; margin: 0 0 var(--s3); }
+  .credcard .req { font-family: var(--mono); font-size: 11.5px; color: var(--halon-ink); background: var(--halon-bed); border: 1px solid var(--halon-line); border-radius: var(--r-sm); padding: 3px 8px; display: inline-block; margin-bottom: var(--s3); }
+  .credcard .honest { font-size: 12px; color: var(--dim); line-height: 1.6; margin: var(--s3) 0 0; }
+  .credcard .side { border-left: 1px solid var(--edge); padding-left: var(--s5); }
+  .progress-block .row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; color: var(--ash); margin-bottom: var(--s2); }
+  .progress-block .row b { color: var(--chalk); font-weight: 500; }
+
+  /* ---- badge dialog (moved from catalog.html) ---------------------------- */
+  dialog { border: 1px solid var(--edge-hi); background: var(--plate); color: var(--chalk); border-radius: var(--r-lg); padding: 0; max-width: 560px; width: 92%; }
+  dialog::backdrop { background: var(--veil); }
+  .sheet { padding: var(--s6); }
+  .sheet h3 { font-family: var(--display); font-size: 20px; letter-spacing: -.02em; margin: var(--s2) 0 var(--s2); }
+  .sheet p { color: var(--ash); font-size: 13px; line-height: 1.6; margin: 0 0 var(--s3); }
+  .sheet .token { font-family: var(--mono); font-size: 10.5px; color: var(--dim); word-break: break-all; background: var(--void); border: 1px solid var(--edge); border-radius: var(--r); padding: var(--s3); max-height: 110px; overflow: auto; }
+  .sheet .foot { display: flex; justify-content: space-between; gap: var(--s2); margin-top: var(--s5); }
+  .sheet .missing { max-height: 200px; overflow: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ash); }
+  .sheet .missing div { padding: 4px 0; border-bottom: 1px solid var(--edge); }
+
+  /* ---- responsive ---------------------------------------------------------- */
+  @media (max-width: 900px) {
+    .twoup { grid-template-columns: 1fr; }
+    .credcard { grid-template-columns: 1fr; }
+    .credcard .side { border-left: 0; padding-left: 0; border-top: 1px solid var(--edge); padding-top: var(--s4); }
+  }
+  /* The "maps to" column carries OWASP chips that will not compress. It has to go
+     before the table starts pushing the page wider than the viewport, which happens
+     well above the 620px shell breakpoint on an Area with 19 scenarios. */
+  @media (max-width: 800px) {
+    .slate th:nth-child(3), .slate td:nth-child(3) { display: none; }
+  }
+  @media (max-width: 620px) {
+    .ahead { flex-direction: column; }
+    .statrow { gap: var(--s5); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cr-announce" role="note" aria-label="Lab scope">
+  <span class="scope">Synthetic estate</span>
+  <span class="said">Every target here is a fake record on your own machine. Nothing reaches an external host.</span>
+  <span class="grow"></span>
+  <span class="mode"><span class="dot"></span><span class="t"></span></span>
+  <button class="x" type="button" aria-label="Dismiss">&times;</button>
+</div>
+
+<header class="cr-nav">
+  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <nav class="cr-links" id="crlinks">
+    <a class="link is-active" href="/lab/ui/catalog.html">Range</a>
+    <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
+  <span class="grow"></span>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+  <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
+</header>
+
+<main class="shell">
+  <nav class="crumb">
+    <a href="/lab/ui/catalog.html">Range</a>
+    <span class="sep">/</span>
+    <span class="here" id="crumbTitle">loading…</span>
+  </nav>
+
+  <div id="host">
+    <div style="padding:var(--s5) 0">
+      <div class="skel" style="height:32px;width:46%;margin-bottom:14px"></div>
+      <div class="skel" style="height:11px;width:70%;margin-bottom:6px"></div>
+      <div class="skel" style="height:11px;width:55%"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="cr-foot shell">
+  <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
+</footer>
+
+<dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
+
+<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script>
+const esc = CR.esc;
+const params = new URLSearchParams(location.search);
+const AREA_ID = params.get("id") || "";
+
+function difficultyTag(d) {
+  const s = (d || "").toLowerCase();
+  if (["beginner", "easy"].includes(s)) return `<span class="tag cold">${esc(d)}</span>`;
+  if (["advanced", "hard", "expert"].includes(s)) return `<span class="tag hot">${esc(d)}</span>`;
+  if (s) return `<span class="tag warn">${esc(d)}</span>`;
+  return "";
+}
+function statusTag(s) {
+  return s === "available"
+    ? `<span class="tag cold"><i class="dot"></i>available</span>`
+    : `<span class="tag warn"><span class="pip"></span>authoring</span>`;
+}
+function callout(tone, html) {
+  return `<div class="callout ${tone}"><div class="body">${html}</div></div>`;
+}
+function fmtMinutes(mins) {
+  if (!mins) return "—";
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h && m) return `${h}h ${m}m`;
+  if (h) return `${h}h`;
+  return `${m} min`;
+}
+
+const TRACKS = [
+  { id: "core", label: "Core path", hint: "required for the badge" },
+  { id: "persist", label: "Advanced — persistence", hint: "RAG, memory, multi-agent, MCP" },
+  { id: "operate", label: "Advanced — operate", hint: "measure, CI, policy, spend" },
+];
+
+function scenarioProgress(area) {
+  return (area.scenarios || []).map((s) => {
+    const p = CR.loadProgress(area.id, s.id);
+    const done = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
+    return { s, done, total: s.step_count || 0, complete: s.step_count > 0 && done >= s.step_count };
+  });
+}
+
+function rowFor(area, r, locked) {
+  const { s, complete } = r;
+  const href = locked ? "" : ` data-href="/lab/ui/scenario.html?area=${esc(area.id)}&id=${esc(s.id)}"`;
+  // The facets the find bar filters on travel with the row, so the filter never
+  // has to re-derive them from cell text.
+  const facets = ` data-track="${esc(s.track || "core")}" data-difficulty="${esc(s.difficulty || "")}"` +
+                 ` data-state="${complete ? "done" : "todo"}"`;
+  return `
+    <tr class="${locked ? "locked" : ""}"${href}${facets}>
+      <td class="ord"><span class="cell ${complete ? "done" : ""}">${complete ? "✓" : String(s.order ?? "").padStart(2, "0")}</span></td>
+      <td><span class="cell"><span class="t">${esc(s.title)}</span><span class="s">${esc(s.summary || "")}</span></span></td>
+      <td><span class="cell owasp">${(s.owasp || []).slice(0, 2).map((o) => `<span class="tag quiet">${esc(o)}</span>`).join("")}</span></td>
+      <td class="n"><span class="cell">${s.est_minutes || "—"} min</span></td>
+      <td class="n"><span class="cell">${s.graded_steps ? s.graded_steps + " graded" : "read"}</span></td>
+    </tr>`;
+}
+
+function renderTracks(area, prog, locked) {
+  return TRACKS.map((t, i) => {
+    const items = prog.filter((r) => (r.s.track || "core") === t.id);
+    if (!items.length) return "";
+    const mins = items.reduce((n, r) => n + (r.s.est_minutes || 0), 0);
+    const graded = items.reduce((n, r) => n + (r.s.graded_steps || 0), 0);
+    return `
+      <div class="track-block" data-reveal data-reveal-delay="${Math.min(i + 1, 3)}">
+        <div class="trackbar">
+          <span class="th">${esc(t.label)}</span>
+          <span class="hint">${esc(t.hint)}</span>
+          <span class="grow"></span>
+          <span class="meta">${items.length} scenarios · ${graded} graded · ${fmtMinutes(mins)}</span>
+        </div>
+        <table class="slate" data-track="${esc(t.id)}">
+          <thead><tr><th>#</th><th>Scenario</th><th>Maps to</th><th style="text-align:right">Time</th><th style="text-align:right">Checks</th></tr></thead>
+          <tbody>${items.map((r) => rowFor(area, r, locked)).join("")}</tbody>
+        </table>
+      </div>`;
+  }).join("");
+}
+
+function wireRows(root) {
+  root.querySelectorAll(".slate tbody tr[data-href]").forEach((tr) => {
+    tr.onclick = () => (location.href = tr.dataset.href);
+  });
+}
+
+/* ---- find bar ------------------------------------------------------------
+   A text query and one facet chip, combined. Chips are built from the Area's
+   own scenarios and carry their counts, so a chip that would empty the table
+   is never drawn. The global "/" shortcut still belongs to the site search
+   overlay, so this field does not claim it.
+   -------------------------------------------------------------------------- */
+const DIFFICULTY_ORDER = ["beginner", "intermediate", "advanced"];
+
+function facetChips(area, prog) {
+  const scenarios = area.scenarios || [];
+  const chips = [{ key: "", label: "All", n: scenarios.length }];
+
+  TRACKS.forEach((t) => {
+    const n = scenarios.filter((s) => (s.track || "core") === t.id).length;
+    // "Core path" reads oddly on a chip next to "Beginner"; the track's own id
+    // is the word learners see in the section headings above.
+    if (n) chips.push({ key: `track:${t.id}`, label: t.id[0].toUpperCase() + t.id.slice(1), n });
+  });
+
+  DIFFICULTY_ORDER.forEach((d) => {
+    const n = scenarios.filter((s) => s.difficulty === d).length;
+    if (n) chips.push({ key: `difficulty:${d}`, label: d[0].toUpperCase() + d.slice(1), n });
+  });
+
+  const todo = prog.filter((r) => !r.complete).length;
+  if (todo && todo !== scenarios.length) chips.push({ key: "state:todo", label: "Not finished", n: todo });
+
+  return chips;
+}
+
+function findbarHTML(area, prog) {
+  const chips = facetChips(area, prog);
+  return `
+    <div class="findbar">
+      <div class="fhead">
+        <span class="l">Find a scenario</span>
+        <span class="count" id="findCount"></span>
+      </div>
+      <div class="field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="scenarioFilter" autocomplete="off"
+               placeholder="injection, memory, guardrail, exfil…" aria-label="Filter scenarios" />
+        <button type="button" class="clear" id="findClear" aria-label="Clear the filter" hidden>&times;</button>
+      </div>
+      <div class="chips-row" role="group" aria-label="Filter by track, difficulty or progress">
+        ${chips.map((c) => `
+          <button type="button" class="fchip" data-facet="${esc(c.key)}" aria-pressed="${c.key ? "false" : "true"}">
+            ${esc(c.label)}<span class="n">${c.n}</span>
+          </button>`).join("")}
+      </div>
+    </div>
+    <div class="nomatch" id="findEmpty" hidden>
+      Nothing matches that. <button type="button" id="findReset">Clear the filter</button>
+    </div>`;
+}
+
+function wireFilter(area) {
+  const input = document.getElementById("scenarioFilter");
+  if (!input) return;
+  const blocks = Array.from(document.querySelectorAll(".track-block"));
+  const rows = Array.from(document.querySelectorAll(".slate tbody tr"));
+  const chips = Array.from(document.querySelectorAll(".fchip"));
+  const countEl = document.getElementById("findCount");
+  const emptyEl = document.getElementById("findEmpty");
+  const clearEl = document.getElementById("findClear");
+  const total = rows.length;
+  let facet = "";
+
+  function matchesFacet(tr) {
+    if (!facet) return true;
+    const [kind, value] = facet.split(":");
+    return tr.dataset[kind] === value;
+  }
+
+  function apply() {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    rows.forEach((tr) => {
+      // Match only the scenario's own title + summary, not tag/time/check cell
+      // text — otherwise typing "graded" or an OWASP code matches everything.
+      const t = tr.querySelector(".t")?.textContent || "";
+      const s = tr.querySelector(".s")?.textContent || "";
+      const match = (!q || (t + " " + s).toLowerCase().includes(q)) && matchesFacet(tr);
+      tr.classList.toggle("hiderow", !match);
+      if (match) shown++;
+    });
+    // A track section whose every row is filtered out must not keep showing
+    // its own "N scenarios" meta line — that would be a stale count on screen.
+    blocks.forEach((block) => {
+      const visible = Array.from(block.querySelectorAll(".slate tbody tr")).some(
+        (tr) => !tr.classList.contains("hiderow")
+      );
+      block.hidden = !visible;
+    });
+    countEl.textContent = shown === total ? `${total} scenarios` : `${shown} of ${total}`;
+    emptyEl.hidden = shown > 0;
+    clearEl.hidden = !q;
+  }
+
+  input.addEventListener("input", apply);
+  clearEl.addEventListener("click", () => { input.value = ""; input.focus(); apply(); });
+
+  chips.forEach((chip) => chip.addEventListener("click", () => {
+    // One facet at a time: pressing the active chip again returns to All.
+    const next = chip.dataset.facet === facet ? "" : chip.dataset.facet;
+    facet = next;
+    chips.forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.facet === facet)));
+    apply();
+  }));
+
+  document.getElementById("findReset").addEventListener("click", () => {
+    input.value = "";
+    facet = "";
+    chips.forEach((c) => c.setAttribute("aria-pressed", String(!c.dataset.facet)));
+    apply();
+  });
+
+  apply();
+}
+
+/* ---- render -------------------------------------------------------------- */
+function render(area) {
+  document.getElementById("crumbTitle").textContent = area.title || area.id;
+  document.title = `CyberRange — ${area.title || area.id}`;
+
+  const prog = scenarioProgress(area);
+  const coreProg = prog.filter((r) => (r.s.track || "core") === "core");
+  const coreComplete = coreProg.filter((r) => r.complete).length;
+  const coreTotal = coreProg.length;
+  const pct = coreTotal ? Math.round((coreComplete / coreTotal) * 100) : 0;
+
+  const gradedTotal = (area.scenarios || []).reduce((n, s) => n + (s.graded_steps || 0), 0);
+  // "distinct check kinds" was asked for in the stat row, but /catalog only
+  // exposes a per-scenario graded_steps *count*, never the check kind. That
+  // number is not available from the payload this page is scoped to read, so
+  // per the no-fabrication rule it is omitted rather than guessed at.
+  const statCells = [
+    [area.scenario_count ?? (area.scenarios || []).length, "scenarios"],
+    [gradedTotal, "graded checks"],
+    [fmtMinutes(area.estimated_minutes), "hands-on"],
+  ];
+
+  const locked = area.status !== "available";
+  const callouts = [];
+  if (locked) {
+    callouts.push(callout("ember", `<b>This Area is authoring.</b> The content below is the plan, not a finished
+      lab — scenarios do not open yet. Nothing here is fabricated; it is simply not built.`));
+  }
+  const gaps = Array.isArray(area.gaps) ? area.gaps.filter(Boolean) : [];
+
+  const cred = area.credential || {};
+  const credReq = cred.requires_track
+    ? `Requires: <b>${esc(cred.requires_track)}</b> track completed`
+    : cred.requires
+    ? `Requires: <b>${esc(cred.requires)}</b>`
+    : "";
+
+  document.getElementById("host").innerHTML = `
+    <div class="ahead">
+      ${area.icon ? `<div class="icon">${esc(area.icon)}</div>` : ""}
+      <div>
+        <div class="chips">${statusTag(area.status)}${difficultyTag(area.difficulty)}</div>
+        <h1>${esc(area.title)}</h1>
+        <p class="long">${esc(area.long_description || area.blurb || "")}</p>
+      </div>
+    </div>
+
+    <div class="statrow" data-reveal>${statCells.map(([n, l]) => `<div><span class="n">${esc(n)}</span><span class="l">${esc(l)}</span></div>`).join("")}</div>
+
+    <div id="calloutHost">${callouts.join("")}</div>
+
+    <div class="twoup blk">
+      <section data-reveal data-reveal-delay="1">
+        <div class="sechead"><h2>After this Area, you can</h2></div>
+        <ul class="outcomes">${(area.outcomes || []).map((o) => `<li>${esc(o)}</li>`).join("") || `<li style="border:0;color:var(--dim)">Not listed yet.</li>`}</ul>
+      </section>
+      <section data-reveal data-reveal-delay="2">
+        <div class="sechead"><h2>Before you start</h2></div>
+        <ul class="checklist">${(area.prerequisites || []).map((p) => `<li>${esc(p)}</li>`).join("") || `<li style="border:0;color:var(--dim)">No prerequisites listed.</li>`}</ul>
+      </section>
+    </div>
+
+    <section class="blk">
+      <div class="sechead"><h2>Scenarios</h2><span class="hint">grouped by track · click a row to open it</span></div>
+      <div id="filterHost"></div>
+      <div id="tracksHost"></div>
+    </section>
+
+    <section class="blk" data-reveal>
+      <div class="sechead"><h2>Completion badge</h2></div>
+      <div class="panel credcard">
+        <div>
+          <h3>${esc(cred.title || "Completion badge")}</h3>
+          ${credReq ? `<div class="req">${credReq}</div>` : ""}
+          <p>${esc(cred.description || "")}</p>
+          <p class="honest">This instance signs its own badges — the signature only proves the transcript was
+            not edited after issuance, not that a third party graded it. <a href="/lab/ui/verify.html" style="color:var(--halon-ink);border-bottom:1px solid var(--halon-line)">Verify any badge</a> against this instance's key.</p>
+        </div>
+        <div class="side">
+          <div class="progress-block">
+            <div class="row"><span>Core complete</span><b>${coreComplete} / ${coreTotal}</b></div>
+            <div class="meter"><i style="width:${pct}%"></i></div>
+          </div>
+          <button class="btn ${locked ? "ghost" : (coreComplete === coreTotal && coreTotal ? "assert" : "ghost")} sm"
+                  id="claimBtn" style="width:100%;justify-content:center;margin-top:var(--s4)" ${locked ? "disabled" : ""}>
+            ${locked ? "Area not open yet" : (coreComplete === coreTotal && coreTotal ? "Claim badge" : "Core path required for badge")}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    ${gaps.length ? `
+    <section class="blk" data-reveal>
+      <div class="sechead"><h2>Not covered by this Area</h2></div>
+      <ul class="checklist" style="max-width:74ch">${gaps.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
+    </section>` : ""}
+  `;
+
+  // Below a handful of scenarios the find bar costs more attention than it saves.
+  const wantsFilter = !locked && (area.scenarios || []).length > 6;
+  if (wantsFilter) {
+    document.getElementById("filterHost").innerHTML = findbarHTML(area, prog);
+  }
+  document.getElementById("tracksHost").innerHTML = renderTracks(area, prog, locked);
+  if (!locked) wireRows(document.getElementById("tracksHost"));
+  if (wantsFilter) wireFilter(area);
+
+  const claimBtn = document.getElementById("claimBtn");
+  if (claimBtn && !locked) claimBtn.onclick = () => openBadge(area);
+}
+
+/* ---- badge (moved here from catalog.html — the credential lives on the
+   Area detail page now, not the index) ------------------------------------ */
+async function openBadge(area) {
+  const body = document.getElementById("badgeBody");
+  const sheet = document.getElementById("badgeSheet");
+  body.innerHTML = `<p><span class="spinner"></span> Checking your graded results…</p>`;
+  sheet.showModal();
+
+  let res;
+  try {
+    res = await CR.api(`/credential/${area.id}/issue`, {
+      method: "POST",
+      body: JSON.stringify({ learner: null, passed: CR.transcript(area.id, area.scenarios) }),
+    });
+  } catch (e) {
+    body.innerHTML = `<div class="state bad"><h4>The lab did not answer</h4><p>${esc(e.message)}</p></div>
+      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
+    document.getElementById("closeBadge").onclick = () => sheet.close();
+    return;
+  }
+
+  if (!res.ok) {
+    const el = res.eligibility || { passed_count: 0, required_count: 0, missing: [] };
+    body.innerHTML = `
+      <div class="eyebrow">Badge requirements</div>
+      <h3>${esc(el.passed_count)} of ${esc(el.required_count)} graded checks passed</h3>
+      <p>The badge is issued when every graded check in this Area has passed on this machine.
+         Reading a step does not count — a check does. Still open:</p>
+      <div class="missing">${el.missing.slice(0, 40).map((m) =>
+        `<div>${esc(m.scenario)} · ${esc(m.step)} — ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
+      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
+  } else {
+    const a = res.assertion;
+    body.innerHTML = `
+      <div class="eyebrow">Issued by this instance</div>
+      <h3>${esc(a.badge.name)}</h3>
+      <p>${esc(a.badge.description || "")}</p>
+      <p><b>${esc(a.evidence.transcript.length)} graded checks</b> are recorded in this badge, each naming the
+         scenario, the step and the mode it was graded in. The transcript is signed, so an edited badge fails
+         verification.</p>
+      <p style="color:var(--dim)">${esc(res.verification.note)}</p>
+      <div class="token" id="tok">${esc(res.token)}</div>
+      <div class="foot">
+        <button class="btn sm" id="copyTok">Copy badge token</button>
+        <span style="display:flex;gap:var(--s2)">
+          <a class="btn sm ghost" href="/lab/ui/verify.html?token=${encodeURIComponent(res.token)}">Verify it</a>
+          <button class="btn sm" id="closeBadge">Close</button>
+        </span>
+      </div>`;
+    document.getElementById("copyTok").onclick = (e) => {
+      navigator.clipboard?.writeText(res.token);
+      e.target.textContent = "Copied";
+    };
+  }
+  document.getElementById("closeBadge").onclick = () => sheet.close();
+}
+
+/* ---- boot ------------------------------------------------------------ */
+async function init() {
+  if (!AREA_ID) {
+    document.getElementById("host").innerHTML = `
+      <div class="state" style="margin:var(--s5) 0"><h4>No Area specified</h4>
+      <p>Open this page as <code>area.html?id=&lt;area_id&gt;</code> from the catalog.</p></div>`;
+    return;
+  }
+  let cat;
+  try {
+    cat = await CR.api("/catalog");
+  } catch (e) {
+    document.getElementById("host").innerHTML = `
+      <div class="state bad" style="margin:var(--s5) 0">
+        <h4>The lab is not answering on this port</h4>
+        <p>Start it from the repo folder with <code>docker compose up -d</code>, then reload.</p>
+      </div>`;
+    return;
+  }
+  const area = (cat.areas || []).find((a) => a.id === AREA_ID);
+  if (!area) {
+    document.getElementById("host").innerHTML = `
+      <div class="state" style="margin:var(--s5) 0"><h4>Area not found</h4>
+      <p><code>${esc(AREA_ID)}</code> is not in the catalog. <a href="/lab/ui/catalog.html" style="color:var(--halon-ink)">Back to the range</a>.</p></div>`;
+    return;
+  }
+  render(area);
+}
+init();
+</script>
+</body>
+</html>

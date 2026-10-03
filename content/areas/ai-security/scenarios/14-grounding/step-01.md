@@ -13,7 +13,7 @@ A groundedness check is a **provenance** control, not a truth oracle. It catches
 1. **Fabrication** — the agent asserts a policy that appears in no source.
 2. **Laundered poison** — the agent repeats a claim from a poisoned document as
    its own confident statement. Citation forces the bad source into view instead
-   of letting the agent's authority hide it (this is where LLM09 meets the
+   of letting the agent's authority hide it (this is where LLM07 meets the
    poisoning you did in Modules 2 and 6).
 
 What it does **not** catch: a source that is itself wrong but legitimately

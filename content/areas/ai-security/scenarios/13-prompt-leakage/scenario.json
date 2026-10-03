@@ -1,22 +1,48 @@
 {
   "id": "13-prompt-leakage",
   "legacy_id": "m9",
-  "order": 13,
+  "order": 16,
   "title": "System prompt leakage",
-  "summary": "LLM07. Make the planner recite its own instructions, then read what you got: every tool name, argument shape, and a dump-all SQL example. Detect the leak on output — and learn why the real fix is upstream.",
-  "difficulty": "medium",
+  "summary": "LLM08. Make the planner recite its own instructions, then read what you got: every tool name, argument shape, and a dump-all SQL example. Detect the leak on output — and learn why the real fix is upstream.",
+  "difficulty": "intermediate",
   "est_minutes": 14,
   "attack_id": "m9_prompt_leak",
   "mailhog": false,
-  "owasp": ["LLM07 System Prompt Leakage", "LLM01 Prompt Injection"],
-  "controls": ["C18"],
-  "code_paths": ["defenses/m09/prompt_leak.py", "agents/prompts/planner_system.txt", "guardrails/pipeline.py"],
+  "owasp": [
+    "LLM08:2026 Hidden Context Exposure",
+    "LLM01:2026 Prompt Injection"
+  ],
+  "controls": [
+    "C18"
+  ],
+  "code_paths": [
+    "defenses/m09/prompt_leak.py",
+    "agents/prompts/planner_system.txt",
+    "guardrails/pipeline.py"
+  ],
   "takeaway": "The system prompt is reconnaissance, not a secret store. Detect leaks, but never put anything there you wouldn't publish.",
   "design_rule": "Scan outbound responses for system-prompt disclosure; keep secrets and policy out of the prompt entirely.",
   "steps": [
-    { "id": "step-01", "title": "What the prompt gives away", "file": "step-01.md" },
-    { "id": "step-02", "title": "Make it recite", "file": "step-02.md" },
-    { "id": "step-03", "title": "Detect and withhold", "file": "step-03.md" },
-    { "id": "step-04", "title": "The real fix is upstream", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "What the prompt gives away",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Make it recite",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Detect and withhold",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "The real fix is upstream",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "operate"
 }

@@ -3,6 +3,10 @@
   "simulate": "m6",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the same battery re-run in secure mode shows a collapsed attack-success rate",
+    "the forensics matrix shows which control held for each attack"
+  ],
   "pass_message": "Risk reduction measured: secure mode collapses the attack-success rate — every module's control holds across the battery.",
   "fail_message": "Attack-success rate stayed high under secure mode. Check the Forensics matrix to see which attack re-opened."
 }

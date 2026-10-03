@@ -3,6 +3,10 @@
   "simulate": "m5",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "every malicious probe in the benchmark passed through with guardrails off",
+    "the measured catch rate for this run is 0%"
+  ],
   "pass_message": "Baseline captured: with guardrails off, every malicious probe passed unfiltered (catch rate 0%).",
   "fail_message": "Baseline run did not behave as expected. Ensure the graded run used vulnerable mode."
 }

@@ -1,22 +1,47 @@
 {
   "id": "14-grounding",
   "legacy_id": "m10",
-  "order": 14,
+  "order": 17,
   "title": "Misinformation — groundedness & citations",
-  "summary": "LLM09. The agent states a refund policy that exists in no source, in the same confident voice as the true answer. Enforce groundedness: every claim must be supported by a retrieved source, or it doesn't ship.",
-  "difficulty": "medium",
+  "summary": "LLM07. The agent states a refund policy that exists in no source, in the same confident voice as the true answer. Enforce groundedness: every claim must be supported by a retrieved source, or it doesn't ship.",
+  "difficulty": "intermediate",
   "est_minutes": 15,
   "attack_id": "m10_grounding",
   "mailhog": false,
-  "owasp": ["LLM09 Misinformation", "LLM04 Data and Model Poisoning"],
-  "controls": ["C19"],
-  "code_paths": ["defenses/m10/grounding.py", "rag/retriever.py"],
+  "owasp": [
+    "LLM07:2026 Misinformation",
+    "LLM05:2026 Data and Model Poisoning"
+  ],
+  "controls": [
+    "C19"
+  ],
+  "code_paths": [
+    "defenses/m10/grounding.py",
+    "rag/retriever.py"
+  ],
   "takeaway": "You can't verify truth, but you can verify support. Unsupported claims don't ship; supported ones carry citations.",
   "design_rule": "Check every claim against the retrieved sources; withhold unsupported claims and cite the rest.",
   "steps": [
-    { "id": "step-01", "title": "What this can and cannot check", "file": "step-01.md" },
-    { "id": "step-02", "title": "A confident fabrication", "file": "step-02.md" },
-    { "id": "step-03", "title": "Enforce groundedness", "file": "step-03.md" },
-    { "id": "step-04", "title": "Citations expose poisoned sources", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "What this can and cannot check",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "A confident fabrication",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Enforce groundedness",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Citations expose poisoned sources",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "operate"
 }

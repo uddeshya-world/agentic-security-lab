@@ -1,0 +1,1315 @@
+/* AI Security Lab — Fanout --ga-* light tokens (visual clone)
+   Stack mirror: Vite/React + Tailwind + shadcn/Radix patterns
+   Fonts: self-contained system UI and monospace stacks for offline rendering */
+
+:root {
+  /* Core surfaces */
+  --ga-bg: #f7f7f8;
+  --ga-surface: #ffffff;
+  --ga-sidebar: #fafafa;
+  --ga-hover: #f0f0f2;
+  --ga-chip: #f4f4f5;
+  --ga-divider: #e8e8ea;
+  --ga-border: #dedee2;
+
+  /* Ink / foreground */
+  --ga-ink-900: #1d1d1d;
+  --ga-ink-800: #272727;
+  --ga-ink-600: #6e6e6e;
+  --ga-ink-400: #9a9a9e;
+  --ga-fg1: var(--ga-ink-800);
+  --ga-fg2: var(--ga-ink-600);
+
+  /* Primary (charcoal CTA) */
+  --primary: var(--ga-ink-900);
+  --primary-foreground: #ffffff;
+
+  /* Semantic accents (pastel taxonomy — never alone) */
+  --ga-accent-detection: #d6e4ff;
+  --ga-accent-detection-fg: #1e3a8a;
+  --ga-accent-exploit: #ffe0d6;
+  --ga-accent-exploit-fg: #9a3412;
+  --ga-accent-defense: #d1fae5;
+  --ga-accent-defense-fg: #065f46;
+  --ga-accent-policy: #fef3c7;
+  --ga-accent-policy-fg: #92400e;
+  --ga-accent-crypto: #ede9fe;
+  --ga-accent-crypto-fg: #5b21b6;
+  --ga-accent-announce: #e8f0fe;
+  --ga-accent-announce-fg: #1d4ed8;
+
+  /* Radii */
+  --ga-r-sm: 4px;
+  --ga-r-md: 8px;
+  --ga-r-lg: 12px;
+  --ga-r-xl: 16px;
+  --ga-r-full: 9999px;
+  --radius: var(--ga-r-md);
+
+  /* Shadows (soft multi-layer + hairline ring) */
+  --ga-shadow-sm:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  --ga-shadow-md:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  --ga-shadow-lg:
+    0 12px 32px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  /* Typography — self-contained system stacks; no network fonts required */
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  /* Mono fallback with letter-spacing for uppercase labels */
+  --font-label: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 42px;
+  --text-hero: 52px;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-body: 1.5;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+
+  /* ——— Theme-aware additions ———————————————————————————————————————————
+     Every colour that used to sit as a literal inside a rule body is a token
+     from here on. The values below are exactly what those rules already said,
+     so light mode is unchanged; the dark block at the foot of this file is
+     what they exist for. */
+
+  --ga-nav-bg: rgba(255, 255, 255, 0.92);
+  --ga-hatch: rgba(0, 0, 0, 0.03);
+
+  /* Emphasis — the charcoal CTA, the brand mark, the Free badge. */
+  --ga-on-primary: #ffffff;
+  --ga-primary-hover: #000000;
+  --ga-on-primary-hover: #ffffff;
+
+  /* Panels that are dark on a light page and stay dark on a dark one: the
+     Rule-of-Two HUD and the cert-readiness card. They read as instruments, and
+     an instrument that flips to white in dark mode stops reading as one. */
+  --ga-panel-ink: #1d1d1d;
+  --ga-panel-ink-fg: #ffffff;
+  --ga-panel-ink-dim: #a1a1aa;
+  --ga-panel-ink-border: #111111;
+
+  /* Learning-path card tints */
+  --ga-path-llm: #e8eefc;
+  --ga-path-appsec: #fce8e4;
+  --ga-path-cloud: #e6f5ef;
+  --ga-path-detect: #e8f1ff;
+  --ga-path-ir: #fff3e0;
+  --ga-path-gov: #f0f0f2;
+
+  /* Safety banner */
+  --ga-safety-bg: #fff8e6;
+  --ga-safety-border: #f5e0a8;
+  --ga-safety-fg: #7a5b00;
+
+  /* In scope / out of scope, test pass / fail */
+  --ga-ok: #065f46;
+  --ga-no: #9a3412;
+
+  /* The tool-proxy node — the one hot node in the threat diagram */
+  --ga-threat-hot-bg: #fff5f0;
+  --ga-threat-hot-border: #f5c2a0;
+
+  /* Live indicator and the unfilled half of a progress track */
+  --ga-live: #22c55e;
+  --ga-live-ring: rgba(34, 197, 94, 0.2);
+  --ga-track: #3f3f46;
+
+  --max-w: 1120px;
+  --nav-h: 56px;
+  --announce-h: 36px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--ga-fg1);
+  background: var(--ga-bg);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--ga-ink-900);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* ——— Typography utilities ——— */
+.label {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ga-fg2);
+}
+
+.label-dark {
+  color: var(--ga-fg1);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.heading-hero {
+  font-size: clamp(36px, 5vw, var(--text-hero));
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.025em;
+  color: var(--ga-ink-900);
+  margin: 0;
+}
+
+.heading-xl {
+  font-size: clamp(28px, 3.5vw, var(--text-2xl));
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--ga-ink-900);
+  margin: 0;
+}
+
+.heading-lg {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ga-ink-900);
+  margin: 0;
+}
+
+.muted {
+  color: var(--ga-fg2);
+}
+
+/* ——— Shell ——— */
+.announce {
+  height: var(--announce-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--ga-accent-announce);
+  color: var(--ga-accent-announce-fg);
+  font-size: var(--text-sm);
+  position: relative;
+  padding: 0 var(--space-5);
+}
+
+.announce a {
+  color: var(--ga-accent-announce-fg);
+  font-weight: 500;
+}
+
+.announce a:hover {
+  text-decoration: underline;
+}
+
+.announce-dismiss {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--ga-accent-announce-fg);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px;
+  opacity: 0.7;
+}
+
+.announce-dismiss:hover {
+  opacity: 1;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  background: var(--ga-nav-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ga-divider);
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ga-ink-900);
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--ga-ink-900);
+  display: grid;
+  place-items: center;
+  color: var(--ga-on-primary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+}
+
+.beta {
+  font-family: var(--font-label);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ga-ink-900);
+  color: var(--ga-on-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  margin-left: var(--space-2);
+}
+
+.nav-links a {
+  font-size: var(--text-sm);
+  color: var(--ga-fg1);
+  padding: 6px 10px;
+  border-radius: var(--ga-r-md);
+  white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--ga-hover);
+  color: var(--ga-ink-900);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ga-r-full);
+  border: 1px solid var(--ga-border);
+  background: var(--ga-surface);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ga-fg2);
+}
+
+.icon-btn:hover {
+  background: var(--ga-hover);
+  color: var(--ga-ink-900);
+}
+
+/* ——— Buttons ——— */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border-radius: var(--ga-r-md);
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: var(--ga-shadow-sm);
+}
+
+.btn-primary:hover {
+  background: var(--ga-primary-hover);
+  color: var(--ga-on-primary-hover);
+}
+
+.btn-secondary {
+  background: var(--ga-surface);
+  border-color: var(--ga-border);
+  color: var(--ga-fg1);
+}
+
+.btn-secondary:hover {
+  background: var(--ga-hover);
+}
+
+.btn-chip {
+  background: var(--ga-chip);
+  border-color: transparent;
+  color: var(--ga-fg1);
+  border-radius: var(--ga-r-full);
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+}
+
+.btn-chip:hover,
+.btn-chip.active {
+  background: var(--ga-hover);
+  box-shadow: inset 0 0 0 1px var(--ga-border);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ga-fg2);
+  padding: 6px 10px;
+}
+
+.btn-ghost:hover {
+  color: var(--ga-ink-900);
+  background: var(--ga-hover);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+}
+
+.btn-lg {
+  padding: 12px 20px;
+  font-size: var(--text-md);
+}
+
+/* ——— Cards ——— */
+.card {
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-border);
+  border-radius: var(--ga-r-lg);
+  box-shadow: var(--ga-shadow-sm);
+}
+
+.card-soft {
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-divider);
+  border-radius: var(--ga-r-xl);
+  box-shadow: var(--ga-shadow-md);
+}
+
+/* ——— Layout helpers ——— */
+.container {
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+.section {
+  padding: var(--space-8) 0;
+}
+
+.section-sm {
+  padding: var(--space-6) 0;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.grid-paths {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .grid-3,
+  .grid-paths,
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .nav-links {
+    display: none;
+  }
+}
+
+/* ——— Badges ——— */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-label);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--ga-r-full);
+  background: var(--ga-chip);
+  color: var(--ga-fg1);
+  border: 1px solid var(--ga-divider);
+}
+
+.badge-detection {
+  background: var(--ga-accent-detection);
+  color: var(--ga-accent-detection-fg);
+  border-color: transparent;
+}
+.badge-exploit {
+  background: var(--ga-accent-exploit);
+  color: var(--ga-accent-exploit-fg);
+  border-color: transparent;
+}
+.badge-defense {
+  background: var(--ga-accent-defense);
+  color: var(--ga-accent-defense-fg);
+  border-color: transparent;
+}
+.badge-policy {
+  background: var(--ga-accent-policy);
+  color: var(--ga-accent-policy-fg);
+  border-color: transparent;
+}
+.badge-crypto {
+  background: var(--ga-accent-crypto);
+  color: var(--ga-accent-crypto-fg);
+  border-color: transparent;
+}
+.badge-soon {
+  background: var(--ga-chip);
+  color: var(--ga-fg2);
+}
+.badge-free {
+  background: var(--ga-ink-900);
+  color: var(--ga-on-primary);
+  border-color: transparent;
+}
+
+/* ——— Path cards ——— */
+.path-card {
+  padding: var(--space-5);
+  border-radius: var(--ga-r-xl);
+  border: 1px solid transparent;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+}
+
+.path-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ga-shadow-md);
+}
+
+.path-card h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.path-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.path-card li {
+  font-size: var(--text-sm);
+  color: var(--ga-fg1);
+  opacity: 0.85;
+  padding-left: 14px;
+  position: relative;
+}
+
+.path-card li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+.path-llm { background: var(--ga-path-llm); }
+.path-appsec { background: var(--ga-path-appsec); }
+.path-cloud { background: var(--ga-path-cloud); }
+.path-detect { background: var(--ga-path-detect); }
+.path-ir { background: var(--ga-path-ir); }
+.path-gov { background: var(--ga-path-gov); opacity: 0.85; }
+
+.path-soon-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* ——— Labs search ——— */
+.search-card {
+  padding: var(--space-5);
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ga-bg);
+  border: 1px solid var(--ga-border);
+  border-radius: var(--ga-r-full);
+  padding: 12px 16px;
+  margin: var(--space-3) 0 var(--space-4);
+}
+
+.search-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--text-md);
+  color: var(--ga-fg1);
+}
+
+.search-field input::placeholder {
+  color: var(--ga-ink-400);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ——— Lab cards ——— */
+.lab-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.lab-card:hover {
+  box-shadow: var(--ga-shadow-md);
+  transform: translateY(-1px);
+}
+
+.lab-card-pattern {
+  height: 88px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      var(--ga-hatch) 3px,
+      var(--ga-hatch) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      var(--ga-hatch) 3px,
+      var(--ga-hatch) 4px
+    ),
+    var(--ga-chip);
+  border-bottom: 1px solid var(--ga-divider);
+  position: relative;
+}
+
+.lab-card-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.lab-card-icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--ga-border);
+  border-radius: var(--ga-r-md);
+  background: var(--ga-surface);
+  display: grid;
+  place-items: center;
+  margin-top: -28px;
+  position: relative;
+  font-size: 14px;
+}
+
+.lab-card-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: var(--ga-ink-800);
+}
+
+.lab-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.lab-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--ga-divider);
+  margin-top: 4px;
+}
+
+/* ——— Footer ——— */
+.site-footer {
+  border-top: 1px solid var(--ga-divider);
+  background: var(--ga-surface);
+  padding: var(--space-7) 0 var(--space-5);
+  margin-top: var(--space-7);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.footer-grid h4 {
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ga-fg2);
+  margin: 0 0 var(--space-3);
+  font-weight: 500;
+}
+
+.footer-grid a {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--ga-fg1);
+  padding: 3px 0;
+}
+
+.footer-grid a:hover {
+  color: var(--ga-ink-900);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ga-divider);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--ga-fg2);
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ——— Floating presence ——— */
+.presence {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-border);
+  box-shadow: var(--ga-shadow-md);
+  border-radius: var(--ga-r-full);
+  padding: 8px 14px;
+  font-size: var(--text-sm);
+  color: var(--ga-fg1);
+}
+
+.presence-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ga-live);
+  box-shadow: 0 0 0 3px var(--ga-live-ring);
+}
+
+/* ——— Safety banner ——— */
+.safety-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--ga-safety-bg);
+  border: 1px solid var(--ga-safety-border);
+  color: var(--ga-safety-fg);
+  padding: 10px 14px;
+  border-radius: var(--ga-r-md);
+  font-size: var(--text-sm);
+}
+
+.safety-banner .mono {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+/* ——— Rule-of-Two HUD ——— */
+.rot-hud {
+  background: var(--ga-panel-ink);
+  color: var(--ga-panel-ink-fg);
+  border-radius: var(--ga-r-lg);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: var(--text-sm);
+  box-shadow: var(--ga-shadow-md);
+}
+
+.rot-seg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rot-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: #3f3f46;
+  border: 1px solid #52525b;
+}
+
+.rot-pip.on {
+  background: #fbbf24;
+  border-color: #f59e0b;
+}
+
+.rot-pip.danger {
+  background: #ef4444;
+  border-color: #dc2626;
+}
+
+/* ——— Terminal panel ——— */
+.terminal {
+  background: #1a1a1c;
+  color: #e4e4e7;
+  border-radius: var(--ga-r-lg);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  border: 1px solid #2a2a2e;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #222226;
+  border-bottom: 1px solid #2e2e32;
+  color: #a1a1aa;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.terminal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3f3f46;
+}
+
+.terminal-dot.r { background: #ef4444; }
+.terminal-dot.y { background: #eab308; }
+.terminal-dot.g { background: #22c55e; }
+
+.terminal-body {
+  padding: 14px 16px;
+  min-height: 180px;
+  white-space: pre-wrap;
+}
+
+.terminal-body .prompt {
+  color: #86efac;
+}
+
+.terminal-body .dim {
+  color: #71717a;
+}
+
+.terminal-body .warn {
+  color: #fbbf24;
+}
+
+/* ——— Scope gate modal ——— */
+.scope-gate {
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-border);
+  border-radius: var(--ga-r-xl);
+  box-shadow: var(--ga-shadow-lg);
+  padding: var(--space-5);
+}
+
+.scope-list {
+  margin: var(--space-3) 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scope-list li {
+  display: flex;
+  gap: 10px;
+  font-size: var(--text-sm);
+  padding: 8px 10px;
+  background: var(--ga-bg);
+  border-radius: var(--ga-r-md);
+  border: 1px solid var(--ga-divider);
+}
+
+.scope-list .ok { color: var(--ga-ok); }
+.scope-list .no { color: var(--ga-no); }
+
+/* ——— How it works steps ——— */
+.step-num {
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ga-fg2);
+}
+
+/* ——— Proof strip ——— */
+.proof-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.proof-item {
+  padding: var(--space-5);
+  text-align: left;
+}
+
+@media (max-width: 700px) {
+  .proof-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ——— Runner layout ——— */
+.runner-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - var(--nav-h) - var(--announce-h));
+}
+
+.runner-rail {
+  background: var(--ga-sidebar);
+  border-right: 1px solid var(--ga-divider);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.runner-main {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.runner-panels {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1000px) {
+  .runner-shell {
+    grid-template-columns: 1fr;
+  }
+  .runner-rail {
+    border-right: none;
+    border-bottom: 1px solid var(--ga-divider);
+  }
+  .runner-panels {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rail-link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--ga-r-md);
+  font-size: var(--text-sm);
+  color: var(--ga-fg2);
+}
+
+.rail-link:hover,
+.rail-link.active {
+  background: var(--ga-hover);
+  color: var(--ga-ink-900);
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--text-sm);
+  margin: 8px 0;
+}
+
+.check-row input {
+  margin-top: 2px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.test-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--ga-divider);
+  border-radius: var(--ga-r-md);
+  background: var(--ga-bg);
+  font-size: var(--text-sm);
+  margin-bottom: 8px;
+}
+
+.test-pass { color: var(--ga-ok); }
+.test-fail { color: var(--ga-no); }
+.test-pending { color: var(--ga-fg2); }
+
+.evidence-box {
+  border: 1px dashed var(--ga-border);
+  border-radius: var(--ga-r-md);
+  padding: 14px;
+  background: var(--ga-bg);
+  font-size: var(--text-sm);
+  color: var(--ga-fg2);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Dark theme
+   --------------------------------------------------------------------------
+   These mockups are drawn light, so bare :root above IS the design and nothing
+   is re-derived. Dark is a redefinition of the same tokens, applied in two
+   places that have to stay identical:
+
+     1. the visitor's system preference, when they have not chosen
+     2. an explicit choice, which must beat the system preference either way
+
+   The ink tokens read backwards here -- --ga-ink-900 becomes the LIGHTEST ink
+   and --ga-bg the darkest surface -- but their roles hold exactly: --ga-bg is
+   always the page ground, --ga-ink-900 always the strongest ink, and the ramp
+   bg -> sidebar -> surface -> chip -> hover -> divider -> border always runs
+   from page to nearest.
+
+   Two things deliberately do NOT invert. The Rule-of-Two HUD and the
+   cert-readiness card are instruments (--ga-panel-ink), and an instrument that
+   turns white in dark mode stops reading as one; they stay dark and only lift
+   off the page. The terminal is dark in both themes for the same reason, which
+   is why its colours are still literals further up.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ga-bg: #0d0d0f;
+    --ga-surface: #161619;
+    --ga-sidebar: #121215;
+    --ga-hover: #1e1e22;
+    --ga-chip: #1b1b1f;
+    --ga-divider: #26262b;
+    --ga-border: #313137;
+
+    --ga-ink-900: #f4f4f5;
+    --ga-ink-800: #e3e3e6;
+    --ga-ink-600: #a0a0a8;
+    --ga-ink-400: #74747c;
+
+    --primary-foreground: #0d0d0f;
+    --ga-on-primary: #0d0d0f;
+    --ga-primary-hover: #ffffff;
+    --ga-on-primary-hover: #0d0d0f;
+
+    --ga-accent-detection: #16233f;
+    --ga-accent-detection-fg: #bcd2ff;
+    --ga-accent-exploit: #3a1d12;
+    --ga-accent-exploit-fg: #ffc3a8;
+    --ga-accent-defense: #0b2b21;
+    --ga-accent-defense-fg: #93e4c5;
+    --ga-accent-policy: #322509;
+    --ga-accent-policy-fg: #f3d484;
+    --ga-accent-crypto: #241a3d;
+    --ga-accent-crypto-fg: #c9b6ff;
+    --ga-accent-announce: #13203c;
+    --ga-accent-announce-fg: #a6c2ff;
+
+    --ga-nav-bg: rgba(13, 13, 15, 0.92);
+    --ga-hatch: rgba(255, 255, 255, 0.04);
+
+    --ga-panel-ink: #1b1b1f;
+    --ga-panel-ink-fg: #f4f4f5;
+    --ga-panel-ink-dim: #a0a0a8;
+    --ga-panel-ink-border: #313137;
+
+    --ga-path-llm: #161f33;
+    --ga-path-appsec: #2e1a16;
+    --ga-path-cloud: #10281f;
+    --ga-path-detect: #15203a;
+    --ga-path-ir: #2e2010;
+    --ga-path-gov: #1b1b1f;
+
+    --ga-safety-bg: #2b2208;
+    --ga-safety-border: #4a3c12;
+    --ga-safety-fg: #f0d590;
+
+    --ga-ok: #6ee7b7;
+    --ga-no: #fca88a;
+
+    --ga-threat-hot-bg: #2e1a14;
+    --ga-threat-hot-border: #6b3a26;
+
+    --ga-shadow-sm:
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+    --ga-shadow-md:
+      0 4px 12px rgba(0, 0, 0, 0.5),
+      0 1px 3px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    --ga-shadow-lg:
+      0 12px 32px rgba(0, 0, 0, 0.6),
+      0 4px 8px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ga-bg: #0d0d0f;
+  --ga-surface: #161619;
+  --ga-sidebar: #121215;
+  --ga-hover: #1e1e22;
+  --ga-chip: #1b1b1f;
+  --ga-divider: #26262b;
+  --ga-border: #313137;
+
+  --ga-ink-900: #f4f4f5;
+  --ga-ink-800: #e3e3e6;
+  --ga-ink-600: #a0a0a8;
+  --ga-ink-400: #74747c;
+
+  --primary-foreground: #0d0d0f;
+  --ga-on-primary: #0d0d0f;
+  --ga-primary-hover: #ffffff;
+  --ga-on-primary-hover: #0d0d0f;
+
+  --ga-accent-detection: #16233f;
+  --ga-accent-detection-fg: #bcd2ff;
+  --ga-accent-exploit: #3a1d12;
+  --ga-accent-exploit-fg: #ffc3a8;
+  --ga-accent-defense: #0b2b21;
+  --ga-accent-defense-fg: #93e4c5;
+  --ga-accent-policy: #322509;
+  --ga-accent-policy-fg: #f3d484;
+  --ga-accent-crypto: #241a3d;
+  --ga-accent-crypto-fg: #c9b6ff;
+  --ga-accent-announce: #13203c;
+  --ga-accent-announce-fg: #a6c2ff;
+
+  --ga-nav-bg: rgba(13, 13, 15, 0.92);
+  --ga-hatch: rgba(255, 255, 255, 0.04);
+
+  --ga-panel-ink: #1b1b1f;
+  --ga-panel-ink-fg: #f4f4f5;
+  --ga-panel-ink-dim: #a0a0a8;
+  --ga-panel-ink-border: #313137;
+
+  --ga-path-llm: #161f33;
+  --ga-path-appsec: #2e1a16;
+  --ga-path-cloud: #10281f;
+  --ga-path-detect: #15203a;
+  --ga-path-ir: #2e2010;
+  --ga-path-gov: #1b1b1f;
+
+  --ga-safety-bg: #2b2208;
+  --ga-safety-border: #4a3c12;
+  --ga-safety-fg: #f0d590;
+
+  --ga-ok: #6ee7b7;
+  --ga-no: #fca88a;
+
+  --ga-threat-hot-bg: #2e1a14;
+  --ga-threat-hot-border: #6b3a26;
+
+  --ga-shadow-sm:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  --ga-shadow-md:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  --ga-shadow-lg:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  color-scheme: dark;
+}
+
+/* The toggle reports the mode it will switch TO, which is why the icon swaps
+   rather than staying fixed. */
+.theme-toggle .moon { display: block; }
+.theme-toggle .sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .sun { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .moon { display: none; }
+  :root:not([data-theme="light"]) .theme-toggle .sun { display: block; }
+}
+
+/* The mockups carry no narrow-viewport handling for the header, so the nav's
+   right-hand cluster runs off the side of a phone. Adding the theme toggle made
+   that worse, so it is handled here rather than left to the next person: below
+   640px the bar wraps onto two rows instead of holding one fixed-height line.
+   Nothing above 640px changes. */
+@media (max-width: 640px) {
+  .nav {
+    height: auto;
+    padding: 8px 0;
+  }
+  .nav-inner {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    column-gap: var(--space-3);
+  }
+  .nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-actions {
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

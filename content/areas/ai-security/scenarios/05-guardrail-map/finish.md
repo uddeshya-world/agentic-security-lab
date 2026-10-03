@@ -1,17 +1,17 @@
-## Area complete
+## Core complete
 
 You can now:
 
-- Explain the agent data path and where untrusted input enters.
-- Demonstrate SQL injection, RAG poisoning, cross-tool exfiltration, and a full
-  end-to-end agent exploit — with real evidence, not slideware.
-- Map each finding to OWASP LLM Top 10 and Agentic ASI categories.
-- Design and implement six overlapping controls, and prove the before/after.
+- Explain the agent data path and where untrusted input *and* sensitive data enter.
+- Demonstrate tool SQLi, direct and indirect prompt injection, cross-tool
+  exfiltration, four-channel DLP, confused-deputy identity, and a full
+  end-to-end agent exploit — with real evidence.
+- Map each finding to OWASP LLM Top 10 (2026) and ASI Top 10 (2026).
+- Place DLP and identity on the same drawing as schema, HITL and egress.
 
-That is the **AI Security Practitioner** skill set. Claim your certificate of
-completion from the Area page.
+That is the **AI Security Practitioner** Core path. Claim the badge from the
+Area page. Advanced tracks (persistence, operate) are optional depth — memory,
+MCP, measured guardrails, CI, policy, grounding, spend.
 
-**Where next:** the AI-Security Area continues with deeper modules (multi-agent
-attacks, memory poisoning, production guardrails, red-team pipelines, supply
-chain, governance). Other cyber Areas — Web AppSec, Offensive, Blue Team, Cloud,
-DFIR — are on the roadmap.
+**Not in this Area:** ASI05 RCE via a code-exec tool, ML privacy attacks,
+browser/computer-use agents.

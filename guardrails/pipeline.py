@@ -21,6 +21,52 @@ _INJECTION_RE = re.compile(
 # --- output scanners: catch data egress / secret leakage ---
 _PII_RE = re.compile(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", re.I)
 _SECRET_RE = re.compile(r"(sk-[a-z0-9]{8,}|AKIA[0-9A-Z]{12,}|password\s*[:=])", re.I)
+# Data guards (C21): structured PII beyond "looks like an email".
+_SSN_RE = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
+_PAN_RE = re.compile(r"\b(?:4\d{12}(?:\d{3})?|5[1-5]\d{14})\b")
+
+# Teaching labels — not a real taxonomy engine.
+CLASSIFICATION = ("public", "internal", "confidential", "restricted")
+
+
+def find_sensitive(text: str) -> list[dict]:
+    """Return labelled hits for DLP labs. Deterministic, no ML."""
+    t = text or ""
+    hits: list[dict] = []
+    for m in _SSN_RE.finditer(t):
+        hits.append({"type": "ssn", "value": m.group(0), "class": "restricted"})
+    for m in _PAN_RE.finditer(t):
+        hits.append({"type": "pan", "value": m.group(0), "class": "restricted"})
+    for m in _SECRET_RE.finditer(t):
+        hits.append({"type": "secret", "value": m.group(0), "class": "restricted"})
+    for m in _PII_RE.finditer(t):
+        hits.append({"type": "email", "value": m.group(0), "class": "confidential"})
+    return hits
+
+
+def mask_sensitive(text: str) -> str:
+    t = text or ""
+    t = _SSN_RE.sub("[SSN]", t)
+    t = _PAN_RE.sub("[PAN]", t)
+    t = _SECRET_RE.sub("[SECRET]", t)
+    t = _PII_RE.sub("[EMAIL]", t)
+    return t
+
+
+def scan_data(text: str, *, channel: str) -> dict:
+    """Four-channel data guard: input | context | output | tool."""
+    hits = find_sensitive(text)
+    restricted = [h for h in hits if h["class"] == "restricted"]
+    # Restricted → block the channel. Confidential (email) → mask, still a hit.
+    action = "block" if restricted else ("mask" if hits else "allow")
+    return {
+        "blocked": action in ("block", "mask") and bool(restricted or channel in ("output", "tool") and hits),
+        "action": action,
+        "channel": channel,
+        "hits": [{"type": h["type"], "class": h["class"]} for h in hits],
+        "masked": mask_sensitive(text),
+        "scanner": "data-guard",
+    }
 
 
 def scan_input(text: str) -> dict:

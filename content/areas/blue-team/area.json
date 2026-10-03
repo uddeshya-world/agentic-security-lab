@@ -22,7 +22,7 @@
   },
   "certs": [
     "MITRE ATT&CK (exfiltration, collection)",
-    "OWASP Top 10 for LLM Applications (2025)"
+    "OWASP Top 10 for LLM Applications (2026)"
   ],
   "roles": [
     "SOC Analyst (Tier 1/2)",

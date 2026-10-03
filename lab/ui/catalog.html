@@ -7,68 +7,100 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
 <style>
   /* ---- hero ---------------------------------------------------------- */
   .hero { padding: var(--s8) 0 var(--s7); }
   .hero h1 {
     font-family: var(--display); font-weight: 700;
-    font-size: clamp(34px, 6.2vw, 60px); line-height: 1.02; letter-spacing: -0.04em;
+    font-size: var(--fs-hero); line-height: var(--lh-tight); letter-spacing: var(--tr-hero);
     margin: var(--s4) 0 var(--s4); max-width: 16ch;
   }
   .hero h1 .cool { color: var(--halon); }
-  .hero .lede { color: var(--ash); font-size: 16px; line-height: 1.6; max-width: 58ch; margin: 0; }
+  .hero .lede { color: var(--text-2); font-size: var(--fs-lg); line-height: var(--lh-normal); max-width: 58ch; margin: 0; }
   .hero .demo { margin: var(--s7) 0 var(--s6); max-width: 720px; }
   .hero .cta { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
-  .hero .cta .note { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .hero .cta .note { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
 
-  /* ---- counts strip --------------------------------------------------- */
-  .counts { display: flex; flex-wrap: wrap; gap: var(--s6); padding: var(--s4) 0; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); }
-  .counts div { display: flex; flex-direction: column; gap: 2px; }
-  .counts .n { font-family: var(--mono); font-size: 19px; font-weight: 500; color: var(--chalk); font-variant-numeric: tabular-nums; }
-  .counts .l { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  /* ---- callout primitive --------------------------------------------------
+     One shape, three tones, built only from tokens in the frozen palette.
+     halon = informational, brass = caveat, ember = warning. area.html copies
+     this block verbatim. */
+  .callout { display: flex; gap: var(--s3); padding: var(--s4); border-radius: var(--r); border: 1px solid var(--edge); border-left: 3px solid var(--edge-hi); background: var(--shelf); margin-bottom: var(--s6); }
+  .callout .body { font-size: var(--fs-md); line-height: var(--lh-normal); color: var(--text-2); }
+  .callout .body b { color: var(--text-1); font-weight: var(--fw-semibold); }
+  .callout.halon { border-left-color: var(--halon); background: var(--halon-bed); }
+  .callout.halon .body { color: var(--halon-ink); }
+  .callout.halon .body b { color: var(--halon); }
+  .callout.brass { border-left-color: var(--brass); background: var(--brass-bed); }
+  .callout.brass .body { color: var(--chalk); }
+  .callout.brass .body b { color: var(--brass); }
+  .callout.ember { border-left-color: var(--ember); background: var(--ember-bed); }
+  .callout.ember .body { color: var(--ember-ink); }
+  .callout.ember .body b { color: var(--ember); }
 
-  /* ---- area record ---------------------------------------------------- */
+  /* ---- section scaffolding -------------------------------------------- */
   .sechead { display: flex; align-items: baseline; gap: var(--s3); margin: var(--s7) 0 var(--s4); }
-  .sechead h2 { font-family: var(--display); font-size: 15px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
-  .sechead .hint { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .sechead h2 { font-family: var(--display); font-size: var(--fs-base); font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); margin: 0; }
+  .sechead .hint { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
 
-  .record { display: grid; grid-template-columns: 340px minmax(0, 1fr); }
-  .record .idcol { padding: var(--s5); border-right: 1px solid var(--edge); }
-  .record .idcol h3 { font-family: var(--display); font-size: 22px; letter-spacing: -.025em; margin: var(--s2) 0 var(--s3); line-height: 1.15; }
-  .record .idcol p { color: var(--ash); font-size: 13.5px; line-height: 1.6; margin: 0 0 var(--s4); }
-  .record .idcol h4 { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s2); font-weight: 500; }
-  .record .idcol ul { margin: 0; padding-left: 1.1em; color: var(--ash); font-size: 13px; line-height: 1.55; }
-  .record .idcol li { margin: 3px 0; }
-  .record .idcol li::marker { color: var(--halon-line); }
-  .chips { display: flex; flex-wrap: wrap; gap: var(--s1); }
-  .progress-block { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--edge); }
-  .progress-block .row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; color: var(--ash); margin-bottom: var(--s2); }
-  .progress-block .row b { color: var(--chalk); font-weight: 500; }
-
-  /* scenario table — 16 rows deserve a table, not sixteen truncated tiles */
-  .slate { width: 100%; border-collapse: collapse; }
-  .slate th {
-    font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--dim); font-weight: 500; text-align: left; padding: var(--s3) var(--s3);
-    border-bottom: 1px solid var(--edge); position: sticky; top: 54px; background: var(--plate);
+  /* ---- Area tiles -------------------------------------------------------
+     Media-top card: a banded head carrying the Area's mark, then the body.
+     The band is the same 64px grid as the page's own .gridfield, so the card
+     reads as a window cut into the range rather than a separate sticker. */
+  .areagrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--s5); }
+  .tile {
+    display: flex; flex-direction: column;
+    background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r-lg);
+    position: relative; overflow: hidden; transition: border-color .12s, background .12s;
   }
-  .slate td { border-bottom: 1px solid var(--edge); padding: 0; }
-  .slate tr:last-child td { border-bottom: 0; }
-  .slate a.row { display: contents; }
-  .slate td .cell { padding: 10px var(--s3); display: block; }
-  .slate tbody tr { cursor: pointer; }
-  .slate tbody tr:hover { background: var(--shelf); }
-  .slate tbody tr:hover .t { color: var(--halon-ink); }
-  .slate .ord { font-family: var(--mono); font-size: 11px; color: var(--dim); width: 44px; font-variant-numeric: tabular-nums; }
-  .slate .ord.done { color: var(--halon); }
-  .slate .t { font-size: 13.5px; color: var(--chalk); }
-  /* Two lines of summary is enough to choose a scenario; sixteen four-line rows
-     is a wall. The full text is on the scenario page. */
-  .slate .s { font-size: 12px; color: var(--dim); margin-top: 2px; display: -webkit-box;
-              -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .slate .owasp { display: flex; flex-wrap: wrap; gap: 3px; }
-  .slate .n { font-family: var(--mono); font-size: 11px; color: var(--ash); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  a.tile:hover { border-color: var(--edge-hi); background: var(--shelf); }
+  a.tile:hover .t { color: var(--halon-ink); }
+  a.tile:hover h3 { color: var(--halon-ink); }
+  .tile.locked { opacity: .68; }
+
+  .tile .band {
+    height: 72px; flex: none; position: relative;
+    background-color: var(--shelf);
+    background-image:
+      linear-gradient(to right, var(--edge) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--edge) 1px, transparent 1px);
+    background-size: 32px 32px;
+    border-bottom: 1px solid var(--edge);
+  }
+  a.tile:hover .band { background-color: var(--raise); }
+  /* The mark sits on the band's lower edge and straddles it, which is what
+     stops the band from reading as an empty header. */
+  .tile .mark {
+    position: absolute; left: var(--s5); bottom: -17px;
+    width: 34px; height: 34px; display: grid; place-items: center;
+    background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r);
+    font-size: var(--fs-lg); line-height: 1;
+  }
+  a.tile:hover .mark { border-color: var(--edge-hi); }
+
+  .tile .body { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s6) var(--s5) var(--s5); flex: 1; }
+  .tile .kicker-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s3); }
+  .tile .kicker { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+  .tile h3 { font-family: var(--display); font-size: var(--fs-xl); font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); margin: 0; color: var(--text-1); line-height: var(--lh-snug); }
+  .tile .desc { font-size: var(--fs-md); color: var(--text-2); line-height: var(--lh-normal); margin: 0;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .tile .comp { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
+  /* --line is not a token in this stylesheet; these read as no border at all. */
+  .tile .progress { margin-top: auto; padding-top: var(--s3); border-top: 1px solid var(--edge); }
+  .tile .progress .row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); margin-bottom: 6px; }
+  .tile .progress .row b { color: var(--text-1); font-weight: var(--fw-medium); }
+  .tile .lockednote { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); margin-top: auto; padding-top: var(--s3); border-top: 1px solid var(--edge); }
+  /* The card's closing line: what the Area is worth, and the way in. On a
+     locked Area there is no way in, so the row carries the reason instead. */
+  .tile .foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding-top: var(--s4); }
+  .tile .foot .earns { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tile .foot .go {
+    flex: none; font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase;
+    color: var(--halon); border: 1px solid var(--halon-line); background: var(--halon-bed);
+    border-radius: var(--r); padding: 5px 10px;
+  }
+  a.tile:hover .foot .go { background: var(--halon); color: var(--on-halon); border-color: var(--halon); }
 
   /* ---- roadmap: an index, not fake cards ------------------------------ */
   .roadmap { border-top: 1px solid var(--edge); }
@@ -77,52 +109,53 @@
     padding: 11px var(--s2); border-bottom: 1px solid var(--edge); cursor: default;
   }
   .roadmap { list-style: none; margin: 0; padding: 0; }
-  .roadmap .code { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--dim); }
-  .roadmap .nm { font-size: 13.5px; color: var(--ash); }
-  .roadmap .nm span { display: block; font-size: 12px; color: var(--dim); margin-top: 1px; }
-  .roadmap .certs { font-family: var(--mono); font-size: 10.5px; color: var(--dim); text-align: right; }
-
-  /* ---- badge dialog --------------------------------------------------- */
-  dialog { border: 1px solid var(--edge-hi); background: var(--plate); color: var(--chalk); border-radius: var(--r-lg); padding: 0; max-width: 560px; width: 92%; }
-  dialog::backdrop { background: rgba(4, 6, 9, .78); }
-  .sheet { padding: var(--s6); }
-  .sheet h3 { font-family: var(--display); font-size: 20px; letter-spacing: -.02em; margin: var(--s2) 0 var(--s2); }
-  .sheet p { color: var(--ash); font-size: 13px; line-height: 1.6; margin: 0 0 var(--s3); }
-  .sheet .token { font-family: var(--mono); font-size: 10.5px; color: var(--dim); word-break: break-all; background: var(--void); border: 1px solid var(--edge); border-radius: var(--r); padding: var(--s3); max-height: 110px; overflow: auto; }
-  .sheet .foot { display: flex; justify-content: space-between; gap: var(--s2); margin-top: var(--s5); }
-  .sheet .missing { max-height: 200px; overflow: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ash); }
-  .sheet .missing div { padding: 4px 0; border-bottom: 1px solid var(--edge); }
+  .roadmap .code { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); color: var(--text-3); }
+  .roadmap .nm { font-size: var(--fs-md); color: var(--text-2); }
+  .roadmap .nm span { display: block; font-size: var(--fs-sm); color: var(--text-3); margin-top: 1px; }
+  .roadmap .certs { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); text-align: right; }
 
   /* ---- responsive ----------------------------------------------------- */
-  @media (max-width: 900px) {
-    .record { grid-template-columns: 1fr; }
-    .record .idcol { border-right: 0; border-bottom: 1px solid var(--edge); }
-    .slate th { position: static; }
-    .slate .hidesm { display: none; }
-  }
   @media (max-width: 620px) {
     .hero { padding: var(--s6) 0 var(--s5); }
-    .counts { gap: var(--s5); }
+    .areagrid { grid-template-columns: 1fr; }
     .roadmap li { grid-template-columns: 44px minmax(0,1fr); }
     .roadmap .certs { display: none; }
   }
 </style>
 </head>
 <body>
+<div class="cr-progress" id="crProgress" aria-hidden="true"></div>
+
+<div class="cr-announce" role="note" aria-label="Lab scope">
+  <span class="scope">Synthetic estate</span>
+  <span class="said">Every target here is a fake record on your own machine. Nothing reaches an external host.</span>
+  <span class="grow"></span>
+  <span class="mode"><span class="dot"></span><span class="t"></span></span>
+  <button class="x" type="button" aria-label="Dismiss">&times;</button>
+</div>
 
 <header class="cr-nav">
   <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <nav class="cr-links" id="crlinks">
+    <a class="link is-active" href="/lab/ui/catalog.html">Range</a>
+    <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
   <span class="grow"></span>
-  <a class="link" href="/lab/ui/index.html">Sandbox console</a>
-  <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
-  <a class="link" href="/docs" target="_blank" rel="noopener">API</a>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+  <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
 </header>
 
 <main class="shell">
 
+  <div class="gridfield" aria-hidden="true"></div>
+
   <section class="hero">
     <div class="eyebrow" id="eyebrow">self-hosted · deliberately vulnerable · graded on real lab state</div>
-    <h1>Exploit the agent.<br />Then find the line that <span class="cool">should have said&nbsp;no</span>.</h1>
+    <h1>Exploit <span class="tw" id="tw"><span class="tw-word" id="twWord">the agent</span><span class="tw-caret" aria-hidden="true"></span></span>.<br />Then find the line that <span class="cool">should have said&nbsp;no</span>.</h1>
     <p class="lede">
       A working LangGraph agent with a SQL tool, an email tool, retrieval and memory — built wrong on
       purpose, running on your machine. You break it for real, build the control that stops it, and
@@ -133,32 +166,53 @@
 
     <div class="cta">
       <a class="btn assert" href="/lab/ui/scenario.html?area=ai-security&id=00-orientation">Start the range</a>
-      <a class="btn ghost" href="/lab/ui/index.html">Open the sandbox console</a>
-      <span class="note">no account · progress stays in this browser</span>
+      <a class="btn" href="/lab/ui/play.html">New here? Play the 15-minute version</a>
+      <span class="note">19 scenarios · no account · progress stays in this browser</span>
     </div>
   </section>
 
-  <section class="counts" id="counts">
-    <div><span class="n skel" style="width:44px;height:19px">&nbsp;</span><span class="l">loading</span></div>
+  <section class="hops-sec" data-reveal>
+    <div class="sechead">
+      <h2 class="wordreveal">Eight hops. A control on every one.</h2>
+      <span class="hint" id="hopHint"></span>
+    </div>
+    <div class="rule lead"></div>
+    <div class="hops-wrap">
+      <div class="hop-rail"><i></i></div>
+      <ol class="hops" id="hops"></ol>
+    </div>
   </section>
 
-  <div class="sechead">
-    <h2>Live area</h2>
-    <span class="hint" id="liveHint"></span>
-  </div>
-  <div class="panel" id="areaHost">
-    <div style="padding:var(--s5)">
-      <div class="skel" style="height:14px;width:38%;margin-bottom:10px"></div>
-      <div class="skel" style="height:11px;width:66%;margin-bottom:6px"></div>
-      <div class="skel" style="height:11px;width:52%"></div>
+  <section data-reveal>
+    <div class="sechead">
+      <h2>By the numbers</h2>
+      <span class="hint">counted from the content tree, not claimed</span>
     </div>
-  </div>
+    <div class="figs ticked" id="figs"></div>
+  </section>
 
-  <div class="sechead">
-    <h2>Not built yet</h2>
-    <span class="hint">planned at expert depth in docs/CURRICULUM.md — these do not open</span>
-  </div>
-  <ul class="roadmap" id="roadmap"></ul>
+  <section data-reveal>
+    <div class="sechead">
+      <h2>Areas</h2>
+      <span class="hint" id="areaHint"></span>
+    </div>
+    <div class="areagrid" id="areaGrid">
+      <div class="skel-card" aria-hidden="true">
+        <div class="skel skel-line w40"></div>
+        <div class="skel skel-line w60"></div>
+        <div class="skel skel-line w80"></div>
+        <div class="skel skel-line w60"></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-reveal>
+    <div class="sechead">
+      <h2>Not built yet</h2>
+      <span class="hint">planned at expert depth in docs/CURRICULUM.md — these do not open</span>
+    </div>
+    <ul class="roadmap" id="roadmap"></ul>
+  </section>
 
 </main>
 
@@ -166,24 +220,11 @@
   <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
 </footer>
 
-<dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
-
-<script src="/lab/ui/cyberrange.js?v=7"></script>
+<script src="/lab/ui/vendor/gsap.min.js"></script>
+<script src="/lab/ui/vendor/ScrollTrigger.min.js"></script>
+<script src="/lab/ui/vendor/lenis.min.js"></script>
+<script src="/lab/ui/cyberrange.js?v=16"></script>
 <script>
-// Areas we have designed but not authored. Listed so the curriculum reads whole —
-// rendered as an index with no link, because a card you cannot open is a lie.
-const ROADMAP = [
-  { code:"WEB", title:"Web Application Security", note:"OWASP Top 10 against a deliberately vulnerable app", certs:"PortSwigger WSA · BSCP · eWPT" },
-  { code:"OFF", title:"Offensive Security",        note:"recon to root — the full kill chain on a target box", certs:"eJPT · PNPT · OSCP-prep" },
-  { code:"SOC", title:"Blue Team / SOC",           note:"SIEM queries, triage and detection engineering",      certs:"BTL1/2 · GCIA-prep" },
-  { code:"CLD", title:"Cloud Security",            note:"IAM misconfiguration and container hardening",         certs:"AWS Security · CKS-adjacent" },
-  { code:"DEV", title:"DevSecOps & Supply Chain",  note:"CI/CD security, secrets, SBOM, IaC scanning",           certs:"vendor-neutral" },
-  { code:"DFR", title:"Digital Forensics & IR",    note:"memory and disk triage, incident playbooks",            certs:"GCFA · GCIH-prep" },
-  { code:"RE",  title:"Malware Analysis & RE",     note:"static and dynamic analysis, no egress",                certs:"GREM-prep" },
-  { code:"NET", title:"Network & Fundamentals",    note:"packet analysis and protocols — the on-ramp",           certs:"Security+ · Network+" },
-  { code:"CRY", title:"Cryptography & Secrets",    note:"applied crypto, PKI, key-management failures",          certs:"vendor-neutral" },
-  { code:"GRC", title:"Governance & Policy-as-Code", note:"OPA/Rego, NIST/ISO mapping, usable audit trails",     certs:"vendor-neutral" },
-];
 
 const esc = CR.esc;
 let AREAS = [];
@@ -223,188 +264,190 @@ function playHero() {
   setTimeout(() => CR.paintTrace(el, HERO_CONTAINED.events, HERO_CONTAINED.result), 2600);
 }
 
-/* ---- counts ---------------------------------------------------------- */
-function renderCounts(area) {
-  const graded = (area?.scenarios || []).reduce((n, s) => n + (s.graded_steps || 0), 0);
-  // Derived, not hard-coded: an Area being authored must never inflate the live
-  // count, and a roadmap tile must never be counted as product.
-  const live = AREAS.filter((a) => a.status === "available").length;
-  const planned = ROADMAP.length + AREAS.filter((a) => a.status !== "available").length;
-  const cells = [
-    [area ? area.scenario_count : 0, "scenarios"],
-    [graded, "graded checks"],
-    [area ? `~${Math.round((area.estimated_minutes || 0) / 60)}h` : "—", "hands-on"],
-    ["10/10", "OWASP LLM top 10"],
-    [`${live} live · ${planned} planned`, "areas"],
-  ];
-  document.getElementById("counts").innerHTML = cells
-    .map(([n, l]) => `<div><span class="n">${esc(n)}</span><span class="l">${esc(l)}</span></div>`).join("");
+/* ---- Area tiles --------------------------------------------------------
+   Every number on a tile is derived from /catalog at render time — no rating,
+   no enrolment count, nothing invented. /catalog now carries per-step check
+   kinds, so the composition line reports the real three-way split: a `recall`
+   check is answered from the reading, every other kind asserts lab state the
+   learner had to produce by running the attack first. */
+function difficultyTag(d) {
+  const s = (d || "").toLowerCase();
+  if (["beginner", "easy"].includes(s)) return `<span class="tag cold">${esc(d)}</span>`;
+  if (["advanced", "hard", "expert"].includes(s)) return `<span class="tag hot">${esc(d)}</span>`;
+  if (s) return `<span class="tag warn">${esc(d)}</span>`;
+  return "";
+}
+function fmtMinutes(mins) {
+  if (!mins) return "0 min";
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h && m) return `~${h}h ${m}m`;
+  if (h) return `~${h}h`;
+  return `~${m} min`;
 }
 
-/* ---- the live area record -------------------------------------------- */
-function renderArea(area) {
-  const prog = area.scenarios.map((s) => {
+function coreProgress(area) {
+  const core = (area.scenarios || []).filter((s) => (s.track || "core") === "core");
+  const done = core.filter((s) => {
     const p = CR.loadProgress(area.id, s.id);
-    const done = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
-    return { s, done, total: s.step_count || 0, complete: s.step_count > 0 && done >= s.step_count };
-  });
-  const completeCount = prog.filter((r) => r.complete).length;
-  const pct = area.scenario_count ? Math.round((completeCount / area.scenario_count) * 100) : 0;
-
-  const rows = prog.map(({ s, complete }) => `
-    <tr data-href="/lab/ui/scenario.html?area=${esc(area.id)}&id=${esc(s.id)}">
-      <td class="ord"><span class="cell ${complete ? "done" : ""}">${complete ? "✓" : String(s.order).padStart(2, "0")}</span></td>
-      <td><span class="cell"><span class="t">${esc(s.title)}</span><span class="s">${esc(s.summary || "")}</span></span></td>
-      <td class="hidesm"><span class="cell owasp">${(s.owasp || []).slice(0, 2).map((o) => `<span class="tag quiet">${esc(o)}</span>`).join("")}</span></td>
-      <td class="n"><span class="cell">${s.est_minutes || "—"} min</span></td>
-      <td class="n"><span class="cell">${s.graded_steps ? s.graded_steps + " graded" : "read"}</span></td>
-    </tr>`).join("");
-
-  const cred = area.credential || {};
-  document.getElementById("areaHost").innerHTML = `
-    <div class="record">
-      <div class="idcol">
-        <div class="chips"><span class="tag cold"><i class="dot"></i>live</span><span class="tag">${esc(area.difficulty || "")}</span></div>
-        <h3>${esc(area.title)}</h3>
-        <p>${esc(area.blurb || "")}</p>
-
-        <h4>You will be able to</h4>
-        <ul>${(area.outcomes || []).slice(0, 4).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>
-
-        <h4>Roles this maps to</h4>
-        <div class="chips">${(area.roles || []).map((r) => `<span class="tag">${esc(r)}</span>`).join("")}</div>
-
-        <h4>Frameworks covered</h4>
-        <div class="chips">${(area.certs || []).map((c) => `<span class="tag quiet">${esc(c)}</span>`).join("")}</div>
-
-        <div class="progress-block">
-          <div class="row"><span>Scenarios complete</span><b>${completeCount} / ${area.scenario_count}</b></div>
-          <div class="meter"><i style="width:${pct}%"></i></div>
-          <div class="row" style="margin:var(--s3) 0 0"><span>${esc(cred.title || "Completion badge")}</span></div>
-          <button class="btn ${completeCount === area.scenario_count && area.scenario_count ? "assert" : "ghost"} sm"
-                  id="claimBtn" style="width:100%;justify-content:center;margin-top:var(--s2)">
-            ${completeCount === area.scenario_count && area.scenario_count ? "Claim badge" : "See what the badge requires"}
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <table class="slate">
-          <thead><tr><th>#</th><th>Scenario</th><th class="hidesm">Maps to</th><th style="text-align:right">Time</th><th style="text-align:right">Checks</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </div>`;
-
-  document.querySelectorAll(".slate tbody tr").forEach((tr) => {
-    tr.onclick = () => (location.href = tr.dataset.href);
-  });
-  document.getElementById("claimBtn").onclick = () => openBadge(area);
-  document.getElementById("liveHint").textContent =
-    `${area.scenario_count} scenarios · every graded step asserts real lab state`;
+    const passed = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
+    return s.step_count > 0 && passed >= s.step_count;
+  }).length;
+  return { done, total: core.length, pct: core.length ? Math.round((done / core.length) * 100) : 0 };
 }
 
-/* ---- badge ------------------------------------------------------------ */
-async function openBadge(area) {
-  const body = document.getElementById("badgeBody");
-  const sheet = document.getElementById("badgeSheet");
-  body.innerHTML = `<p><span class="spinner"></span> Checking your graded results…</p>`;
-  sheet.showModal();
+function tileHTML(area) {
+  const graded = (area.scenarios || []).reduce((n, s) => n + (s.graded_steps || 0), 0);
+  const steps = (area.scenarios || []).reduce((n, s) => n + (s.step_count || 0), 0);
+  const readOnly = Math.max(0, steps - graded);
+  // Split the graded steps by what they actually demand of the learner.
+  const recall = (area.scenarios || []).reduce(
+    (n, s) => n + ((s.check_kinds || {}).recall || 0), 0);
+  const runCheck = Math.max(0, graded - recall);
+  const parts = [];
+  if (runCheck) parts.push(`${runCheck} run+check`);
+  if (recall) parts.push(`${recall} recall`);
+  if (readOnly) parts.push(`${readOnly} read`);
+  const comp = `${parts.join(" · ")} · ${fmtMinutes(area.estimated_minutes)}`;
+  const locked = area.status !== "available";
+  const prog = coreProgress(area);
 
-  let res;
-  try {
-    res = await CR.api(`/credential/${area.id}/issue`, {
-      method: "POST",
-      body: JSON.stringify({ learner: null, passed: CR.transcript(area.id, area.scenarios) }),
-    });
-  } catch (e) {
-    body.innerHTML = `<div class="state bad"><h4>The lab did not answer</h4><p>${esc(e.message)}</p></div>
-      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
-    document.getElementById("closeBadge").onclick = () => sheet.close();
-    return;
-  }
+  // What the Area is worth on the way out. Falls back to the scenario count
+  // when an Area has no credential defined, so the row is never empty.
+  const earns = area.credential?.title
+    ? `Earns ${area.credential.title}`
+    : `${area.scenario_count ?? 0} scenarios · ${fmtMinutes(area.estimated_minutes)}`;
 
-  if (!res.ok) {
-    const el = res.eligibility || { passed_count: 0, required_count: 0, missing: [] };
-    body.innerHTML = `
-      <div class="eyebrow">Badge requirements</div>
-      <h3>${esc(el.passed_count)} of ${esc(el.required_count)} graded checks passed</h3>
-      <p>The badge is issued when every graded check in this Area has passed on this machine.
-         Reading a step does not count — a check does. Still open:</p>
-      <div class="missing">${el.missing.slice(0, 40).map((m) =>
-        `<div>${esc(m.scenario)} · ${esc(m.step)} — ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
-      <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
-  } else {
-    const a = res.assertion;
-    body.innerHTML = `
-      <div class="eyebrow">Issued by this instance</div>
-      <h3>${esc(a.badge.name)}</h3>
-      <p>${esc(a.badge.description || "")}</p>
-      <p><b>${esc(a.evidence.transcript.length)} graded checks</b> are recorded in this badge, each naming the
-         scenario, the step and the mode it was graded in. The transcript is signed, so an edited badge fails
-         verification.</p>
-      <p style="color:var(--dim)">${esc(res.verification.note)}</p>
-      <div class="token" id="tok">${esc(res.token)}</div>
+  const inner = `
+    <div class="band" aria-hidden="true">
+      <span class="mark">${esc(area.icon || "◆")}</span>
+    </div>
+    <div class="body">
+      <div class="kicker-row">
+        <span class="kicker">AREA · ${esc(area.scenario_count ?? 0)} SCENARIOS</span>
+        ${difficultyTag(area.difficulty)}
+      </div>
+      <h3>${esc(area.title)}</h3>
+      <p class="desc">${esc(area.blurb || "")}</p>
+      <div class="comp">${esc(comp)}</div>
+      ${locked
+        ? `<div class="lockednote"><span class="pip"></span><span class="tag warn">authoring</span> — not open yet</div>`
+        : `<div class="progress">
+             <div class="row"><span>Core progress</span><b>${prog.done} / ${prog.total} · ${prog.pct}%</b></div>
+             <div class="meter"><i style="width:${prog.pct}%"></i></div>
+           </div>`}
       <div class="foot">
-        <button class="btn sm" id="copyTok">Copy badge token</button>
-        <span style="display:flex;gap:var(--s2)">
-          <a class="btn sm ghost" href="/lab/ui/verify.html?token=${encodeURIComponent(res.token)}">Verify it</a>
-          <button class="btn sm" id="closeBadge">Close</button>
-        </span>
-      </div>`;
-    document.getElementById("copyTok").onclick = (e) => {
-      navigator.clipboard?.writeText(res.token);
-      e.target.textContent = "Copied";
-    };
-  }
-  document.getElementById("closeBadge").onclick = () => sheet.close();
+        <span class="earns">${esc(locked ? "Being written" : earns)}</span>
+        ${locked ? "" : `<span class="go">${prog.done ? "Continue" : "Open"}</span>`}
+      </div>
+    </div>
+  `;
+  return locked
+    ? `<div class="tile locked" aria-disabled="true">${inner}</div>`
+    : `<a class="tile" href="/lab/ui/area.html?id=${encodeURIComponent(area.id)}">${inner}</a>`;
+}
+
+function renderAreaGrid() {
+  document.getElementById("areaGrid").innerHTML = AREAS.map(tileHTML).join("");
+  const liveCount = AREAS.filter((a) => a.status === "available").length;
+  document.getElementById("areaHint").textContent =
+    `${liveCount} live · ${AREAS.length - liveCount} authoring`;
 }
 
 /* ---- roadmap ---------------------------------------------------------- */
 function renderRoadmap() {
-  const authoring = AREAS.filter((a) => a.status !== "available").map((a) => ({
-    code: (a.id || "").slice(0, 3).toUpperCase(),
-    title: a.title,
-    note: a.blurb || "",
-    certs: "being written",
-    inProgress: true,
-  }));
-  const rows = authoring.concat(ROADMAP);
+  // This list is "planned, nothing written yet". Anything that exists in /catalog -- at
+  // any status -- already has its own tile above, so it must not appear here too: an
+  // Area being authored was showing up twice on one page under two different labels
+  // ("authoring - not open yet" as a tile, "in progress" as a row), and listing it under
+  // a heading that reads "these do not open" contradicted the tile next to it.
+  const rows = CR.roadmapGaps(AREAS);
   document.getElementById("roadmap").innerHTML = rows.map((r) => `
     <li aria-disabled="true">
       <span class="code">${esc(r.code)}</span>
       <span class="nm">${esc(r.title)}<span>${esc(r.note)}</span></span>
-      <span class="certs">${r.inProgress ? '<span class="tag warn">in progress</span>' : esc(r.certs)}</span>
+      <span class="certs">${esc(r.certs)}</span>
     </li>`).join("");
 }
 
 /* ---- boot -------------------------------------------------------------- */
+
+/* ---- the eight-hop data path + live figures ----------------------------
+   Both read from the API. `data_path_hops` is defined once in
+   lab/curriculum.py alongside CONTROLS, and a test ties every hop's control
+   ids back to that catalog -- so this page renders the map, it does not
+   own a second copy of it. */
+async function renderNarrative() {
+  let cur = null;
+  try { cur = await CR.api("/lab/curriculum"); } catch (e) { return; }
+
+  const byId = {};
+  (cur.controls || []).forEach((c) => { byId[c.id] = c; });
+  const hops = cur.data_path_hops || [];
+  CR.renderHops(document.getElementById("hops"), hops, byId);
+  const hint = document.getElementById("hopHint");
+  if (hint) {
+    const named = new Set();
+    hops.forEach((h) => (h.controls || []).forEach((c) => named.add(c)));
+    hint.textContent = hops.length + " hops · " + named.size + " distinct controls";
+  }
+  CR.initHopScrub(document.querySelector(".hops-sec"));
+
+  // Every figure below is counted at render time. Nothing here is written by hand.
+  const cov = cur.coverage_summary || {};
+  const scen = AREAS.reduce((n, a) => n + (a.scenarios || []).length, 0);
+  const graded = AREAS.reduce((n, a) =>
+    n + (a.scenarios || []).reduce((m, s) => m + (s.graded_steps || 0), 0), 0);
+  const mins = AREAS.reduce((n, a) => n + (a.estimated_minutes || 0), 0);
+  const figs = [
+    [scen, "", "scenarios", "across " + AREAS.length + " areas"],
+    [graded, "", "graded checks", "each one reads real lab state"],
+    [Math.round(mins / 60), "h", "hands-on", "estimated, from the content tree"],
+    [cov.llm_top10_full + "/" + (cov.llm_top10_total || 10), "", "OWASP LLM 2026", "one worked scenario each"],
+    [cov.asi_full + "/" + (cov.asi_listed || 10), "", "OWASP ASI 2026", "gaps published, not hidden"],
+    [cov.controls_taught, "", "controls taught", "mapped to the file that implements it"],
+  ];
+  document.getElementById("figs").innerHTML = figs.map(([n, unit, label, note]) => `
+    <div class="fig">
+      <b>${CR.esc(String(n))}${unit ? `<span class="unit">${unit}</span>` : ""}</b>
+      <span>${CR.esc(label)}</span>
+      <em>${CR.esc(note)}</em>
+    </div>`).join("");
+
+  document.querySelectorAll(".wordreveal").forEach((el) => CR.initWordReveal(el));
+}
+
 async function init() {
   playHero();
+  // The words are the surfaces this Area actually teaches you to attack, in the
+  // order the Core path teaches them -- not adjectives.
+  CR.initTypewriter(document.getElementById("twWord"),
+    ["the agent", "the planner", "the retriever", "the memory", "the tools"],
+    { minChars: 4 });
+  CR.initSmoothScroll();
   try {
     const cat = await CR.api("/catalog");
     AREAS = cat.areas || [];
   } catch (e) {
-    document.getElementById("areaHost").innerHTML = `
-      <div class="state bad" style="margin:var(--s5)">
+    document.getElementById("areaGrid").innerHTML = `
+      <div class="state bad" style="grid-column:1/-1">
         <h4>The lab is not answering on this port</h4>
         <p>Start it from the repo folder with <code>docker compose up -d</code>, then reload.</p>
       </div>`;
-    document.getElementById("counts").innerHTML = "";
+    document.getElementById("areaHint").textContent = "";
     renderRoadmap();
     return;
   }
-  const area = AREAS.find((a) => a.status === "available") || AREAS[0];
-  if (!area) {
-    document.getElementById("areaHost").innerHTML = `
-      <div class="state" style="margin:var(--s5)"><h4>No areas loaded</h4>
+  if (!AREAS.length) {
+    document.getElementById("areaGrid").innerHTML = `
+      <div class="state" style="grid-column:1/-1"><h4>No areas loaded</h4>
       <p>The content tree came back empty. Check <code>content/areas/</code> is mounted into the agent container.</p></div>`;
+    document.getElementById("areaHint").textContent = "";
     renderRoadmap();
     return;
   }
-  renderCounts(area);
-  renderArea(area);
+  renderAreaGrid();
   renderRoadmap();
+  renderNarrative();
 }
 init();
 </script>

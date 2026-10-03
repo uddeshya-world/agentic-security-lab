@@ -1,4 +1,4 @@
-"""LLM09 defense: groundedness / citation enforcement.
+"""LLM07 defense: groundedness / citation enforcement (Misinformation).
 
 **Scope, stated honestly:** this is *not* a hallucination detector. Detecting
 whether a statement is true in general is not something a deterministic lab check

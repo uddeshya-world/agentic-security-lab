@@ -7,134 +7,297 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<script src="/lab/ui/vendor/marked.min.js"></script>
 <style>
   html, body { height: 100%; }
   body { overflow: hidden; }
 
-  .stage { display: grid; grid-template-columns: 250px minmax(0, 1fr) 400px; height: calc(100vh - 54px); }
+  /* The marketing header is gone on this page — the rail is the chrome. --rail-w
+     is the one thing that changes between expanded and collapsed, read by every
+     grid-template-columns declaration below so there is exactly one place that
+     knows the rail's width. */
+  .stage { --rail-w: 264px; display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr) 400px; height: 100vh; }
+  .stage.rail-collapsed { --rail-w: 60px; }
 
-  /* ---- rail ----------------------------------------------------------- */
-  .rail { border-right: 1px solid var(--edge); background: var(--plate); overflow-y: auto; }
-  .rail .head { padding: var(--s4) var(--s4) var(--s3); border-bottom: 1px solid var(--edge); }
-  .rail .head .t { font-family: var(--display); font-size: 14px; font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
-  .rail .head .s { font-size: 12px; color: var(--dim); line-height: 1.5; margin-top: var(--s2); }
-  .rail .prog { display: flex; align-items: center; gap: var(--s2); padding: var(--s3) var(--s4); }
-  .rail .prog .meter { flex: 1; }
-  .rail .prog .pct { font-family: var(--mono); font-size: 10.5px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  /* ---- rail ------------------------------------------------------------- */
+  /* min-width:0 because a grid item defaults to min-content, and the rail's
+     widest child — the scenario title — is a long nowrap string. Without it the
+     single-column phone layout is dragged ~110px wider than the viewport and
+     the whole page scrolls sideways. The title already clips to an ellipsis. */
+  .rail { min-width: 0; border-right: 1px solid var(--edge); background: var(--plate); overflow-y: auto; display: flex; flex-direction: column; }
+  .rail .rhead { display: flex; align-items: center; gap: var(--s2); padding: var(--s3) var(--s3) 0; }
+  .rail .back { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--ash); white-space: nowrap; overflow: hidden; }
+  .rail .back:hover { color: var(--chalk); }
+  .rail .back .arrow { flex: none; }
+  .rail .grow { flex: 1; }
+  .rail .collapse {
+    flex: none; width: 22px; height: 22px; display: grid; place-items: center;
+    background: none; border: 1px solid var(--edge); border-radius: var(--r-sm); color: var(--dim);
+    font-family: var(--mono); font-size: var(--fs-xs); cursor: pointer; padding: 0;
+  }
+  .rail .collapse:hover { color: var(--chalk); border-color: var(--edge-hi); }
+  .rail .brand { display: flex; align-items: center; gap: var(--s2); padding: var(--s3) var(--s4) 0; }
+  .rail .brand .bname { font-family: var(--display); font-weight: 700; font-size: var(--fs-md); letter-spacing: var(--tr-tight); color: var(--ash); }
+  .rail .glyph {
+    display: inline-block; width: 18px; height: 8px; border-radius: 1px; flex: none;
+    background: linear-gradient(90deg, var(--ember) 0 62%, transparent 62%), linear-gradient(90deg, transparent 0 70%, var(--halon) 70%);
+  }
+  .rail .rtitle {
+    padding: var(--s3) var(--s4) 0; font-family: var(--display); font-size: var(--fs-base); font-weight: 600;
+    letter-spacing: -.015em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rail .ringrow { display: flex; align-items: center; gap: var(--s3); padding: var(--s4); }
+  .ring { flex: none; }
+  .ring .ring-bg { fill: none; stroke: var(--edge); stroke-width: 4; }
+  .ring .ring-fg {
+    fill: none; stroke: var(--halon); stroke-width: 4; stroke-linecap: round;
+    transform: rotate(-90deg); transform-origin: 20px 20px; transition: stroke-dashoffset .4s ease;
+  }
+  .ringtext { display: flex; flex-direction: column; line-height: 1.25; }
+  .ringtext b { font-family: var(--mono); font-size: var(--fs-base); color: var(--chalk); font-variant-numeric: tabular-nums; }
+  .ringtext span { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); }
+  .rail .counters { display: flex; flex-wrap: wrap; gap: var(--s2); padding: 0 var(--s4) var(--s4); }
   .steps { list-style: none; margin: 0 0 var(--s6); padding: 0; }
   .steps li {
     display: grid; grid-template-columns: 20px 1fr; gap: var(--s3); align-items: start;
     padding: 9px var(--s4); cursor: pointer; border-left: 2px solid transparent;
+    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
   }
   .steps li:hover { background: var(--shelf); }
   .steps li.on { border-left-color: var(--halon); background: var(--shelf); }
   .steps .pip {
     width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--edge-hi);
-    display: grid; place-items: center; font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 1px;
+    display: grid; place-items: center; font-family: var(--mono); font-size: var(--fs-2xs); color: var(--dim); margin-top: 1px;
+    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   }
   .steps li.ok .pip { background: var(--halon-bed); border-color: var(--halon-line); color: var(--halon); }
-  .steps .lb { font-size: 13px; line-height: 1.4; color: var(--ash); }
+  .steps .lb { font-size: var(--fs-md); line-height: 1.4; color: var(--ash); overflow: hidden; }
   .steps li.on .lb { color: var(--chalk); }
-  .steps .kind { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
+  .steps .kind { display: block; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); margin-bottom: 2px; }
   .steps li.ok .kind { color: var(--halon-line); }
 
-  /* ---- lesson --------------------------------------------------------- */
-  .lesson { overflow-y: auto; padding: var(--s6) var(--s7) var(--s8); }
-  .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: var(--s4); }
+  /* Collapsed: keep the rail navigable (pips + click targets) and drop the prose.
+     The toggled class lives on .stage (it also drives --rail-w), so these key
+     off .stage.rail-collapsed rather than a class on .rail itself. */
+  .stage.rail-collapsed .rail .back .lbl, .stage.rail-collapsed .rail .brand .bname,
+  .stage.rail-collapsed .rail .rtitle, .stage.rail-collapsed .rail .ringtext,
+  .stage.rail-collapsed .rail .counters, .stage.rail-collapsed .rail .steps .lb { display: none; }
+  .stage.rail-collapsed .rail .ringrow { justify-content: center; padding: var(--s3) var(--s2); }
+  .stage.rail-collapsed .rail .steps li { grid-template-columns: 1fr; justify-items: center; padding: 8px 4px; }
+
+  /* ---- lesson ------------------------------------------------------------ */
+  .lesson { overflow-y: auto; padding: 0; }
+  /* The lesson column scrolls, so the scenario's identity has to be pinned to
+     the top of it — at step 14 of 19 the title is otherwise 4000px away. */
+  .runbar {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--nav-bg); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--edge);
+    padding: var(--s3) var(--s7);
+  }
+  .runbar .where { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); }
+  .runbar .where a { color: var(--dim); }
+  .runbar .where a:hover { color: var(--chalk); }
+  .runbar .where .here { color: var(--ash); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .runbar .facts { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s1); margin-top: 6px; }
+  .runbar .facts .grow { flex: 1; }
+  .runbar .sid { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); white-space: nowrap; }
+
+  .lessonbody { padding: var(--s5) var(--s7) var(--s8); }
+  .crumb { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); margin-bottom: var(--s4); }
+
+  /* ---- scope gate ---------------------------------------------------------
+     Shown once per Area, before its first lesson. It is a gate rather than a
+     notice: the lesson is not rendered until it is acknowledged, so the Run
+     control does not exist yet. It covers this player only — the standalone
+     sandbox console at index.html has its own runner and no gate. */
+  .gate { max-width: 68ch; padding: var(--s7) 0 var(--s8); }
+  .gate .k { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--brass); }
+  .gate h2 { font-family: var(--display); font-size: var(--fs-2xl); font-weight: 600; letter-spacing: var(--tr-tight); margin: var(--s2) 0 var(--s3); }
+  .gate .intro { color: var(--ash); font-size: var(--fs-base); line-height: var(--lh-normal); margin: 0 0 var(--s5); }
+  .gate ul { list-style: none; margin: 0 0 var(--s5); padding: 0; }
+  .gate li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: var(--s3); align-items: baseline;
+             padding: 9px 0; border-bottom: 1px solid var(--edge); font-size: var(--fs-md); color: var(--ash); line-height: 1.55; }
+  .gate li b { color: var(--chalk); font-weight: 500; }
+  .gate li .side { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); }
+  .gate li .side.in { color: var(--halon); }
+  .gate li .side.out { color: var(--ember); }
+  .gate label { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: var(--s3); align-items: start;
+                padding: var(--s3) 0; font-size: var(--fs-md); color: var(--ash); line-height: 1.5; cursor: pointer; }
+  .gate label input { width: 15px; height: 15px; margin-top: 2px; accent-color: var(--halon); cursor: pointer; }
+  .gate .acts { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s4); }
+  .gate .why { font-family: var(--mono); font-size: var(--fs-xs); color: var(--dim); }
   .foot { max-width: 70ch; margin-top: var(--s6); }
 
   /* Run and Check are two different acts, so they are two different blocks.
      Run makes the attack happen. Check reads what happened. */
   .act { border: 1px solid var(--edge); border-radius: var(--r-lg); overflow: hidden; margin-bottom: var(--s4); }
   .act .bar { display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); background: var(--plate); }
-  .act .bar .t { font-family: var(--display); font-size: 13.5px; font-weight: 600; }
-  .act .bar .d { font-size: 12.5px; color: var(--ash); flex: 1; }
+  .act .bar .t { font-family: var(--display); font-size: var(--fs-md); font-weight: 600; }
+  .act .bar .d { font-size: var(--fs-sm); color: var(--ash); flex: 1; }
   .act .bar .grow { flex: 1; }
   .act.run .bar { border-left: 2px solid var(--ember); }
   .act.verify .bar { border-left: 2px solid var(--halon); }
-  .act .say { padding: 0 var(--s4) var(--s3); font-family: var(--mono); font-size: 11.5px; line-height: 1.55; color: var(--ash); }
+  .act .say:not(:empty) { padding: 0 var(--s4) var(--s3); }
   .act.pass { border-color: var(--halon-line); }
   .act.pass .say { color: var(--halon-ink); }
   .act.fail { border-color: var(--ember-line); }
   .act.fail .say { color: var(--ember-ink); }
 
-  .quiz { padding: var(--s3) var(--s4) var(--s4); display: grid; gap: var(--s2); }
-  .quiz .q { font-size: 14px; color: var(--chalk); margin-bottom: var(--s1); }
-  .quiz label {
-    display: flex; gap: var(--s3); align-items: flex-start; padding: 9px var(--s3);
-    border: 1px solid var(--edge); border-radius: var(--r); cursor: pointer; font-size: 13.5px; color: var(--ash);
+  /* ---- checks rubric ------------------------------------------------------
+     The highest-value change: what Check is actually going to assert, named
+     before the button is pressed. Only appears when the content carries
+     check.asserts — otherwise this block is simply not inserted. */
+  .rubric { border: 1px solid var(--edge); border-radius: var(--r-lg); margin-bottom: var(--s4); overflow: hidden; }
+  .rubric summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; gap: var(--s2);
+    padding: var(--s3) var(--s4); background: var(--plate);
+    font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--ash);
+    transition: background var(--t-fast) var(--ease);
   }
-  .quiz label:hover { border-color: var(--edge-hi); color: var(--chalk); }
-  .quiz input { accent-color: var(--halon); margin-top: 3px; }
-  .quiz input:checked + span { color: var(--chalk); }
+  .rubric summary:hover { background: var(--shelf); }
+  .rubric summary::-webkit-details-marker { display: none; }
+  .rubric summary .chev { transition: transform var(--t-fast) var(--ease); color: var(--dim); }
+  .rubric[open] summary .chev { transform: rotate(90deg); }
+  .rubric .rlist { padding: var(--s2) var(--s4) var(--s3); display: grid; gap: var(--s2); }
+  .rubric .rrow { display: flex; align-items: flex-start; gap: var(--s3); font-size: var(--fs-md); color: var(--ash); }
+  .rubric .rdot {
+    flex: none; width: 12px; height: 12px; margin-top: 3px; border-radius: 50%; border: 1.5px solid var(--edge-hi); background: transparent;
+    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  }
+  .rubric .rdot.pass { background: var(--halon); border-color: var(--halon); box-shadow: 0 0 8px -1px var(--halon); }
+  .rubric .rdot.fail { background: var(--ember); border-color: var(--ember); box-shadow: 0 0 8px -1px var(--ember); }
+  @media (prefers-reduced-motion: reduce) { .rubric summary .chev { transition: none; } }
 
-  .nav { display: flex; justify-content: space-between; gap: var(--s3); margin-top: var(--s5); }
+  /* ---- state-aware helper line -------------------------------------------- */
+  .helper { margin: var(--s3) 0 0; font-size: var(--fs-sm); color: var(--ash); }
+  .helper.pass { color: var(--halon-ink); }
+  .helper.fail { color: var(--ember-ink); }
+  .helper.warn { color: var(--brass); }
+  .helper[hidden] { display: none; }
+
+  /* ---- next / gate / skip -------------------------------------------------- */
+  .nav { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s4); margin-top: var(--s5); }
+  .nextwrap { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); max-width: 60ch; }
+  .gatemsg { font-size: var(--fs-sm); color: var(--dim); }
+  .skiplink { font-size: var(--fs-sm); color: var(--ash); border-bottom: 1px solid var(--edge); }
+  .skiplink:hover { color: var(--chalk); border-color: var(--edge-hi); }
 
   /* ---- evidence column ------------------------------------------------
      This never disappears. If you cannot see the SQL that ran, you did not
      learn the lesson — so at narrow widths it moves below the lesson rather
-     than being hidden. */
+     than being hidden. When the stack is unreachable its content is swapped
+     for the pre-flight panel, but the column itself is always present. */
   .evid { border-left: 1px solid var(--edge); background: var(--plate); display: flex; flex-direction: column; overflow: hidden; }
+  #evidReady { display: flex; flex-direction: column; overflow: hidden; height: 100%; }
   .evid .modebar { display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border-bottom: 1px solid var(--edge); }
-  .evid .modebar .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  .evid .modebar .l { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); }
   .evid .modebar .grow { flex: 1; }
+  /* mode switch: the toggle picks the next run, so it gets the same fast
+     interaction feedback as a button — a hover/press response, not an entrance. */
+  #modeSeg button { transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
+  #modeSeg button:hover[aria-pressed="false"] { color: var(--chalk); }
+  #modeSeg button:active { transform: translateY(1px); }
+  @media (prefers-reduced-motion: reduce) { #modeSeg button { transition: none; } }
   .evid .tracebox { padding: var(--s2) var(--s4) var(--s3); border-bottom: 1px solid var(--edge); }
   .evid .tracebox .trace .track { margin-top: var(--s2); }
   .tabs { display: flex; border-bottom: 1px solid var(--edge); }
   .tabs button {
-    flex: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    flex: 1; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase;
     background: none; border: 0; border-bottom: 2px solid transparent; color: var(--dim); padding: 10px 6px; cursor: pointer;
   }
   .tabs button.on { color: var(--chalk); border-bottom-color: var(--halon); }
   .panes { flex: 1; overflow-y: auto; padding: var(--s4); min-height: 0; }
   .pane { display: none; } .pane.on { display: block; }
   #p-term.on { display: flex; flex-direction: column; height: 100%; }
-  .termframe { flex: 1; width: 100%; min-height: 320px; border: 1px solid var(--edge); border-radius: var(--r); background: #000; }
-  .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin-bottom: var(--s2); }
+  .termframe { flex: 1; width: 100%; min-height: 320px; border: 1px solid var(--edge); border-radius: var(--r); background: var(--term-bg); }
+  .lbl { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--dim); margin-bottom: var(--s2); }
+
+  /* ---- environment pre-flight -------------------------------------------- */
+  .preflight { padding: var(--s4); overflow-y: auto; }
+  .pf h4 { margin: 0 0 var(--s2); font-family: var(--display); font-size: var(--fs-base); color: var(--chalk); letter-spacing: var(--tr-tight); }
+  .pf p { margin: 0 0 var(--s3); font-size: var(--fs-sm); color: var(--ash); line-height: 1.55; }
+  .pf .fine { color: var(--dim); font-size: var(--fs-xs); }
+  .svclist { display: grid; gap: var(--s2); margin-bottom: var(--s3); }
+  .svcrow { display: flex; align-items: center; gap: var(--s3); }
+  .svcname { font-family: var(--mono); font-size: var(--fs-sm); color: var(--ash); }
+  .cmd {
+    display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s3);
+    background: var(--void); border: 1px solid var(--edge); border-radius: var(--r); padding: var(--s2) var(--s3);
+    overflow-x: auto;
+  }
+  .cmd code { font-family: var(--mono); font-size: var(--fs-sm); color: var(--halon-ink); white-space: nowrap; }
+  .cmd .btn { margin-left: auto; flex: none; }
 
   /* ---- responsive ----------------------------------------------------- */
   @media (max-width: 1180px) {
     body { overflow: auto; }
-    .stage { grid-template-columns: 220px minmax(0, 1fr); height: auto; }
-    .rail { height: calc(100vh - 54px); position: sticky; top: 54px; }
-    .lesson { overflow: visible; padding: var(--s5) var(--s5) var(--s6); }
+    .stage { grid-template-columns: var(--rail-w) minmax(0, 1fr); height: auto; }
+    .rail { height: 100vh; position: sticky; top: 0; }
+    .lesson { overflow: visible; }
+    .runbar { padding: var(--s3) var(--s5); }
+    .lessonbody { padding: var(--s5) var(--s5) var(--s6); }
     /* the evidence moves under the lesson — it is never removed */
     .evid { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--edge); }
-    .panes { max-height: 560px; }
+    .panes, .preflight { max-height: 560px; }
     .termframe { min-height: 420px; }
   }
   @media (max-width: 780px) {
-    .stage { grid-template-columns: 1fr; }
+    /* minmax(0,1fr), not 1fr: a bare 1fr track takes its minimum from the
+       item's min-content, which the rail's long scenario title blows past. */
+    .stage { grid-template-columns: minmax(0, 1fr); }
     .rail { position: static; height: auto; max-height: 300px; border-right: 0; border-bottom: 1px solid var(--edge); }
-    .lesson { padding: var(--s5) var(--s4) var(--s6); }
-    .cr-nav { padding: 0 var(--s4); gap: var(--s3); overflow-x: auto; }
-    .topline { flex-wrap: wrap; }
+    .runbar { position: static; padding: var(--s3) var(--s4); }
+    .lessonbody { padding: var(--s5) var(--s4) var(--s6); }
+  }
+  @media (max-width: 420px) {
+    .nav { flex-direction: column; }
+    .cmd { flex-wrap: wrap; }
+    .cmd .btn { margin-left: 0; }
   }
 </style>
 </head>
 <body>
 
-<header class="cr-nav">
-  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
-  <a class="link" href="/lab/ui/catalog.html">← All scenarios</a>
-  <span class="grow"></span>
-  <span class="tag" id="stackPill"><i class="dot"></i>checking stack</span>
-</header>
+<div class="stage" id="stage">
 
-<div class="stage">
-
-  <aside class="rail">
-    <div class="head">
-      <div class="t" id="scTitle">Loading…</div>
-      <div class="s" id="scSummary"></div>
+  <aside class="rail" id="rail">
+    <div class="rhead">
+      <a class="back" href="/lab/ui/catalog.html" id="backLink" title="Back to the Area"><span class="arrow">←</span><span class="lbl">Area</span></a>
+      <span class="grow"></span>
+      <button type="button" class="collapse" id="collapseBtn" aria-expanded="true" title="Collapse the step list">«</button>
     </div>
-    <div class="prog"><div class="meter"><i id="progBar" style="width:0"></i></div><span class="pct" id="progPct">0%</span></div>
+    <a class="brand" href="/lab/ui/catalog.html"><span class="glyph"></span><span class="bname">CyberRange</span></a>
+    <div class="rtitle" id="scTitle" title="">Loading…</div>
+    <div class="ringrow">
+      <svg class="ring" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+        <circle class="ring-bg" cx="20" cy="20" r="16"></circle>
+        <circle class="ring-fg" id="ringFg" cx="20" cy="20" r="16"></circle>
+      </svg>
+      <div class="ringtext"><b id="ringCount">0/0</b><span>graded</span></div>
+    </div>
+    <div class="counters">
+      <span class="tag quiet" id="cDone">DONE 0</span>
+      <span class="tag cold" id="cEvidence">EVIDENCE 0</span>
+      <span class="tag warn" id="cRecall">RECALL 0</span>
+    </div>
     <ul class="steps" id="stepList"></ul>
   </aside>
 
   <main class="lesson" id="lesson">
+    <div class="runbar" id="runbar" hidden>
+      <div class="where">
+        <a href="/lab/ui/catalog.html">Range</a>
+        <span>/</span>
+        <a href="/lab/ui/catalog.html" id="barArea">Area</a>
+        <span>/</span>
+        <span class="here" id="barTitle"></span>
+      </div>
+      <div class="facts" id="barFacts"></div>
+    </div>
+
+    <div class="lessonbody" id="lessonBody">
     <div class="crumb" id="crumb"></div>
     <div class="md" id="body">
       <div class="skel" style="height:22px;width:46%;margin-bottom:16px"></div>
@@ -143,59 +306,69 @@
     </div>
     <div class="foot">
       <div id="acts"></div>
+      <div class="helper" id="helperLine" hidden></div>
       <div class="nav">
-        <button class="btn ghost" id="prev">← Previous</button>
-        <button class="btn" id="next">Next →</button>
+        <button class="btn ghost lift" id="prev">← Previous</button>
+        <div class="nextwrap">
+          <button class="btn lift" id="next">Next →</button>
+          <span class="gatemsg" id="gateMsg" hidden>Pass the check to continue</span>
+          <a href="#" class="skiplink" id="skipLink" hidden>Skip this step</a>
+        </div>
       </div>
+    </div>
     </div>
   </main>
 
   <aside class="evid">
-    <div class="modebar">
-      <span class="l">This run</span>
-      <div class="seg" id="modeSeg" role="group" aria-label="Mode for the next run">
-        <button type="button" data-mode="vulnerable" aria-pressed="true">vulnerable</button>
-        <button type="button" data-mode="secure" aria-pressed="false">secure</button>
+    <div id="evidReady">
+      <div class="modebar">
+        <span class="l">This run</span>
+        <div class="seg" id="modeSeg" role="group" aria-label="Mode for the next run">
+          <button type="button" data-mode="vulnerable" aria-pressed="true">vulnerable</button>
+          <button type="button" data-mode="secure" aria-pressed="false">secure</button>
+        </div>
+        <span class="grow"></span>
+        <span class="l" id="runState"></span>
       </div>
-      <span class="grow"></span>
-      <span class="l" id="runState"></span>
-    </div>
 
-    <div class="tracebox"><div class="trace" id="trace"></div></div>
+      <div class="tracebox"><div class="trace" id="trace"></div></div>
 
-    <div class="tabs">
-      <button data-pane="time" class="on">Timeline</button>
-      <button data-pane="forensics">Forensics</button>
-      <button data-pane="term">Terminal</button>
-    </div>
+      <div class="tabs">
+        <button data-pane="time" class="on">Timeline</button>
+        <button data-pane="forensics">Forensics</button>
+        <button data-pane="term">Terminal</button>
+      </div>
 
-    <div class="panes">
-      <div class="pane on" id="p-time">
-        <div class="timeline" id="timeline">
-          <div class="state"><h4>No run yet</h4><p>Press <b>Run</b> on a step. The attack executes against the real
-            tools and everything it touches shows up here — including the SQL.</p></div>
+      <div class="panes">
+        <div class="pane on" id="p-time">
+          <div class="timeline" id="timeline">
+            <div class="state"><h4>No run yet</h4><p>Press <b>Run</b> on a step. The attack executes against the real
+              tools and everything it touches shows up here — including the SQL.</p></div>
+          </div>
+        </div>
+        <div class="pane" id="p-forensics">
+          <div class="lbl" id="planLbl">Planner output</div><pre class="dump" id="planOut">—</pre>
+          <div class="lbl" id="toolLbl">Tool result</div><pre class="dump" id="toolOut">—</pre>
+          <div class="lbl" id="ragLbl">Retrieved context</div><pre class="dump" id="ragOut">—</pre>
+        </div>
+        <div class="pane" id="p-term">
+          <div class="state" id="termNote">
+            <h4>A shell inside the lab network</h4>
+            <p>Commands from the lesson run here unchanged — <code>curl http://127.0.0.1:8101/schema</code>,
+               <code>cat data/…</code>, <code>python -m json.tool</code>. If it stays blank, start it with
+               <code>docker compose up -d ttyd</code> and reopen this tab.</p>
+          </div>
+          <iframe id="termFrame" class="termframe" hidden title="Lab terminal"></iframe>
         </div>
       </div>
-      <div class="pane" id="p-forensics">
-        <div class="lbl">Planner output</div><pre class="dump" id="planOut">—</pre>
-        <div class="lbl">Tool result</div><pre class="dump" id="toolOut">—</pre>
-        <div class="lbl">Retrieved context</div><pre class="dump" id="ragOut">—</pre>
-      </div>
-      <div class="pane" id="p-term">
-        <div class="state" id="termNote">
-          <h4>A shell inside the lab network</h4>
-          <p>Commands from the lesson run here unchanged — <code>curl http://127.0.0.1:8101/schema</code>,
-             <code>cat data/…</code>, <code>python -m json.tool</code>. If it stays blank, start it with
-             <code>docker compose up -d ttyd</code> and reopen this tab.</p>
-        </div>
-        <iframe id="termFrame" class="termframe" hidden title="Lab terminal"></iframe>
-      </div>
     </div>
+
+    <div class="preflight" id="evidPreflight" hidden></div>
   </aside>
 
 </div>
 
-<script src="/lab/ui/cyberrange.js?v=7"></script>
+<script src="/lab/ui/cyberrange.js?v=16"></script>
 <script>
 const esc = CR.esc;
 const TTYD = `http://${location.hostname}:7681`;
@@ -205,57 +378,252 @@ const SCEN = q.get("id") || "00-orientation";
 
 let data = null, idx = 0;
 let runMode = "vulnerable";   // one control, one meaning: the mode of the next run
-let lastRun = null;           // {sim, mode, result} — what Check will be reading
+let lastRun = null;           // {sim, mode, result, stepId} — what Check will be reading
+let stackReachable = null;    // null = unknown yet, true/false once /lab/status answers
+let stackData = null;
+const lastCheckResult = {};   // stepId -> {passed, message} — the server's own words
 
 /* ---- progress --------------------------------------------------------- */
 const progress = () => CR.loadProgress(AREA, SCEN);
 function markPassed(step, kind, mode) {
   CR.recordPass(AREA, SCEN, step.id, kind, mode);
   renderRail();
+  updateGate(step);
+  renderHelper(step);
 }
 
-/* ---- rail ------------------------------------------------------------- */
+/* A step's evidence-bearing check kinds — everything that reads real lab
+   state rather than a read-only "mark it done" or a recall quiz. */
+const EVIDENCE_KINDS = new Set(["evidence", "simulate", "mailhog", "lab_status", "secure_mode"]);
+
+function countsByKind(p) {
+  let done = 0, evidence = 0, recall = 0;
+  for (const v of Object.values(p)) {
+    if (!v || !v.passed) continue;
+    const k = v.kind;
+    if (k === "recall") recall++;
+    else if (EVIDENCE_KINDS.has(k)) evidence++;
+    else done++; // "read" and "manual" — the step was done, not graded against lab state
+  }
+  return { done, evidence, recall };
+}
+
+/** READ (no check) / RUN + CHECK (has a run spec) / RECALL / LIVE (ungraded) / CHECK
+    (has a check but nothing to run first — e.g. lab_status). */
+function stepType(step) {
+  if (step.ungraded_live) return "live";
+  if (step.check_kind === "recall") return "recall";
+  if (!step.has_check) return "read";
+  return step.run ? "run + check" : "check";
+}
+
+/* ---- rail --------------------------------------------------------------- */
+const RING_R = 16, RING_C = 2 * Math.PI * RING_R;
+function paintRing(passed, total) {
+  const fg = document.getElementById("ringFg");
+  const frac = total ? passed / total : 0;
+  fg.style.strokeDasharray = String(RING_C);
+  fg.style.strokeDashoffset = String(RING_C * (1 - frac));
+  document.getElementById("ringCount").textContent = `${passed}/${total}`;
+}
+
 function renderRail() {
   const p = progress();
-  const done = data.steps.filter((s) => CR.isPassed(p, s.id)).length;
-  const pct = Math.round((done / data.steps.length) * 100);
-  document.getElementById("progBar").style.width = pct + "%";
-  document.getElementById("progPct").textContent = pct + "%";
+  const graded = data.steps.filter((s) => s.has_check);
+  paintRing(graded.filter((s) => CR.isPassed(p, s.id)).length, graded.length);
+  const c = countsByKind(p);
+  document.getElementById("cDone").textContent = `DONE ${c.done}`;
+  document.getElementById("cEvidence").textContent = `EVIDENCE ${c.evidence}`;
+  document.getElementById("cRecall").textContent = `RECALL ${c.recall}`;
   document.getElementById("stepList").innerHTML = data.steps.map((s, i) => {
     const ok = CR.isPassed(p, s.id);
-    const kind = !s.has_check ? "read" : s.check_kind === "recall" ? "question" : "graded";
+    const kind = stepType(s) + (s.optional ? " · optional" : "");
     return `<li data-i="${i}" class="${i === idx ? "on" : ""} ${ok ? "ok" : ""}">
       <span class="pip">${ok ? "✓" : i + 1}</span>
-      <span class="lb"><span class="kind">${kind}</span>${esc(s.title || s.id)}</span></li>`;
+      <span class="lb"><span class="kind">${esc(kind)}</span>${esc(s.title || s.id)}</span></li>`;
   }).join("");
   document.querySelectorAll(".steps li").forEach((li) => (li.onclick = () => go(+li.dataset.i)));
 }
 
+/* ---- rail collapse (persisted) ------------------------------------------ */
+const RAIL_KEY = "cr:rail:collapsed";
+function setRailCollapsed(collapsed) {
+  try { localStorage.setItem(RAIL_KEY, collapsed ? "1" : "0"); } catch { /* private mode */ }
+  document.getElementById("stage").classList.toggle("rail-collapsed", collapsed);
+  const btn = document.getElementById("collapseBtn");
+  btn.setAttribute("aria-expanded", String(!collapsed));
+  btn.textContent = collapsed ? "»" : "«";
+  btn.title = collapsed ? "Expand the step list" : "Collapse the step list";
+}
+function railCollapsed() {
+  try { return localStorage.getItem(RAIL_KEY) === "1"; } catch { return false; }
+}
+
 /* ---- step ------------------------------------------------------------- */
+/* ---- runner bar ----------------------------------------------------------
+   Everything here is a field of the scenario payload. Nothing is asserted that
+   the content tree does not already say — an Area that omits a difficulty
+   simply gets one fewer chip.
+   -------------------------------------------------------------------------- */
+function renderRunbar() {
+  const bar = document.getElementById("runbar");
+  document.getElementById("barArea").textContent = data.area?.title || AREA;
+  document.getElementById("barArea").href = `/lab/ui/area.html?id=${encodeURIComponent(AREA)}`;
+  document.getElementById("barTitle").textContent = data.title || SCEN;
+
+  const graded = (data.steps || []).filter((s) => s.check_kind).length;
+  const chips = [];
+  if (data.track) chips.push(["quiet", data.track]);
+  if (data.difficulty) chips.push(["quiet", data.difficulty]);
+  if (data.est_minutes) chips.push(["quiet", `${data.est_minutes} min`]);
+  if (graded) chips.push(["cold", `${graded} graded`]);
+  // The controls are the defenses this scenario is about. They are the reason
+  // secure mode behaves differently, and the runner never named them before.
+  (data.controls || []).forEach((c) => chips.push(["warn", c]));
+
+  document.getElementById("barFacts").innerHTML =
+    chips.map(([tone, text]) => `<span class="tag ${tone}">${esc(text)}</span>`).join("") +
+    `<span class="grow"></span><span class="sid">${esc(data.legacy_id || data.id || SCEN)}</span>`;
+  bar.hidden = false;
+}
+
+/* ---- scope gate ----------------------------------------------------------
+   The lab runs real attacks against real tools. That is safe here only because
+   every record is synthetic and nothing leaves the machine, and a learner
+   should have said so out loud once before the first Run — not read it in a
+   footer. Acknowledged per Area, because asking 19 times would train people to
+   click through it.
+   -------------------------------------------------------------------------- */
+const gateKey = (areaId) => `cr.scope.${areaId}`;
+
+function scopeAcknowledged() {
+  try { return localStorage.getItem(gateKey(AREA)) === "1"; } catch { return true; }
+}
+
+/* The gate takes over the lesson column, so the column's own markup is put
+   aside first and restored on the way out — the step renderer expects all of
+   its element ids to still be there. */
+let lessonMarkup = null;
+
+function renderScopeGate(onPass) {
+  const host = document.getElementById("lessonBody");
+  if (lessonMarkup === null) lessonMarkup = host.innerHTML;
+  const areaTitle = data.area?.title || AREA;
+  host.innerHTML = `
+    <section class="gate">
+      <div class="k">Before you start</div>
+      <h2>What this range is, and is not</h2>
+      <p class="intro">The attacks in ${esc(areaTitle)} run for real against the agent and its tools.
+        That is the point — a simulated exploit teaches nothing. It is safe because of what the
+        target is, so read what the target is.</p>
+      <ul>
+        <li><span class="side in">In</span><span>Tools, retrieval, memory and mail belonging to <b>this instance on your machine</b></span></li>
+        <li><span class="side in">In</span><span>Synthetic customer records and fake credentials, generated by the lab</span></li>
+        <li><span class="side out">Out</span><span>Any host, account, API or model you do not own</span></li>
+        <li><span class="side out">Out</span><span>Techniques from these lessons used anywhere but a system you are authorized to test</span></li>
+      </ul>
+      <label>
+        <input type="checkbox" id="gateSynthetic" />
+        <span>I understand the targets here are synthetic and local, and that the findings are not
+          transferable to systems I do not have written permission to test.</span>
+      </label>
+      <label>
+        <input type="checkbox" id="gateOwn" />
+        <span>I am running this instance myself and I am responsible for what it does.</span>
+      </label>
+      <div class="acts">
+        <button class="btn assert" id="gateGo" disabled>Start ${esc(areaTitle)}</button>
+        <span class="why" id="gateWhy">Both boxes are required.</span>
+      </div>
+    </section>`;
+
+  const boxes = [document.getElementById("gateSynthetic"), document.getElementById("gateOwn")];
+  const go = document.getElementById("gateGo");
+  const why = document.getElementById("gateWhy");
+  const sync = () => {
+    const ready = boxes.every((b) => b.checked);
+    go.disabled = !ready;
+    why.textContent = ready ? "Asked once for this Area." : "Both boxes are required.";
+  };
+  boxes.forEach((b) => b.addEventListener("change", sync));
+  go.addEventListener("click", () => {
+    try { localStorage.setItem(gateKey(AREA), "1"); } catch { /* private mode: gate returns next visit */ }
+    host.innerHTML = lessonMarkup;
+    onPass();
+  });
+}
+
+function kickerText(step) {
+  const type = stepType(step).toUpperCase();
+  const opt = step.optional ? " · OPTIONAL" : "";
+  return `${type}${opt} · STEP ${idx + 1} OF ${data.steps.length}`;
+}
+
 function renderStep() {
   const step = data.steps[idx];
-  document.getElementById("crumb").textContent = `${data.title} · step ${idx + 1} of ${data.steps.length}`;
+  document.getElementById("crumb").textContent = kickerText(step);
   const el = document.getElementById("body");
-  const md = (idx === 0 && data.intro_md ? data.intro_md + "\n\n---\n\n" : "")
-    + (step.body_md || "")
-    + (idx === data.steps.length - 1 && data.finish_md ? "\n\n---\n\n" + data.finish_md : "");
-  el.innerHTML = marked.parse(md);
+  // Per-step content never reveals — a learner stepping through the lesson
+  // does not want each step fading in. The one exception is the finish note:
+  // it appears once, after the last step, as a closing moment rather than
+  // something to act on, so it gets the same scroll-reveal treatment a
+  // one-time hero/closing block gets elsewhere in the product.
+  let html = "";
+  if (idx === 0 && data.intro_md) html += marked.parse(data.intro_md) + "<hr>";
+  html += marked.parse(step.body_md || "");
+  if (idx === data.steps.length - 1 && data.finish_md) {
+    html += `<hr><div data-reveal>${marked.parse(data.finish_md)}</div>`;
+  }
+  el.innerHTML = html;
   CR.enhanceCode(el, sendToTerminal);
+  CR.revealScan(el);
   renderActs(step);
+  updateGate(step);
+  renderHelper(step);
   document.getElementById("prev").disabled = idx === 0;
-  const last = idx === data.steps.length - 1;
-  document.getElementById("next").textContent = last ? "Finish ✓" : "Next →";
-  document.getElementById("next").className = "btn" + (last ? " assert" : "");
   document.querySelector(".lesson").scrollTop = 0;
   window.scrollTo({ top: 0, behavior: "instant" });
   renderRail();
+}
+
+/* ---- checks rubric ------------------------------------------------------
+   Renders only when the content ships check.asserts. Nothing here fabricates
+   a list when the field is absent — it degrades to literally no markup. */
+function renderRubric(step) {
+  const asserts = step.check && Array.isArray(step.check.asserts) ? step.check.asserts : null;
+  if (!asserts || !asserts.length) return "";
+  const rows = asserts.map((a, i) => {
+    const text = typeof a === "string" ? a : (a && (a.text || a.label)) || JSON.stringify(a);
+    return `<div class="rrow"><span class="rdot" data-i="${i}"></span><span>${esc(text)}</span></div>`;
+  }).join("");
+  const n = asserts.length;
+  return `<details class="rubric" id="rubric">
+    <summary><span class="chev">›</span>${n} CHECK${n === 1 ? "" : "S"}</summary>
+    <div class="rlist">${rows}</div>
+  </details>`;
+}
+function resetRubric() {
+  document.querySelectorAll("#rubric .rdot").forEach((d) => (d.className = "rdot"));
+}
+/** Paint each row from a real per-assert result if the check response carries
+    one; otherwise every row reflects the one real verdict Check returned —
+    never a fabricated per-row breakdown. */
+function paintRubric(res) {
+  const dots = document.querySelectorAll("#rubric .rdot");
+  if (!dots.length) return;
+  const perAssert = res && res.evidence && Array.isArray(res.evidence.asserts) && res.evidence.asserts.length === dots.length
+    ? res.evidence.asserts : null;
+  dots.forEach((d, i) => {
+    const ok = perAssert ? !!(perAssert[i] && perAssert[i].passed) : !!(res && res.passed);
+    d.className = "rdot " + (ok ? "pass" : "fail");
+  });
 }
 
 /* Run and Check rendered as separate acts. A read-only step gets neither, and —
    unlike before — is not silently marked complete just because you opened it. */
 function renderActs(step) {
   const host = document.getElementById("acts");
-  host.innerHTML = "";
+  host.innerHTML = renderRubric(step);
 
   if (step.run) {
     const wanted = step.run.mode && step.run.mode !== "any" ? step.run.mode : null;
@@ -264,7 +632,7 @@ function renderActs(step) {
         <div class="bar">
           <span class="t">${esc(step.run.label || "Run it")}</span>
           <span class="d">Executes against the real tools${wanted ? ` in <b>${esc(wanted)}</b> mode` : ""}. Watch the timeline.</span>
-          <button class="btn attack sm" id="btnRun">Run</button>
+          <button class="btn attack sm lift" id="btnRun">Run</button>
         </div>
         <div class="say" id="runSay"></div>
       </div>`);
@@ -277,7 +645,7 @@ function renderActs(step) {
       <div class="act verify">
         <div class="bar"><span class="t">Nothing to verify here</span>
           <span class="d">Reading step. Mark it read when you have.</span>
-          <button class="btn sm" id="btnRead">Mark read</button></div>
+          <button class="btn sm lift" id="btnRead">Mark read</button></div>
       </div>`);
     document.getElementById("btnRead").onclick = () => {
       markPassed(step, "read", "any");
@@ -292,7 +660,7 @@ function renderActs(step) {
     host.insertAdjacentHTML("beforeend", `
       <div class="act verify" id="actCheck">
         <div class="bar"><span class="t">Answer this</span><span class="grow"></span>
-          <button class="btn assert sm" id="btnCheck">Check answer</button></div>
+          <button class="btn assert sm lift" id="btnCheck">Check answer</button></div>
         <div class="quiz">
           <div class="q">${esc(c.prompt || "")}</div>
           ${(c.options || []).map((o, i) => `
@@ -301,20 +669,102 @@ function renderActs(step) {
         <div class="say" id="checkSay"></div>
       </div>`);
   } else {
+    // "Check ..." describes what the button reads, never what it does to the
+    // world — Check only ever asserts against evidence a Run already left.
     const what = {
       evidence: "Reads the run you just performed and asserts what it left behind.",
       mailhog: "Looks in the mail sink for the message the attack actually sent.",
       lab_status: "Asks every tool server whether it is up.",
-      simulate: "Runs the graded lab check.",
     }[step.check_kind] || "Asserts real lab state.";
     host.insertAdjacentHTML("beforeend", `
       <div class="act verify" id="actCheck">
         <div class="bar"><span class="t">Check</span><span class="d">${what}</span>
-          <button class="btn assert sm" id="btnCheck">Check</button></div>
+          <button class="btn assert sm lift" id="btnCheck">Check</button></div>
         <div class="say" id="checkSay"></div>
       </div>`);
   }
   document.getElementById("btnCheck").onclick = () => doCheck(step);
+}
+
+/* The graded verdict, as the shared .check component. The glyph and the word
+   carry the outcome on their own; the hue only reinforces them. */
+function verdictHTML(passed, message) {
+  const cls   = passed ? "pass" : "fail";
+  const glyph = passed ? "✓" : "✗";
+  const word  = passed ? "Pass" : "Not yet";
+  return `<div class="check ${cls}"><span class="glyph" aria-hidden="true">${glyph}</span>`
+       + `<div><span class="verdict">${word}</span><p>${esc(message)}</p></div></div>`;
+}
+
+/* ---- gate: Next on a graded step waits for the check, out loud ---------- */
+function advance() {
+  if (idx === data.steps.length - 1) location.href = "/lab/ui/catalog.html";
+  else go(idx + 1);
+}
+function updateGate(step) {
+  const p = progress();
+  const gated = step.has_check && !step.ungraded_live;
+  const passed = CR.isPassed(p, step.id);
+  const locked = gated && !passed;
+  const next = document.getElementById("next");
+  const gateMsg = document.getElementById("gateMsg");
+  const skip = document.getElementById("skipLink");
+  const last = idx === data.steps.length - 1;
+  next.disabled = locked;
+  gateMsg.hidden = !locked;
+  skip.hidden = !locked;
+  next.textContent = last ? "Finish ✓" : "Next →";
+  next.className = "btn lift" + (last && !locked ? " assert" : "");
+}
+
+/* ---- state-aware helper line --------------------------------------------
+   Says what to do next, before the click, using only real signals: stack
+   reachability from /lab/status and the messages Check itself already
+   returned — no new copy invented for states we can measure. */
+function wantedMode(step) {
+  return step.run && step.run.mode && step.run.mode !== "any" ? step.run.mode : null;
+}
+function renderHelper(step) {
+  const el = document.getElementById("helperLine");
+  if (!step || (!step.has_check && !step.run)) { el.hidden = true; return; }
+  el.hidden = false;
+  el.className = "helper";
+
+  if (stackReachable === false) {
+    el.textContent = "Start the lab stack to run this step.";
+    return;
+  }
+
+  const p = progress();
+  if (CR.isPassed(p, step.id)) {
+    const cr = lastCheckResult[step.id];
+    el.className = "helper pass";
+    el.textContent = cr && cr.passed && cr.message ? `Proved: ${cr.message}` : "This step already passed.";
+    return;
+  }
+
+  if (step.run) {
+    const matches = lastRun && lastRun.stepId === step.id;
+    if (!matches) {
+      el.textContent = "Run this step first. Check reads the evidence, it does not produce it.";
+      return;
+    }
+    const want = wantedMode(step);
+    if (want && lastRun.mode !== want) {
+      el.className = "helper warn";
+      el.textContent = `The last run was in ${lastRun.mode} mode; this step grades the ${want} run. Set the run mode to ${want} and run it again.`;
+      return;
+    }
+  }
+
+  const cr = lastCheckResult[step.id];
+  if (cr && !cr.passed) {
+    el.className = "helper fail";
+    el.textContent = cr.message || "Not yet — check again.";
+    return;
+  }
+  if (step.check_kind === "recall") { el.textContent = "Answer the question, then check."; return; }
+  el.textContent = "Ready — press Check.";
 }
 
 /* ---- run -------------------------------------------------------------- */
@@ -332,6 +782,7 @@ async function doRun(step) {
   btn.disabled = true;
   say.textContent = "";
   state.innerHTML = `<span class="spinner"></span> running`;
+  resetRubric();
   showPane("time");
   try {
     const forStep = encodeURIComponent(`${AREA}/${SCEN}/${step.id}`);
@@ -339,14 +790,10 @@ async function doRun(step) {
       `/lab/simulate/${sim}?secure=${runMode === "secure"}&step=${forStep}`,
       { method: "POST", body: "{}" });
     const r = res.result || {};
-    lastRun = { sim, mode: runMode, result: r };
+    lastRun = { sim, mode: runMode, result: r, stepId: step.id };
     renderTimeline(res.events || []);
     CR.paintTrace(document.getElementById("trace"), res.events || [], r);
-    document.getElementById("planOut").textContent =
-      JSON.stringify(r.evidence?.compromised_plan || r.evidence || {}, null, 2);
-    document.getElementById("toolOut").textContent =
-      JSON.stringify({ detail: r.detail, success: r.success, blocked: r.blocked }, null, 2);
-    document.getElementById("ragOut").textContent = (r.evidence?.previews || []).join("\n\n") || "—";
+    fillForensics(r);
     state.textContent = r.success ? "attack landed" : r.blocked ? "contained" : "ran";
     say.innerHTML = r.success
       ? `Landed in <b>${esc(runMode)}</b> mode. Read the timeline before you check — the evidence is the lesson.`
@@ -356,6 +803,7 @@ async function doRun(step) {
     say.textContent = "Run failed: " + e.message;
   } finally {
     btn.disabled = false;
+    renderHelper(step);
   }
 }
 
@@ -367,24 +815,31 @@ async function doCheck(step) {
   let answer = null;
   if (step.check_kind === "recall") {
     const sel = document.querySelector('input[name="recall"]:checked');
-    if (!sel) { box.className = "act verify fail"; say.textContent = "Pick an answer first."; return; }
+    if (!sel) { box.className = "act verify fail"; say.innerHTML = verdictHTML(false, "Pick an answer first."); return; }
     answer = Number(sel.value);
   }
   btn.disabled = true;
   box.className = "act verify";
-  say.innerHTML = `<span class="spinner"></span> checking`;
+  say.innerHTML = `<div class="check pending"><span class="glyph" aria-hidden="true">·</span>`
+    + `<div><span class="verdict">Checking</span><p>Asserting against real lab state…</p></div></div>`;
+  resetRubric();
   try {
     const res = await CR.api(`/scenario/${AREA}/${SCEN}/check/${step.id}`, {
       method: "POST", body: JSON.stringify({ answer }),
     });
     box.className = "act verify " + (res.passed ? "pass" : "fail");
-    say.textContent = (res.passed ? "PASS — " : "NOT YET — ") + (res.message || "");
+    say.innerHTML = verdictHTML(res.passed, res.message || "");
+    lastCheckResult[step.id] = { passed: !!res.passed, message: res.message || "" };
+    paintRubric(res);
     if (res.passed) markPassed(step, res.kind, (step.check && step.check.require_mode) || "any");
     if (step.check_kind !== "recall") { await hydrate(); }
+    if (lastRun) fillForensics(lastRun.result || {});
+    updateGate(step);
+    renderHelper(step);
     refreshStack();
   } catch (e) {
     box.className = "act verify fail";
-    say.textContent = "Check error: " + e.message;
+    say.innerHTML = verdictHTML(false, "Check error: " + e.message);
   } finally {
     btn.disabled = false;
   }
@@ -401,6 +856,32 @@ async function hydrate() {
 
 const KEY = { plan: "PLAN", tool: "TOOL", sql: "SQL", defense: "DEFENSE", result: "RESULT",
               retrieve: "RAG", explain: "NOTE", teach: "NOTE", user: "USER" };
+
+function fillForensics(r) {
+  const ev = r.evidence || {};
+  const planLbl = document.getElementById("planLbl");
+  const toolLbl = document.getElementById("toolLbl");
+  const ragLbl = document.getElementById("ragLbl");
+  if (ev.scanner || ev.forensics) {
+    planLbl.textContent = "What scanned the payload";
+    toolLbl.textContent = "Before / after on each channel";
+    ragLbl.textContent = "Not these tools";
+    document.getElementById("planOut").textContent =
+      ev.scanner || "guardrails/pipeline.py::scan_data (C21)";
+    document.getElementById("toolOut").textContent = ev.forensics || "—";
+    document.getElementById("ragOut").textContent =
+      (ev.not_the_scanner || []).join("\n") || "—";
+    return;
+  }
+  planLbl.textContent = "Planner output";
+  toolLbl.textContent = "Tool result";
+  ragLbl.textContent = "Retrieved context";
+  document.getElementById("planOut").textContent =
+    JSON.stringify(ev.compromised_plan || ev || {}, null, 2);
+  document.getElementById("toolOut").textContent =
+    JSON.stringify({ detail: r.detail, success: r.success, blocked: r.blocked }, null, 2);
+  document.getElementById("ragOut").textContent = (ev.previews || []).join("\n\n") || "—";
+}
 
 function renderTimeline(list) {
   const el = document.getElementById("timeline");
@@ -431,34 +912,88 @@ function sendToTerminal(text) {
   openTerminal();
 }
 
-/* ---- stack pill -------------------------------------------------------- */
+/* ---- environment pre-flight ---------------------------------------------
+   Swaps the evidence column's content (never the column itself) for a
+   composed panel naming the stack, when /lab/status says it isn't all up. */
+function renderPreflight() {
+  const ready = document.getElementById("evidReady");
+  const pre = document.getElementById("evidPreflight");
+  if (stackReachable !== false) { ready.hidden = false; pre.hidden = true; return; }
+  ready.hidden = true; pre.hidden = false;
+
+  const env = (data && data.area && data.area.env) || {};
+  const services = env.services || [];
+  const tools = (stackData && stackData.tools) || {};
+  const svcRows = services.map((svc) => {
+    const key = svc.replace(/-/g, "_");
+    let ok = null, label = "not probed here";
+    if (key === "agent" && stackData) { ok = !!(stackData.agent && stackData.agent.ok); label = ok ? "up" : "down"; }
+    else if (Object.prototype.hasOwnProperty.call(tools, key)) { ok = !!tools[key].ok; label = ok ? "up" : "down"; }
+    else if (key === "ollama" && stackData) { ok = !!(stackData.ollama && stackData.ollama.reachable_from_agent); label = ok ? "reachable" : "not reachable (graded steps never need it)"; }
+    const cls = ok === true ? "cold" : ok === false ? "hot" : "quiet";
+    return `<div class="svcrow"><span class="tag ${cls}"><i class="dot"></i>${esc(label)}</span><span class="svcname">${esc(svc)}</span></div>`;
+  }).join("");
+
+  pre.innerHTML = `
+    <div class="pf" data-reveal>
+      <h4>This scenario runs on the ${esc(env.id || AREA)} stack</h4>
+      <p>Once every service below is up, this column fills with the timeline of what you run — the SQL, the
+         plan, the mail it sent. Nothing here starts it for you.</p>
+      <div class="svclist">${svcRows || '<span class="lbl">No services declared for this Area.</span>'}</div>
+      ${(env.requires || []).length ? `<p class="lbl">Requires</p><p>${esc((env.requires || []).join(", "))}</p>` : ""}
+      <p class="lbl">Start it</p>
+      <div class="cmd"><code>docker compose up -d</code><button type="button" class="btn sm ghost" id="pfCopy">Copy</button></div>
+      <p class="fine">Run that from the project root. This is your machine — we cannot start it for you.</p>
+      <button type="button" class="btn sm ghost" id="pfRecheck">Recheck</button>
+    </div>`;
+  document.getElementById("pfCopy").onclick = (e) => {
+    navigator.clipboard?.writeText("docker compose up -d");
+    e.target.textContent = "Copied";
+    setTimeout(() => (e.target.textContent = "Copy"), 1200);
+  };
+  document.getElementById("pfRecheck").onclick = () => refreshStack();
+  CR.revealScan(pre);
+}
+
+/* ---- stack status -------------------------------------------------------- */
 async function refreshStack() {
-  const el = document.getElementById("stackPill");
   try {
     const s = await CR.api("/lab/status");
     const tools = s.tools || {};
-    const up = Object.values(tools).filter((t) => t.ok).length;
-    const total = Object.keys(tools).length || 0;
-    if (total && up === total) { el.className = "tag cold"; el.innerHTML = `<i class="dot"></i>stack up · ${up}/${total} tools`; }
-    else { el.className = "tag warn"; el.innerHTML = `<i class="dot"></i>${up}/${total} tools responding`; }
+    const names = Object.keys(tools);
+    stackData = s;
+    stackReachable = names.length > 0 && names.every((n) => tools[n].ok);
   } catch {
-    el.className = "tag hot"; el.innerHTML = `<i class="dot"></i>lab not answering`;
+    stackData = null;
+    stackReachable = false;
   }
+  renderPreflight();
+  if (data) renderHelper(data.steps[idx]);
 }
 
 /* ---- boot -------------------------------------------------------------- */
 const go = (i) => { idx = Math.max(0, Math.min(data.steps.length - 1, i)); renderStep(); };
 
+/* The scope gate swaps the lesson column's markup out and back, so the step
+   controls are bound through a function that can be called again afterwards
+   rather than once at boot. */
+function wireLessonControls() {
+  document.getElementById("prev").onclick = () => go(idx - 1);
+  document.getElementById("next").onclick = advance;
+  document.getElementById("skipLink").onclick = (e) => { e.preventDefault(); advance(); };
+}
+
 async function init() {
+  document.getElementById("backLink").href = `/lab/ui/area.html?id=${encodeURIComponent(AREA)}`;
   document.getElementById("trace").innerHTML = CR.traceHTML("No run recorded yet.");
+  setRailCollapsed(railCollapsed());
+  document.getElementById("collapseBtn").onclick = () => setRailCollapsed(!railCollapsed());
   document.querySelectorAll(".tabs button").forEach((b) =>
     (b.onclick = () => (b.dataset.pane === "term" ? openTerminal() : showPane(b.dataset.pane))));
   document.querySelectorAll("#modeSeg button").forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
-  document.getElementById("prev").onclick = () => go(idx - 1);
-  document.getElementById("next").onclick = () => {
-    if (idx === data.steps.length - 1) location.href = "/lab/ui/catalog.html";
-    else go(idx + 1);
-  };
+  wireLessonControls();
+
+  refreshStack();
 
   try {
     data = await CR.api(`/scenario/${AREA}/${SCEN}`);
@@ -470,9 +1005,14 @@ async function init() {
     return;
   }
   document.getElementById("scTitle").textContent = data.title;
-  document.getElementById("scSummary").textContent = data.summary || "";
-  renderStep();
-  refreshStack();
+  document.getElementById("scTitle").title = data.title;
+  renderRunbar();
+
+  if (scopeAcknowledged()) {
+    renderStep();
+  } else {
+    renderScopeGate(() => { wireLessonControls(); renderStep(); });
+  }
 }
 init();
 </script>

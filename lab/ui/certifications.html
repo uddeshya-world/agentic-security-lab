@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CyberRange — certifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<style>
+  .page { max-width: 1000px; margin: 0 auto; padding: var(--s7) var(--s5) var(--s8); }
+  .page h1 { font-family: var(--display); font-size: 32px; letter-spacing: -.03em; margin: var(--s3) 0 var(--s3); }
+  .page .lede { color: var(--ash); font-size: 15px; line-height: 1.65; margin: 0 0 var(--s6); max-width: 68ch; }
+
+  .cred { border: 1px solid var(--edge); border-radius: var(--r-lg); padding: var(--s5); margin-bottom: var(--s5); background: var(--plate); }
+  .cred.locked { opacity: .78; }
+  .credhead { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s5); flex-wrap: wrap; }
+  .cred h2 { font-family: var(--display); font-size: 21px; letter-spacing: -.02em; margin: 0 0 var(--s2); }
+  .cred .from { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  .cred .desc { color: var(--ash); font-size: 14px; line-height: 1.6; margin: var(--s3) 0 var(--s4); max-width: 62ch; }
+
+  .prog { min-width: 210px; }
+  .prog .top { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; color: var(--dim); margin-bottom: var(--s2); }
+  .prog .top b { color: var(--chalk); font-weight: 500; }
+  .bar { height: 4px; background: var(--raise); border-radius: 2px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--halon); transition: width var(--t-slow) var(--ease); }
+
+  .frames { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s3); }
+  .reqs { margin-top: var(--s4); padding-top: var(--s4); border-top: 1px solid var(--edge); }
+  .reqs h3 { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); font-weight: 500; margin: 0 0 var(--s3); }
+  .reqs ol { margin: 0; padding-left: var(--s5); color: var(--ash); font-size: 13.5px; line-height: 1.8; }
+  .reqs ol b { color: var(--chalk); font-weight: 500; }
+
+  .lockmsg { margin-top: var(--s4); padding: var(--s3) var(--s4); border: 1px solid var(--brass-line); background: var(--brass-bed); border-radius: var(--r); color: var(--brass-ink); font-size: 13px; line-height: 1.6; }
+  .lockmsg b { color: var(--brass); }
+  .actions { display: flex; gap: var(--s3); align-items: center; margin-top: var(--s5); flex-wrap: wrap; }
+
+  .caveat { margin-top: var(--s6); padding: var(--s4); border: 1px solid var(--edge); background: var(--shelf); border-radius: var(--r); color: var(--ash); font-size: 13px; line-height: 1.65; }
+  .caveat b { color: var(--chalk); }
+</style>
+</head>
+<body>
+
+<header class="cr-nav">
+  <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+  <nav class="cr-links" id="crlinks">
+    <a class="link" href="/lab/ui/catalog.html">Range</a>
+    <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link is-active" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
+  <span class="grow"></span>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+  <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
+</header>
+
+<main class="page">
+  <div class="eyebrow">earned by evidence · signed · verifiable offline</div>
+  <h1>Certifications</h1>
+  <p class="lede">
+    Each Area issues one credential. You earn it by passing every graded check on its required
+    path — and a graded check only passes on evidence a run of yours actually left in the lab, so
+    the badge records work you did rather than pages you opened.
+  </p>
+
+  <div id="creds"></div>
+
+  <div class="caveat" data-reveal>
+    <b>What a badge here proves, and what it does not.</b>
+    The signature shows the transcript has not been edited since it was issued. It is not
+    third-party attestation: whoever runs this lab also holds the signing key, so a badge is only
+    as trustworthy as the instance that issued it. The frameworks listed on a credential are the
+    taxonomies its scenarios map to — they are not accreditation by those bodies, and no industry
+    certification is granted here. <a class="link" href="/lab/ui/verify.html">Verify a badge →</a>
+  </div>
+</main>
+
+<footer class="cr-foot page">
+  <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
+</footer>
+
+<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script>
+const esc = CR.esc;
+
+/** Count the graded steps a credential actually requires, and how many the
+    learner has passed in this browser. Mirrors credential.required_checks():
+    when `requires_track` is set only that track counts. */
+function progressFor(area) {
+  const cred = area.credential || {};
+  const track = cred.requires_track || null;
+  let required = 0, passed = 0, scenTotal = 0, scenDone = 0;
+
+  for (const s of area.scenarios || []) {
+    if (track && (s.track || "core") !== track) continue;
+    scenTotal++;
+    const graded = s.graded_steps || 0;
+    required += graded;
+    const p = CR.loadProgress(area.id, s.id);
+    const done = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
+    passed += Math.min(done, graded);
+    if (graded > 0 && done >= graded) scenDone++;
+  }
+  return { required, passed, scenTotal, scenDone, track };
+}
+
+function credCard(area) {
+  const cred = area.credential;
+  if (!cred) return "";
+  const locked = area.status !== "available";
+  const pr = progressFor(area);
+  const pct = pr.required ? Math.round((pr.passed / pr.required) * 100) : 0;
+
+  const frames = (area.certs || []).map(
+    (c) => `<span class="tag quiet">${esc(CR.owaspLabel(c))}</span>`).join("");
+
+  const trackLabel = pr.track ? `${esc(pr.track)} track` : "all scenarios";
+
+  return `
+    <section class="cred ${locked ? "locked" : ""}" data-reveal>
+      <div class="credhead">
+        <div>
+          <div class="from">${esc(area.title)}</div>
+          <h2>${esc(cred.title || cred.id)}</h2>
+          <span class="tag ${locked ? "warn" : "ok"}">${locked ? "not issuable yet" : "earnable now"}</span>
+        </div>
+        ${locked ? "" : `
+        <div class="prog">
+          <div class="top"><span>${esc(trackLabel)}</span><b>${pr.passed} / ${pr.required}</b></div>
+          <div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="top" style="margin-top:6px"><span>scenarios</span><b>${pr.scenDone} / ${pr.scenTotal}</b></div>
+        </div>`}
+      </div>
+
+      <p class="desc">${esc(cred.description || "")}</p>
+      <div class="frames">${frames}</div>
+
+      <div class="reqs">
+        <h3>How it is earned</h3>
+        <ol>
+          <li>Pass <b>every one of the ${pr.required} graded checks</b> on the ${esc(trackLabel)}
+              (${pr.scenTotal} scenarios).</li>
+          <li>Each check reads evidence a run of yours left behind — dumped rows, an intercepted
+              message, or the named control that blocked a step. <b>No run, no pass.</b></li>
+          <li>The issued badge carries the full transcript: which check, which kind, which mode.</li>
+        </ol>
+      </div>
+
+      ${locked ? `
+      <div class="lockmsg">
+        <b>This Area is still being authored.</b> Its scenario set is not final, so "completed
+        everything" would mean something different today than it will next month. The credential
+        unlocks when the Area is published; your progress is kept either way.
+      </div>` : `
+      <div class="actions">
+        <a class="btn assert" href="/lab/ui/area.html?id=${encodeURIComponent(area.id)}">Open ${esc(area.title)}</a>
+        <span class="note">${pr.passed >= pr.required && pr.required > 0
+          ? "All checks passed — claim it from the Area page."
+          : `${pr.required - pr.passed} checks left`}</span>
+      </div>`}
+    </section>`;
+}
+
+async function init() {
+  const el = document.getElementById("creds");
+  try {
+    const cat = await CR.api("/catalog");
+    const withCred = (cat.areas || []).filter((a) => a.credential);
+    el.innerHTML = withCred.length
+      ? withCred.map(credCard).join("")
+      : `<p class="lede">No Area defines a credential yet.</p>`;
+  } catch (e) {
+    el.innerHTML = `<p class="lede">Could not reach the lab API. Start the stack with
+      <code>docker compose up -d</code> and reload.</p>`;
+  }
+  CR.revealScan(document);
+}
+init();
+</script>
+</body>
+</html>

@@ -3,6 +3,10 @@
   "simulate": "m8",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "policy denied the external-egress action by rule",
+    "the audit trail logged every action attempted in the run"
+  ],
   "pass_message": "Policy held: external egress denied, high-blast actions gated, and the audit trail is complete.",
   "fail_message": "The critical action ran or the audit was incomplete under secure mode. Confirm controls C16 and C17."
 }

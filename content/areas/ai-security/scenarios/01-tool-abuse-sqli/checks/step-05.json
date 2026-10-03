@@ -3,6 +3,10 @@
   "simulate": "a1",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the same filter=1=1 payload was rejected by db_tool in secure mode",
+    "the block message names the requirement for a bound customer_id"
+  ],
   "pass_message": "Same payload, blocked. SECURE_MODE rejected the free-form filter and required a bound customer_id.",
   "fail_message": "The attack was not blocked under secure mode. Confirm the graded run used secure mode and that db_tool honors the SECURE_MODE override."
 }

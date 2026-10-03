@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "A mail to compliance@example.test contains a raw SSN. Which control is supposed to stop that?",
+  "options": [
+    "Recipient domain allow-list",
+    "Human-in-the-loop approval only",
+    "Data guard / DLP on the payload",
+    "RAG trust metadata"
+  ],
+  "answer": 2,
+  "asserts": [
+    "you can pick the control that inspects payload content, not the destination"
+  ],
+  "pass_message": "Right. The destination is in-policy. The payload is restricted. That is DLP.",
+  "fail_message": "example.test is an allowed domain. Allow-list and HITL do not classify SSNs."
+}

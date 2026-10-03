@@ -85,43 +85,55 @@ SECURE_DEFENSES = {
     ],
 }
 
-# Guardrail taxonomy shown in G1 lesson
+# Guardrail taxonomy shown in G1 lesson (Core map — DLP + identity hops included)
 GUARDRAIL_MAP = [
     {
-        "layer": "1. Context / RAG",
-        "threat": "Indirect prompt injection (poisoned docs become instructions)",
-        "guardrail": "Trust metadata, source allow-list, strip/quarantine untrusted chunks, delimit untrusted text",
-        "lab_impl": "rag/retriever.py drops trust=untrusted when SECURE_MODE=true",
+        "layer": "1. Input DLP",
+        "threat": "User pastes SSN/PAN/secrets into the prompt",
+        "guardrail": "Classify and block restricted data before it reaches the planner",
+        "lab_impl": "guardrails/pipeline.py::scan_data(channel='input')",
     },
     {
-        "layer": "2. Planner (LLM) output",
+        "layer": "2. Context / RAG + context DLP",
+        "threat": "Indirect prompt injection; retrieved chunks carry PII or instructions",
+        "guardrail": "Trust filter + scan retrieved text; drop or mask restricted chunks",
+        "lab_impl": "rag/retriever.py + scan_data(channel='context')",
+    },
+    {
+        "layer": "3. Planner (LLM) output",
         "threat": "Model emits malicious tool calls (jailbreak / PI / confused deputy)",
         "guardrail": "Never treat plan as authorized; re-validate every step",
         "lab_impl": "agents/executor.py runs defenses before registry.invoke",
     },
     {
-        "layer": "3. Schema / args",
+        "layer": "4. Identity / principal",
+        "threat": "Agent credential is broader than the signed-in user (confused deputy)",
+        "guardrail": "Bind customer_id (and tenant) from the session, never from the model",
+        "lab_impl": "defenses/m01/least_privilege.py — session principal, not planner args",
+    },
+    {
+        "layer": "5. Schema / args",
         "threat": "Unexpected tools or injection-shaped parameters",
         "guardrail": "Allow-listed tools + typed args; reject filter=1=1 style SQL fragments",
         "lab_impl": "defenses/m01/schema_validation.py",
     },
     {
-        "layer": "4. Least privilege",
+        "layer": "6. Least privilege",
         "threat": "Over-broad reads/writes (all customers, any path)",
         "guardrail": "Scoped IDs, parameterized SQL, filesystem jail",
         "lab_impl": "defenses/m01/least_privilege.py + tool secure branches",
     },
     {
-        "layer": "5. Side-effect / HITL",
-        "threat": "Email, file write, payments without a human",
-        "guardrail": "Approval gate for high blast-radius tools; default deny",
-        "lab_impl": "defenses/m01/approval_gate.py (LAB_APPROVE simulates human)",
+        "layer": "7. Tool DLP + HITL + egress",
+        "threat": "PII in tool results; unattended email; wrong recipient",
+        "guardrail": "Scan tool payloads; approval gate; recipient allow-list",
+        "lab_impl": "scan_data(channel='tool') + approval_gate.py + email allow-list",
     },
     {
-        "layer": "6. Tool server policy",
-        "threat": "Even a valid call shape may hit wrong recipient/domain",
-        "guardrail": "Recipient allow-list, rate limits, output filters",
-        "lab_impl": "email_tool domain allow-list in SECURE_MODE",
+        "layer": "8. Output DLP",
+        "threat": "Model recites PII or secrets in the answer",
+        "guardrail": "Mask or withhold before the response reaches the user",
+        "lab_impl": "guardrails/pipeline.py::scan_data(channel='output')",
     },
 ]
 
@@ -907,7 +919,7 @@ try:
 except Exception as _e:  # pragma: no cover - keep Module 1 working if advanced sims fail to import
     print(f"[simulate] advanced sims not loaded: {_e}", flush=True)
 
-# LLM07 / LLM09 / LLM10 coverage sims (system-prompt leakage, groundedness, limits).
+# LLM08 / LLM07 / LLM06 coverage sims (system-prompt leakage, groundedness, limits).
 try:
     from lab import sims_coverage
 
@@ -915,6 +927,15 @@ try:
     SECURE_DEFENSES.update(sims_coverage.SECURE_DEFENSES)
 except Exception as _e:  # pragma: no cover
     print(f"[simulate] coverage sims not loaded: {_e}", flush=True)
+
+# Reconstructed Core labs: direct PI, data guards, agent identity.
+try:
+    from lab import sims_core
+
+    RUNNERS.update(sims_core.RUNNERS)
+    SECURE_DEFENSES.update(sims_core.SECURE_DEFENSES)
+except Exception as _e:  # pragma: no cover
+    print(f"[simulate] core sims not loaded: {_e}", flush=True)
 
 
 def run_simulation(
@@ -959,7 +980,9 @@ def run_simulation(
     if clear:
         events.clear_events()
 
-    if attack_key.startswith("a4") or lesson_or_attack_id == "a4":
+    if attack_key in SECURE_DEFENSES:
+        defense_key = attack_key
+    elif attack_key.startswith("a4") or lesson_or_attack_id == "a4":
         defense_key = "a4"
     elif attack_key.startswith("g1") or lesson_or_attack_id == "g1":
         defense_key = "g1"

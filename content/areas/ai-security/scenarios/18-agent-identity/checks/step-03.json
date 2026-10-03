@@ -1,0 +1,12 @@
+{
+  "kind": "evidence",
+  "simulate": "agent_identity",
+  "require_mode": "secure",
+  "expect": "blocked",
+  "asserts": [
+    "the query that ran was scoped to Alice's own customer_id",
+    "the model's request for every customer did not change how many rows came back"
+  ],
+  "pass_message": "Executor bound customer_id from the session. The model's request for everyone did not widen Alice's scope.",
+  "fail_message": "Secure mode still returned an unscoped dump. Session principal was not applied."
+}

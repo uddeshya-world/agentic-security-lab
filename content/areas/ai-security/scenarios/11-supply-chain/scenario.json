@@ -1,22 +1,48 @@
 {
   "id": "11-supply-chain",
   "legacy_id": "m7",
-  "order": 11,
+  "order": 12,
   "title": "Supply chain — rogue tools & MCP servers",
   "summary": "Module 7. An agent's tools are its supply chain. Register a rogue tool with no manifest and a tampered one that escalates its capabilities, then refuse both with signed manifests and startup attestation.",
-  "difficulty": "hard",
+  "difficulty": "advanced",
   "est_minutes": 16,
   "attack_id": "m7_supply_chain",
   "mailhog": false,
-  "owasp": ["LLM03 Supply Chain", "ASI02 Tool Misuse", "LLM06 Excessive Agency"],
-  "controls": ["C15"],
-  "code_paths": ["defenses/m07/attestation.py", "tools/registry.py"],
+  "owasp": [
+    "LLM04:2026 Supply Chain",
+    "ASI04 Agentic Supply Chain",
+    "ASI10 Rogue Agents"
+  ],
+  "controls": [
+    "C15"
+  ],
+  "code_paths": [
+    "defenses/m07/attestation.py",
+    "tools/registry.py"
+  ],
   "takeaway": "A tool you didn't verify runs with your agent's privileges. Attest before you trust.",
   "design_rule": "Signed capability manifests + startup attestation; refuse unverified or over-scoped components.",
   "steps": [
-    { "id": "step-01", "title": "Tools are a supply chain", "file": "step-01.md" },
-    { "id": "step-02", "title": "Register a rogue tool", "file": "step-02.md" },
-    { "id": "step-03", "title": "Attest before trust", "file": "step-03.md" },
-    { "id": "step-04", "title": "Prove rogues are refused", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "Tools are a supply chain",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Register a rogue tool",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Attest before trust",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Prove rogues are refused",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "persist"
 }

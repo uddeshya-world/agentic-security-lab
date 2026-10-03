@@ -9,6 +9,24 @@ Authorized security education and defensive research only.
 
 ---
 
+## New here? 15 minutes, nothing to install
+
+Open **`lab/ui/play.html`** in a browser (or `/lab/ui/play.html` on a running
+stack). *Place the Control* is a simulated, in-browser version of the lab:
+
+1. **Watch the breach** — a public help-article edit steers a helpdesk agent into
+   emailing applicant records, hop by hop.
+2. **Place the controls** — three attacks, a budget of 3 points, find the
+   cheapest set of controls that stops all of them.
+3. **Find the composition cut** — three agents that each pass alone leak together;
+   pick the one policy that breaks the trifecta without breaking the service
+   (MESA invariant INV-01).
+
+No model runs on that page and every record is synthetic, which is why it is
+safe to host publicly. Everything below is the real lab it previews.
+
+---
+
 ## Start here — guided, hands-on paths
 
 ```text
@@ -74,7 +92,8 @@ Deterministic teaching sims still exist at `POST /lab/simulate/{id}` for CI / no
 |--------|--------|--------|
 | **0** | Foundation: planner + tools + RAG + memory | Done |
 | **1** | Tool abuse — attacks, defenses, metrics, **Lab Console + guided paths** | Done (v1.2 lesson engine) |
-| 2–8 | [ROADMAP.md](ROADMAP.md) · [CURRICULUM.md](docs/CURRICULUM.md) | Not built |
+| 2–8 | RAG poisoning, multi-agent, memory, guardrails, red-team CI, supply chain, governance | Built at lab scale (deterministic sims + graded scenarios) — see [ROADMAP.md](ROADMAP.md) |
+| — | Blue Team / SOC Area | Authoring (4 scenarios, credential not issuable yet) |
 
 Architecture: **planner (LLM) → tool executor → HTTP tools** (not multi-agent sandbox escape).
 
@@ -128,7 +147,7 @@ pip install -r requirements.txt
 |-----|---------|
 | [docs/REMEDIATION.md](docs/REMEDIATION.md) | How to stop each attack |
 | [docs/OWASP_COVERAGE.md](docs/OWASP_COVERAGE.md) | What’s covered / not covered |
-| [docs/LEARN.md](docs/LEARN.md) | 30-minute path |
+| [docs/LEARN.md](docs/LEARN.md) | Core path (~2.5 hours) |
 | [SECURITY_NOTES.md](SECURITY_NOTES.md) | Weakness inventory |
 | `GET /lab/curriculum` | Machine-readable map |
 
@@ -140,4 +159,5 @@ pip install -r requirements.txt
 - `lab/simulate.py` — guided simulations + event log  
 - `attacks/m01/` — CLI attack scripts  
 - `defenses/m01/` — secure-mode controls  
-- `docs/LEARN.md` — 30-minute path  
+- `docs/LEARN.md` — Core path (~2.5 hours)  
+- `lab/ui/play.html` — 15-minute in-browser preview (no Docker)  

@@ -8,6 +8,9 @@
     "DROP TABLE customers"
   ],
   "answer": 1,
+  "asserts": [
+    "you can read the literal SQL statement the run produced in the timeline"
+  ],
   "pass_message": "Correct — and note it is a perfectly valid SELECT. Nothing malformed happened; the tool just let the caller write the WHERE clause.",
   "fail_message": "Open the timeline pane and find the SQL event from your run. The answer is the literal statement printed there."
 }

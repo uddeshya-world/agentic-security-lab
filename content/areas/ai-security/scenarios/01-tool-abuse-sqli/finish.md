@@ -9,5 +9,5 @@
 - You can name the controls: **C1** parameterized/scoped DB access, **C2** tool
   argument schema allow-list.
 
-**Next:** *RAG poisoning* — instead of calling the tool yourself, you plant
-instructions in a document and let retrieval carry them into the model's context.
+**Next:** *Direct prompt injection* — the same payload, authored by a steered
+planner from a chat message. No RAG yet.

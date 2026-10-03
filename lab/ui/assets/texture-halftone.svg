@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!--
+    Tileable halftone. Used as a low-opacity background on card headers and
+    empty states to give a flat surface some grain without adding a raster
+    asset. Two staggered dot grids at different radii read as a gradient of
+    density rather than a repeating pattern at the sizes we use it.
+
+    Usage: background-image: url(/lab/ui/assets/texture-halftone.svg);
+           background-size: 120px; opacity is applied by the consuming rule,
+           not baked in, so one file serves both themes.
+  -->
+  <defs>
+    <pattern id="coarse" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.5" fill="currentColor"/>
+    </pattern>
+    <pattern id="fine" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="translate(6 6)">
+      <circle cx="3" cy="3" r=".75" fill="currentColor"/>
+    </pattern>
+  </defs>
+  <rect width="120" height="120" fill="url(#coarse)" opacity=".55"/>
+  <rect width="120" height="120" fill="url(#fine)" opacity=".35"/>
+</svg>

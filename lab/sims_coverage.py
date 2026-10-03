@@ -1,9 +1,9 @@
 """Deterministic simulations completing the OWASP LLM Top 10 map.
 
 Covers the three categories Modules 1-8 left open:
-  * LLM07 System Prompt Leakage  -> sim_m9_prompt_leak
-  * LLM09 Misinformation         -> sim_m10_grounding   (scoped to groundedness)
-  * LLM10 Unbounded Consumption  -> sim_m11_limits
+  * LLM08 Hidden Context Exposure -> sim_m9_prompt_leak   (was LLM07 in 2025)
+  * LLM07 Misinformation          -> sim_m10_grounding   (scoped to groundedness)
+  * LLM06 Unbounded Consumption   -> sim_m11_limits
 
 Same contract as every other sim: real attack, real defense, honors the
 per-request SECURE_MODE override, no live LLM required.
@@ -17,7 +17,7 @@ from lab import events
 
 
 # --------------------------------------------------------------------------- #
-# LLM07 — System prompt leakage
+# LLM08 — Hidden context exposure (leaked system prompt)
 # --------------------------------------------------------------------------- #
 def sim_m9_prompt_leak() -> dict[str, Any]:
     from defenses.m09 import prompt_leak
@@ -66,7 +66,7 @@ def sim_m9_prompt_leak() -> dict[str, Any]:
     success = (not secure) and leaked_to_user
     blocked = secure and not leaked_to_user
     return {
-        "attack_id": "m9_prompt_leak", "name": "System prompt leakage (LLM07)",
+        "attack_id": "m9_prompt_leak", "name": "System prompt leakage (LLM08)",
         "layer": "B", "secure_mode": secure, "success": success, "blocked": blocked,
         "detail": ("System prompt disclosed to the user — tool names, arg shapes and a dump-all example"
                    if success else
@@ -80,7 +80,7 @@ def sim_m9_prompt_leak() -> dict[str, Any]:
 
 
 # --------------------------------------------------------------------------- #
-# LLM09 — Misinformation, scoped to groundedness / citation enforcement
+# LLM07 — Misinformation, scoped to groundedness / citation enforcement
 # --------------------------------------------------------------------------- #
 def sim_m10_grounding() -> dict[str, Any]:
     from defenses.m10 import grounding
@@ -133,7 +133,7 @@ def sim_m10_grounding() -> dict[str, Any]:
     success = (not secure) and fabrication_shipped
     blocked = secure and not fabrication_shipped
     return {
-        "attack_id": "m10_grounding", "name": "Misinformation / groundedness (LLM09)",
+        "attack_id": "m10_grounding", "name": "Misinformation / groundedness (LLM07)",
         "layer": "defend", "secure_mode": secure, "success": success, "blocked": blocked,
         "detail": ("Fabricated policy shipped to the user as confident fact"
                    if success else
@@ -147,7 +147,7 @@ def sim_m10_grounding() -> dict[str, Any]:
 
 
 # --------------------------------------------------------------------------- #
-# LLM10 — Unbounded consumption
+# LLM06 — Unbounded consumption
 # --------------------------------------------------------------------------- #
 def sim_m11_limits() -> dict[str, Any]:
     from defenses.m11.limits import LimitExceeded, ResourceGuard
@@ -187,7 +187,7 @@ def sim_m11_limits() -> dict[str, Any]:
     success = (not secure) and executed >= 20
     blocked = secure and executed < 10 and stopped_by is not None
     return {
-        "attack_id": "m11_limits", "name": "Unbounded consumption (LLM10)",
+        "attack_id": "m11_limits", "name": "Unbounded consumption (LLM06)",
         "layer": "defend", "secure_mode": secure, "success": success, "blocked": blocked,
         "detail": (f"Runaway plan executed {executed}/{len(runaway)} calls unchecked (denial of wallet)"
                    if success else

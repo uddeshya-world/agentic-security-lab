@@ -25,8 +25,8 @@ def test_scenarios_are_ordered_and_unique():
     orders = [s["order"] for s in scen]
     assert orders == sorted(orders), "scenarios must be ordered"
     assert len(orders) == len(set(orders)), "scenario order values must be unique"
-    # Module 1 (6 scenarios) plus Modules 2-8 (7 scenarios).
-    assert len(scen) >= 13
+    # Core (9) + persist (4) + operate (6) = 19 after the 2026 reconstruction.
+    assert len(scen) >= 19
 
 
 def test_legacy_lesson_ids_and_ordering_preserved():
@@ -98,3 +98,56 @@ def test_manual_and_unknown_check_dispatch():
     assert run_check(None)["passed"] is True
     assert run_check({"kind": "manual"})["passed"] is True
     assert run_check({"kind": "does-not-exist"})["passed"] is False
+
+
+def _graded_checks():
+    """Yield (scenario_id, step_id, check) for every step that carries a check."""
+    for scen in content.list_scenarios():
+        for step in scen.get("steps") or []:
+            chk = step.get("check")
+            if chk:
+                yield scen["id"], step["id"], chk
+
+
+def test_every_graded_check_has_a_nonempty_asserts_array():
+    missing = []
+    for scen_id, step_id, chk in _graded_checks():
+        asserts = chk.get("asserts")
+        if not isinstance(asserts, list) or not (1 <= len(asserts) <= 4):
+            missing.append((scen_id, step_id, chk.get("kind"), asserts))
+    assert not missing, f"checks missing a 1-4 entry asserts array: {missing}"
+
+
+def test_asserts_entries_are_short_and_well_formed():
+    bad = []
+    for scen_id, step_id, chk in _graded_checks():
+        for entry in chk.get("asserts") or []:
+            if len(entry) > 120:
+                bad.append((scen_id, step_id, "too long", entry))
+            elif entry.endswith("."):
+                bad.append((scen_id, step_id, "trailing period", entry))
+            elif not entry or not entry[0].islower():
+                bad.append((scen_id, step_id, "not lowercase-start", entry))
+    assert not bad, f"malformed asserts entries: {bad}"
+
+
+def test_recall_client_payload_never_leaks_asserts_or_answer():
+    for scen in content.list_scenarios():
+        for step in scen.get("steps") or []:
+            chk = step.get("check")
+            if not chk or chk.get("kind") != "recall":
+                continue
+            client = content._client_check(step)
+            assert client is not None
+            assert "answer" not in client, f"{scen['id']}/{step['id']}: answer leaked to client"
+            assert "asserts" not in client, f"{scen['id']}/{step['id']}: asserts leaked to client"
+
+
+def test_non_recall_client_payload_carries_asserts():
+    sp = content.scenario_payload("ai-security", "01-tool-abuse-sqli")
+    assert sp is not None
+    evidence_steps = [s for s in sp["steps"] if s.get("check_kind") == "evidence"]
+    assert evidence_steps, "expected at least one evidence step in this scenario"
+    for step in evidence_steps:
+        assert step["check"] is not None
+        assert step["check"].get("asserts"), f"{step['id']}: evidence step missing client-side asserts"

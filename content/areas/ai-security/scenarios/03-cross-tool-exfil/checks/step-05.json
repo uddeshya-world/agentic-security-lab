@@ -3,6 +3,10 @@
   "simulate": "a3",
   "require_mode": "secure",
   "expect": "blocked",
+  "asserts": [
+    "the outbound send was denied by the recipient allow-list or the HITL gate",
+    "no new message left the boundary in this run"
+  ],
   "pass_message": "Chain broken: the send was denied by the egress allow-list / HITL gate and nothing new left the boundary.",
   "fail_message": "The exfil chain was not blocked under secure mode. Confirm controls C4 (allow-list) and C5 (HITL) are active."
 }

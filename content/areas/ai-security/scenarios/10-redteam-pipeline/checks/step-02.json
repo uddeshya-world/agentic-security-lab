@@ -3,6 +3,10 @@
   "simulate": "m6",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "the red-team battery re-ran the module attacks in vulnerable mode",
+    "the measured attack-success rate across the battery is high enough that the suite is not toothless"
+  ],
   "pass_message": "Battery is meaningful: in vulnerable mode the attacks land (high attack-success rate) — the suite really does exercise the vulnerabilities.",
   "fail_message": "Attacks did not land in vulnerable mode, so the suite would give a false sense of security. Ensure the graded run used vulnerable mode."
 }

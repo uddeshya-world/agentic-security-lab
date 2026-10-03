@@ -18,3 +18,16 @@ workspace/*
 
 # Seeded at runtime by tools/db_tool/queries.py from seed.sql
 data/synthetic_db/*.db
+
+# Per-install secrets and learner progress -- never commit
+data/.credential_key
+data/ledger.json
+data/ledger.tmp
+token.txt
+*.token
+
+# Internal student walkthrough notes -- kept private
+feedback.txt
+
+# superpowers scratch
+.superpowers/

@@ -77,7 +77,7 @@ fastest way to lose a learner's trust.
   "difficulty": "intermediate",
   "est_minutes": 18,
   "summary": "Two lines. This is what shows in the catalog table.",
-  "owasp": ["LLM02 Sensitive Information Disclosure"],
+  "owasp": ["LLM02:2026 Sensitive Information Disclosure"],
   "controls": ["C12 detection rule"],
   "takeaway": "The one sentence they should keep.",
   "steps": [
@@ -86,6 +86,29 @@ fastest way to lose a learner's trust.
   ]
 }
 ```
+
+### `owasp` — always name the scheme
+
+Write ids as **`LLM03:2026 Excessive Agency`**, not bare `LLM03`. The 2026 list renumbered
+eight of ten categories and *swapped* LLM03 and LLM06 with their 2025 meanings, so a bare id
+cannot be audited by reading — and a find/replace over bare ids silently inverts the files
+that were already correct. `tests/test_owasp_2026_consistency.py` fails the build on any
+id paired with its 2025 name.
+
+### `difficulty` — four rungs, no synonyms
+
+`beginner` · `intermediate` · `advanced` · `expert`. One ladder for the whole catalog, so
+tiles from different Areas compare. Do not introduce `easy`/`medium`/`hard` — they were in
+use once and meant the same three rungs under different names.
+
+### Folder number vs `order`
+
+The folder prefix is the **authoring id** and is permanent: it appears in check ids and in
+saved learner progress, so renumbering a folder silently discards a learner's completions.
+`order` is the **display position** and is free to change. They deliberately diverge — the
+Core track puts `16-direct-injection` at position 2 — so read `order`, never the folder
+number, when you need the sequence. Give a new scenario the next unused folder number and
+set `order` to wherever it belongs in the path.
 
 `legacy_id` is optional, and load-bearing when present: `lab/lessons.py` builds the
 legacy `/lab/lessons` list from scenarios that declare one, and `simulate.py` and the
@@ -115,7 +138,7 @@ something.
 
 Available kinds:
 
-| kind | asserts | use it for |
+| kind | asserts (grading mechanism) | use it for |
 |---|---|---|
 | `evidence` | the run the learner performed, via `lab/runlog.py` + the event log | every attack/defend step |
 | `mailhog` | a matching message is (or is not) in the mail sink | exfiltration, egress controls |
@@ -123,6 +146,57 @@ Available kinds:
 | `lab_status` | every tool server is reachable | one setup step per Area |
 | `secure_mode` | the persistent container mode | rarely; prefer per-run mode |
 | `simulate` | runs a simulation and asserts it | **do not use in new content** — it performs the exercise for the learner. It remains in the engine for compatibility only, and `tests/test_run_check_split.py` fails the build if content uses it. |
+
+### The `asserts` field
+
+Every graded check carries an `"asserts"` array in its JSON — 1 to 4 short strings,
+one observable per entry, in the learner's language:
+
+```json
+"asserts": [
+  "the agent ran db_tool and dumped more than one customer row",
+  "an email left the agent and landed in the MailHog sink",
+  "the message body contains customer data, not a summary"
+]
+```
+
+Rules:
+
+- **1 to 4 entries.** One observable per entry.
+- **Present tense, lowercase start, no trailing period.** Read like a checklist
+  item, not a sentence lifted from the code.
+- **Name the observable state the check asserts** — rows returned, a message in
+  the sink, an event on the timeline, the control that fired. Never "the script
+  exits 0" and never an implementation detail nobody on screen would recognize.
+- **Never spoil the answer.** For kind `recall`, the asserts describe what the
+  question is testing ("you can name the control that stops a payload the
+  allow-list would pass"), not the correct option's text. `_client_check()` in
+  `lab/content.py` omits `asserts` from a recall step's payload entirely — the
+  browser never sees it, same as `answer` — but the field is still required in
+  the JSON so the convention holds for every graded check, and so a future kind
+  that does ship it inherits a correct file to start from.
+- **Match what the check actually asserts.** Read the check spec and, where it
+  is not obvious, read the matching simulation in `lab/simulate.py`,
+  `lab/sims_core.py`, `lab/sims_advanced.py` or `lab/sims_coverage.py` before
+  writing. An assert that overstates the check is worse than no assert at all.
+
+Two worked examples:
+
+```json
+// evidence — content/areas/ai-security/scenarios/03-cross-tool-exfil/checks/step-02.json
+"asserts": [
+  "db_tool dumped customer rows using an unscoped filter",
+  "email_tool sent that dump to an external address in the same run"
+]
+```
+
+```json
+// recall — content/areas/ai-security/scenarios/18-agent-identity/checks/step-04.json
+// (omitted from the client payload; still required in the file)
+"asserts": [
+  "you can name where the executor is required to source the customer_id from"
+]
+```
 
 ### `evidence`
 

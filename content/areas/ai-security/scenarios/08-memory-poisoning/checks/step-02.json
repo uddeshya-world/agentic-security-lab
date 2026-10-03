@@ -3,6 +3,10 @@
   "simulate": "m4",
   "require_mode": "vulnerable",
   "expect": "success",
+  "asserts": [
+    "an instruction written to long-term memory in session 1 was recalled unchanged in a new session",
+    "the recalled entry still names the attacker's address"
+  ],
   "pass_message": "Cross-session backdoor confirmed: the instruction written in session 1 was recalled into a new session 2.",
   "fail_message": "The backdoor did not persist. Ensure the graded run used vulnerable mode."
 }

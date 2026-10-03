@@ -6,9 +6,9 @@
   "est_minutes": 18,
   "summary": "Re-run the same incident with the control on, confirm it is stopped, and reason carefully about what your evidence proves and what it only suggests.",
   "owasp": [
-    "LLM02 Sensitive Information Disclosure"
+    "LLM02:2026 Sensitive Information Disclosure"
   ],
-  "controls": [],
+  "controls": ["D4", "D3"],
   "takeaway": "Proving something happened is easy. Proving it did not is a different, harder claim — and most SOC reporting confuses the two.",
   "steps": [
     {

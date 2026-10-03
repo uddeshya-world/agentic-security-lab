@@ -1,22 +1,46 @@
 {
   "id": "15-resource-limits",
   "legacy_id": "m11",
-  "order": 15,
+  "order": 18,
   "title": "Unbounded consumption — denial of wallet",
-  "summary": "LLM10. A runaway plan repeats one 'valid' tool call 40 times. A step cap alone won't save you — add a cost budget, loop detection, and rate limiting, and see exactly which control fires.",
-  "difficulty": "medium",
+  "summary": "LLM06. A runaway plan repeats one 'valid' tool call 40 times. A step cap alone won't save you — add a cost budget, loop detection, and rate limiting, and see exactly which control fires.",
+  "difficulty": "intermediate",
   "est_minutes": 14,
   "attack_id": "m11_limits",
   "mailhog": false,
-  "owasp": ["LLM10 Unbounded Consumption", "ASI04 Resource Overload"],
-  "controls": ["C20"],
-  "code_paths": ["defenses/m11/limits.py", "agents/executor.py"],
+  "owasp": [
+    "LLM06:2026 Unbounded Consumption"
+  ],
+  "controls": [
+    "C20"
+  ],
+  "code_paths": [
+    "defenses/m11/limits.py",
+    "agents/executor.py"
+  ],
   "takeaway": "Every individual call can be valid while the aggregate is an attack. Budget and shape, not just count.",
   "design_rule": "Enforce step cap + cost budget + loop detection + rate limit together; name the control that fires.",
   "steps": [
-    { "id": "step-01", "title": "Why the step cap isn't enough", "file": "step-01.md" },
-    { "id": "step-02", "title": "Run the runaway plan", "file": "step-02.md" },
-    { "id": "step-03", "title": "Four limits, one guard", "file": "step-03.md" },
-    { "id": "step-04", "title": "Which control fired?", "file": "step-04.md" }
-  ]
+    {
+      "id": "step-01",
+      "title": "Why the step cap isn't enough",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Run the runaway plan",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Four limits, one guard",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Which control fired?",
+      "file": "step-04.md"
+    }
+  ],
+  "track": "operate"
 }

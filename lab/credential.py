@@ -19,8 +19,10 @@ The honesty this file is required to keep
 This is a **self-hosted** lab. The learner controls the machine holding the
 signing key, so this signature proves integrity, not third-party attestation —
 it detects a badge that was edited after issue, it does not stop someone forging
-one on their own instance. The badge says so, in ``verification.note``, and the
-verify page repeats it. Third-party attestation requires an issuer the verifier
+one on their own instance. Each install has its own random key, so a badge from
+one instance does not verify on another, and the transcript is built from the
+server's own ledger of passed checks, not from the browser. The badge says so,
+in ``verification.note``, and the verify page repeats it. Third-party attestation requires an issuer the verifier
 trusts, which means a hosted issuer, which is a product decision and not
 something a local container can fake.
 
@@ -35,11 +37,56 @@ import hashlib
 import hmac
 import json
 import os
+import secrets
+from pathlib import Path
 from typing import Any
 
-# Per-instance signing key. Derived from an env var when set, so a hosted issuer
-# can supply a real secret; otherwise a stable per-install value.
-_KEY = (os.environ.get("CREDENTIAL_SIGNING_KEY") or "cyberrange-local-issuer").encode("utf-8")
+# Per-instance signing key.
+#
+# This used to fall back to the constant "cyberrange-local-issuer", which made
+# every install share one key: anyone with the repo could mint a badge that any
+# other instance would call valid. Now: a hosted issuer supplies
+# CREDENTIAL_SIGNING_KEY; otherwise each install generates 32 random bytes on
+# first use and keeps them next to the lab data (gitignored). If that file can't
+# be written, the key lives only for this process -- badges then stop verifying
+# after a restart, which is the safe way to fail.
+_LEGACY_KEY = b"cyberrange-local-issuer"
+
+
+def _key_path() -> Path:
+    env = os.environ.get("CREDENTIAL_KEY_PATH")
+    if env:
+        return Path(env)
+    if Path("/data").is_dir() and os.access("/data", os.W_OK):
+        return Path("/data/.credential_key")
+    return Path(__file__).resolve().parents[1] / "data" / ".credential_key"
+
+
+def _load_key() -> bytes:
+    env = os.environ.get("CREDENTIAL_SIGNING_KEY")
+    if env:
+        return env.encode("utf-8")
+    path = _key_path()
+    try:
+        existing = path.read_text(encoding="utf-8").strip()
+        if len(existing) >= 32:
+            return existing.encode("utf-8")
+    except OSError:
+        pass
+    fresh = secrets.token_hex(32)
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(fresh, encoding="utf-8")
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            pass
+    except OSError as e:
+        print(f"[credential] signing key not persisted ({e}); badges will not survive a restart", flush=True)
+    return fresh.encode("utf-8")
+
+
+_KEY = _load_key()
 
 BADGE_CONTEXT = "https://w3id.org/openbadges/v2"
 ISSUER_NAME = "CyberRange (self-hosted instance)"
@@ -58,11 +105,19 @@ def _now_iso() -> str:
 
 
 def required_checks(area_id: str) -> list[dict[str, Any]]:
-    """Every graded step in an Area — the full list a learner must pass to claim."""
+    """Graded steps the Area actually requires for the badge.
+
+    If ``credential.requires_track`` is set (AI Security: ``core``), only that
+    track counts. Advanced labs stay optional.
+    """
     from lab import content
 
+    area = content.get_area(area_id) or {}
+    req_track = (area.get("credential") or {}).get("requires_track")
     out: list[dict[str, Any]] = []
     for scen in content.list_scenarios(area_id):
+        if req_track and (scen.get("track") or "core") != req_track:
+            continue
         for step in scen.get("steps") or []:
             if not step.get("has_check"):
                 continue
@@ -81,12 +136,11 @@ def required_checks(area_id: str) -> list[dict[str, Any]]:
 
 
 def eligibility(area_id: str, passed: list[dict[str, Any]] | None) -> dict[str, Any]:
-    """Compare the learner's claimed passes against what the Area actually requires.
+    """Compare a list of passes against what the Area actually requires.
 
-    ``passed`` comes from the browser (localStorage), so it is a *claim*. We do
-    not treat it as proof — we treat it as a list to be checked for completeness
-    against the content tree, and we record it verbatim in the transcript so a
-    reader can see exactly what was asserted.
+    ``issue`` calls this with the server-side ledger (``lab.ledger``), which only
+    holds checks this instance graded as passed. A browser-supplied list is only
+    ever compared to explain a mismatch, never signed.
     """
     required = required_checks(area_id)
     claimed = {(p.get("scenario"), p.get("step")) for p in (passed or []) if isinstance(p, dict)}
@@ -107,13 +161,37 @@ def issue(area_id: str, learner: str | None, passed: list[dict[str, Any]] | None
     if not area:
         return {"ok": False, "error": f"Unknown area: {area_id}"}
 
-    elig = eligibility(area_id, passed)
-    if not elig["eligible"]:
+    # An Area still being authored has an incomplete scenario set, so "all graded checks
+    # passed" means something different today than it will next month. Signing that as a
+    # credential would make two badges with the same name assert different work. Only an
+    # Area whose content is frozen (`status: available`) can mint.
+    if (area.get("status") or "available") != "available":
         return {
             "ok": False,
-            "error": "Not every graded check has been passed yet.",
-            "eligibility": elig,
+            "error": (
+                f"{area.get('title') or area_id} is still being authored, so its "
+                "credential is not issuable yet. Progress is kept; the badge unlocks "
+                "when the Area is published."
+            ),
+            "area_status": area.get("status"),
         }
+
+    # Grade against what this server saw pass, never against the browser's list.
+    # The browser's list is kept only to explain a mismatch to the learner.
+    from lab import ledger
+
+    recorded = ledger.passes(area_id)
+    elig = eligibility(area_id, recorded)
+    if not elig["eligible"]:
+        claimed = eligibility(area_id, passed)
+        msg = "Not every graded check has been passed yet."
+        if claimed["eligible"]:
+            msg = (
+                "This browser says every check passed, but this lab instance has no record "
+                "of some of them. Run and Check those steps here, then claim again."
+            )
+        return {"ok": False, "error": msg, "eligibility": elig}
+    passed = recorded
 
     cred = area.get("credential") or {}
     transcript = sorted(
@@ -142,8 +220,8 @@ def issue(area_id: str, learner: str | None, passed: list[dict[str, Any]] | None
             "description": cred.get("description") or "",
             "criteria": {
                 "narrative": (
-                    f"Passed all {elig['required_count']} graded checks across "
-                    f"{len(content.list_scenarios(area_id))} scenarios in {area.get('title')}. "
+                    f"Passed all {elig['required_count']} graded checks on the "
+                    f"{(cred.get('requires') or 'required')} path in {area.get('title')}. "
                     "Each graded check asserts real lab state — dumped rows, an intercepted "
                     "message, or the specific control that blocked a step — after the learner "
                     "ran the attack themselves."

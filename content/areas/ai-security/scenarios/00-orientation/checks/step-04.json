@@ -8,6 +8,9 @@
     "Rejects it unless the planner signed it"
   ],
   "answer": 1,
+  "asserts": [
+    "you can describe what the executor does with the planner's output in vulnerable mode"
+  ],
   "pass_message": "That is the confused-deputy problem: the planner's output is treated as authorization. Every exploit in this Area rides on it.",
   "fail_message": "Re-read the step. The question is what the executor does when it is NOT hardened — does it re-check the planner, or trust it?"
 }

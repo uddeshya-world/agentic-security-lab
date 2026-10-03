@@ -1,5 +1,8 @@
 {
   "kind": "lab_status",
+  "asserts": [
+    "db_tool, email_tool and file_tool all answer healthy before you start collecting evidence"
+  ],
   "pass_message": "Every tool server is reachable, so the evidence you are about to collect is complete rather than partial.",
   "fail_message": "One or more tool servers are not responding. Bring the stack up with `docker compose up -d` before hunting: a partial stack produces partial evidence and confident wrong conclusions."
 }

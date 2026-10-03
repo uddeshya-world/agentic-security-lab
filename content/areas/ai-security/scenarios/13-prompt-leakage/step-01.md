@@ -13,5 +13,5 @@ Without this, an attacker probes blindly. With it they know the tool names, the
 argument keys, that `filter` takes a raw **SQL WHERE fragment**, and the exact
 payload that dumps the table.
 
-That's why LLM07 is its own category: leakage is rarely the final impact, it's the
+That's why LLM08 is its own category: leakage is rarely the final impact, it's the
 **reconnaissance that makes every other attack cheaper.**

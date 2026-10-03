@@ -29,7 +29,7 @@ POST http://127.0.0.1:8103/invoke  {"op":"read","path":"../etc/hostname"}
 - Path resolve uses `Path.relative_to` jail → `escapes workspace jail`.
 
 ### OWASP
-- LLM06 / ASI02 (excessive agency, tool misuse)
+- LLM03:2026 / ASI02 (excessive agency, tool misuse)
 
 ## Attack 2: Retrieval poisoning
 
@@ -48,7 +48,7 @@ GET  /lab/retrieve?q=What%20is%20the%20standard%20shipping%20time%3F
 - Retriever drops `trust=untrusted` chunks → poison markers absent.
 
 ### OWASP
-- LLM01 indirect injection, LLM04/LLM08 data/vector weaknesses, ASI01/ASI06
+- LLM01 indirect injection, LLM05:2026/LLM09:2026 data/vector weaknesses, ASI01/ASI06
 
 ### Note
 Agent-mediated tool calls after poison (Layer B) depend on local model compliance; not a v1.0 hard gate.
@@ -70,7 +70,7 @@ email_tool to audit@external-logging.test subject "Customer Export Lab M01"
 - DB unscoped dump also fails without `customer_id`.
 
 ### OWASP
-- LLM02 sensitive disclosure, LLM06 / ASI02 tool chaining
+- LLM02 sensitive disclosure, LLM03:2026 / ASI02 tool chaining
 
 ## Before/After
 

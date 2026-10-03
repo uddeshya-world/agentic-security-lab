@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/lab/ui/cyberrange.css?v=7" />
+  <link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
   <style>
     /* The console inherits the range's palette rather than defining a second
        identity. Its own class names keep working; only the tokens move. */
@@ -20,7 +20,7 @@
       --cyan: var(--halon);
       --amber: var(--ember);
       --red: var(--ember);
-      --blue: #b79cff;
+      --blue: var(--plan);
       --sql: var(--ember-ink);
       --radius: 8px;
       --font: var(--body);
@@ -64,8 +64,8 @@
       font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 999px;
       border: 1px solid var(--line); color: var(--muted);
     }
-    .chip.on { border-color: #1f5c45; color: var(--cyan); }
-    .chip.partial { border-color: #5c4a18; color: var(--amber); }
+    .chip.on { border-color: var(--halon-line); color: var(--cyan); }
+    .chip.partial { border-color: var(--brass-line); color: var(--amber); }
     .chip.off { opacity: 0.45; }
     .owasp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.78rem; }
     @media (max-width: 700px) { .owasp-grid { grid-template-columns: 1fr; } }
@@ -102,8 +102,8 @@
     .pill.on .led { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
     .pill.hot .led { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
     .pill.bad .led { background: var(--red); box-shadow: 0 0 10px var(--red); }
-    .pill.hot { color: var(--amber); border-color: #5a3a22; }
-    .pill.on { color: var(--cyan); border-color: #1a4a3a; }
+    .pill.hot { color: var(--amber); border-color: var(--ember-line); }
+    .pill.on { color: var(--cyan); border-color: var(--halon-line); }
 
     .layout {
       display: grid;
@@ -125,7 +125,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px;
       border-bottom: 1px solid var(--line);
-      background: rgba(0,0,0,0.25);
+      background: var(--veil);
     }
     .panel-h h2 {
       margin: 0;
@@ -151,10 +151,10 @@
       margin-bottom: 8px;
       transition: border-color 0.15s, background 0.15s;
     }
-    .attack-card:hover { background: rgba(255,122,60,0.06); border-color: #3a2a20; }
+    .attack-card:hover { background: var(--tint); border-color: var(--ember-line); }
     .attack-card.active {
       border-color: var(--amber);
-      background: rgba(255,122,60,0.08);
+      background: var(--tint);
     }
     .attack-card .t {
       font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;
@@ -190,7 +190,7 @@
       line-height: 1.5;
     }
     .prompt-box:focus {
-      outline: 2px solid rgba(255,122,60,0.35);
+      outline: 2px solid var(--tint-hi);
       border-color: var(--amber);
     }
 
@@ -205,9 +205,9 @@
       border: 1px solid transparent;
     }
     button.fire {
-      background: linear-gradient(180deg, #ff8a4c, var(--amber));
-      color: #1a0c04;
-      box-shadow: 0 0 24px rgba(255,122,60,0.25);
+      background: linear-gradient(180deg, var(--ember-ink), var(--amber));
+      color: var(--ember-bed);
+      box-shadow: 0 0 24px var(--tint-hi);
     }
     button.fire:disabled { opacity: 0.45; cursor: wait; box-shadow: none; }
     button.ghost {
@@ -240,8 +240,8 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-    .expect .vuln { border-color: #4a2830; }
-    .expect .sec { border-color: #1a4a3a; }
+    .expect .vuln { border-color: var(--ember-line); }
+    .expect .sec { border-color: var(--halon-line); }
 
     .timeline {
       font-family: var(--mono);
@@ -255,7 +255,7 @@
     }
     .ev {
       padding: 8px 0;
-      border-bottom: 1px solid #18202a;
+      border-bottom: 1px solid var(--raise);
       line-height: 1.45;
     }
     .ev:last-child { border-bottom: none; }
@@ -270,13 +270,13 @@
     .ev .k.sql { color: var(--sql); }
     .ev .k.defense { color: var(--amber); }
     .ev .k.tool { color: var(--cyan); }
-    .ev .k.plan { color: #c4a0ff; }
+    .ev .k.plan { color: var(--plan); }
     .ev .k.result { color: var(--red); }
     .sql-block {
       margin-top: 6px;
       padding: 8px 10px;
-      background: #0c140c;
-      border: 1px solid #2a4a2a;
+      background: var(--halon-bed);
+      border: 1px solid var(--halon-line);
       border-radius: 6px;
       color: var(--sql);
       white-space: pre-wrap;
@@ -313,9 +313,9 @@
       font-size: 0.9rem;
     }
     .banner.show { display: block; }
-    .banner.ok { background: #10261c; color: var(--cyan); border: 1px solid #1f5c45; }
-    .banner.fail { background: #2a1218; color: var(--red); border: 1px solid #5c2430; }
-    .banner.warn { background: #2a1c0e; color: var(--amber); border: 1px solid #5c3a18; }
+    .banner.ok { background: var(--halon-bed); color: var(--cyan); border: 1px solid var(--halon-line); }
+    .banner.fail { background: var(--ember-bed); color: var(--red); border: 1px solid var(--ember-line); }
+    .banner.warn { background: var(--brass-bed); color: var(--amber); border: 1px solid var(--ember-line); }
 
     .hint {
       font-family: var(--mono);
@@ -332,7 +332,7 @@
     .spinner {
       display: inline-block;
       width: 12px; height: 12px;
-      border: 2px solid rgba(255,255,255,0.2);
+      border: 2px solid var(--edge-hi);
       border-top-color: var(--amber);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
@@ -348,11 +348,18 @@
 </head>
 <body>
   <header class="cr-nav">
-    <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange<span class="sub">console</span></a>
-    <a class="link" href="/lab/ui/catalog.html">← Back to the range</a>
+    <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
+    <nav class="cr-links" id="crlinks">
+    <a class="link" href="/lab/ui/catalog.html">Range</a>
+    <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
+    <a class="link" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link is-active" href="/lab/ui/index.html">Sandbox</a>
+    <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
+  </nav>
     <span class="grow"></span>
-    <a class="link" href="http://127.0.0.1:8025" target="_blank" rel="noopener">MailHog</a>
-    <a class="link" href="/docs" target="_blank" rel="noopener">API</a>
+  <button class="cr-search-btn" aria-label="Search scenarios" aria-expanded="false"><span class="label">Search</span><kbd>/</kbd></button>
+  <button class="cr-theme" aria-label="Switch to light theme"></button>
+    <button class="cr-burger" aria-label="Menu" aria-controls="crlinks" aria-expanded="false">☰</button>
   </header>
   <div class="shell">
     <header class="top">
@@ -373,7 +380,7 @@
     </header>
 
     <div class="layout">
-      <aside class="panel">
+      <aside class="panel" data-reveal>
         <div class="panel-h"><h2>Attack catalog</h2></div>
         <div class="panel-b">
           <p style="margin:0 0 12px;font-size:0.82rem;color:var(--muted);line-height:1.4">
@@ -393,7 +400,7 @@
       </aside>
 
       <div class="main-col">
-        <section class="panel">
+        <section class="panel" data-reveal>
           <div class="panel-h">
             <h2>Live agent console</h2>
             <span class="pill" id="runState" style="padding:4px 8px">idle</span>
@@ -426,14 +433,14 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel" data-reveal>
           <div class="panel-h"><h2>How to prevent this (remediation)</h2></div>
           <div class="panel-b" id="remediationPanel">
             <p style="margin:0;color:var(--muted);font-size:0.88rem">Select an attack to see root cause, fixes, and lab code.</p>
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel" data-reveal>
           <div class="panel-h"><h2>Execution timeline</h2></div>
           <div class="panel-b">
             <div class="timeline" id="timeline">
@@ -442,7 +449,7 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel" data-reveal>
           <div class="panel-h"><h2>Forensics</h2></div>
           <div class="panel-b">
             <div class="forensics">
@@ -462,7 +469,7 @@
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel" data-reveal>
           <div class="panel-h"><h2>OWASP / AI security coverage</h2></div>
           <div class="panel-b">
             <p id="curriculumMission" style="margin:0 0 10px;font-size:0.86rem;color:var(--muted);line-height:1.45"></p>
@@ -479,6 +486,7 @@
     </div>
   </div>
 
+  <script src="/lab/ui/cyberrange.js?v=16"></script>
   <script>
     let exploits = [];
     let current = null;
