@@ -757,6 +757,7 @@ function wantedMode(step) {
 }
 function renderHelper(step) {
   const el = document.getElementById("helperLine");
+  if (!el) return;   // the scope gate is showing; it swaps the lesson markup out
   if (!step || (!step.has_check && !step.run)) { el.hidden = true; return; }
   el.hidden = false;
   el.className = "helper";

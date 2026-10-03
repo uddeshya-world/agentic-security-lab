@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "Three attacks enter through a help page, a records field and a chat message. All three end in an outgoing email or web request. Where is one control most likely to stop all three?",
+  "options": [
+    "A filter on chat messages",
+    "A review of every help-page edit",
+    "Approved lists on outgoing email and web requests",
+    "A longer system prompt"
+  ],
+  "answer": 2,
+  "asserts": [
+    "you can find the step every path has to pass"
+  ],
+  "pass_message": "Right. Many ways in, few ways out.",
+  "fail_message": "Each of the other options covers one way in. Look for the step all three share."
+}

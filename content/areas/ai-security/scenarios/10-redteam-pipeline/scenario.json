@@ -1,7 +1,7 @@
 {
   "id": "10-redteam-pipeline",
   "legacy_id": "m6",
-  "order": 14,
+  "order": 15,
   "title": "Red-team evaluation pipeline",
   "summary": "Module 6. Turn ad-hoc probing into a repeatable suite. Run every module's attack as one battery, compute attack-success rate in vulnerable vs secure mode, and wire it into CI so a regression fails the build.",
   "difficulty": "intermediate",

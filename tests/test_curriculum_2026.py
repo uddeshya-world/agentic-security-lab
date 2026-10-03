@@ -13,8 +13,10 @@ def test_ai_area_has_core_persist_operate_tracks():
     persist = [s for s in scen if s.get("track") == "persist"]
     operate = [s for s in scen if s.get("track") == "operate"]
     assert len(core) == 9, [s["id"] for s in core]
-    assert len(persist) == 4
+    reviewer = [s for s in scen if s.get("track") == "reviewer"]
+    assert len(persist) == 5   # + 19-mcp-tool-poisoning (PLAN.md P5.3)
     assert len(operate) == 6
+    assert len(reviewer) == 3  # read-only officials track (PLAN.md P5.4)
     assert tracks["16-direct-injection"] == "core"
     assert tracks["17-data-guards"] == "core"
     assert tracks["18-agent-identity"] == "core"

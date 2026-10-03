@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "Why ask to see the attack land with the control switched off?",
+  "options": [
+    "To test the vendor's patience",
+    "Without it you cannot tell a working control from an attack that never worked",
+    "Because regulations require two screenshots",
+    "To measure how fast the model answers"
+  ],
+  "answer": 1,
+  "asserts": [
+    "you can explain why a before-and-after pair is the evidence"
+  ],
+  "pass_message": "Right. The pair is the evidence; either half alone proves nothing.",
+  "fail_message": "If the attack never lands even with the control off, a 'stopped' result says nothing about the control."
+}

@@ -185,6 +185,7 @@ const TRACKS = {
   "ai-security:core":    { label: "Core",        outcome: "Exploit an agent end to end, then bind it" },
   "ai-security:persist": { label: "Persistence", outcome: "Attacks that outlive one conversation" },
   "ai-security:operate": { label: "Operate",     outcome: "Run agent security in production" },
+  "ai-security:reviewer": { label: "Reviewer",   outcome: "Know what to ask before you approve an agent" },
   "blue-team:core":      { label: "Blue Team",   outcome: "Triage, detect and prove the fix" },
 };
 function trackKey(l) { return `${l.area.id}:${l.track || "core"}`; }

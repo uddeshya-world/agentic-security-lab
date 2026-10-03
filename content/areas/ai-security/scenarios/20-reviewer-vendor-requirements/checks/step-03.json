@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "A vendor says: \"We told the model never to send personal data outside.\" Which requirement does that fail?",
+  "options": [
+    "The record limit, because it has no number",
+    "Proof, not promises: an instruction to the model is not a control you can test",
+    "Human approval, because nobody signs off",
+    "Pinned tools, because the model is a tool"
+  ],
+  "answer": 1,
+  "asserts": [
+    "you can tell a stated intention apart from a control that can be tested"
+  ],
+  "pass_message": "Right. An instruction lowers the odds; it does not stop anything you can prove.",
+  "fail_message": "Ask whether the vendor could run the attack and show it stopped. An instruction to the model cannot be shown that way."
+}

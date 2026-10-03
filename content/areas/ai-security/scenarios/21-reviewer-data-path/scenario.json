@@ -1,0 +1,33 @@
+{
+  "id": "21-reviewer-data-path",
+  "order": 21,
+  "track": "reviewer",
+  "title": "Reading an agent's data path",
+  "summary": "For officials and reviewers. How to read a data-path diagram, find where untrusted content, private records and outgoing messages meet, and spot the one place a control holds for every path. No Docker needed.",
+  "difficulty": "beginner",
+  "est_minutes": 10,
+  "mailhog": false,
+  "owasp": [
+    "LLM03:2026 Excessive Agency",
+    "ASI02 Tool Misuse"
+  ],
+  "controls": [],
+  "takeaway": "Many ways in, few ways out. Put the control where every path has to pass.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "Three kinds of access",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Where the control goes",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Check yourself",
+      "file": "step-03.md"
+    }
+  ]
+}

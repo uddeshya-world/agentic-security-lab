@@ -11,16 +11,26 @@ Authorized security education and defensive research only.
 
 ## New here? 15 minutes, nothing to install
 
-Open **`lab/ui/play.html`** in a browser (or `/lab/ui/play.html` on a running
-stack). *Place the Control* is a simulated, in-browser version of the lab:
+**Play it in your browser: https://uddeshya-world.github.io/agentic-security-lab/**
+(or open `lab/ui/play.html`, or `/lab/ui/play.html` on a running stack).
 
-1. **Watch the breach** — a public help-article edit steers a helpdesk agent into
+![Place the Control: level 1 breach, level 2 budget, level 3 composition cut](docs/media/place-the-control.gif)
+
+*Place the Control* is a simulated, in-browser version of the lab.
+Everyone teaches you to break the agent. Here you decide where the control goes.
+
+1. **Watch the breach**: a public help-article edit steers a helpdesk agent into
    emailing applicant records, hop by hop.
-2. **Place the controls** — three attacks, a budget of 3 points, find the
+2. **Place the controls**: three attacks, a budget of 3 points, find the
    cheapest set of controls that stops all of them.
-3. **Find the composition cut** — three agents that each pass alone leak together;
+3. **Find the composition cut**: three agents that each pass alone leak together;
    pick the one policy that breaks the trifecta without breaking the service
    (MESA invariant INV-01).
+4. **The tool lies**: a registry tool's description tells the agent to email
+   lookups out. Two cuts hold; the debrief explains why you want both.
+
+A **Reviewer** switch rewrites the copy for officials and approvers and turns the
+result into a printable list of questions to ask before approving an AI agent.
 
 No model runs on that page and every record is synthetic, which is why it is
 safe to host publicly. Everything below is the real lab it previews.

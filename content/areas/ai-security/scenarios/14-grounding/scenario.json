@@ -1,7 +1,7 @@
 {
   "id": "14-grounding",
   "legacy_id": "m10",
-  "order": 17,
+  "order": 18,
   "title": "Misinformation — groundedness & citations",
   "summary": "LLM07. The agent states a refund policy that exists in no source, in the same confident voice as the true answer. Enforce groundedness: every claim must be supported by a retrieved source, or it doesn't ship.",
   "difficulty": "intermediate",

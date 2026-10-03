@@ -1,7 +1,7 @@
 {
   "id": "13-prompt-leakage",
   "legacy_id": "m9",
-  "order": 16,
+  "order": 17,
   "title": "System prompt leakage",
   "summary": "LLM08. Make the planner recite its own instructions, then read what you got: every tool name, argument shape, and a dump-all SQL example. Detect the leak on output — and learn why the real fix is upstream.",
   "difficulty": "intermediate",

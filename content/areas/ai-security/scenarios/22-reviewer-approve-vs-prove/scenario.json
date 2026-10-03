@@ -1,0 +1,33 @@
+{
+  "id": "22-reviewer-approve-vs-prove",
+  "order": 22,
+  "track": "reviewer",
+  "title": "Approving vs. proving a control",
+  "summary": "For officials and reviewers. The difference between a control someone describes and a control someone demonstrates, and what evidence to ask for before you sign. No Docker needed.",
+  "difficulty": "beginner",
+  "est_minutes": 10,
+  "mailhog": false,
+  "owasp": [
+    "LLM03:2026 Excessive Agency",
+    "ASI02 Tool Misuse"
+  ],
+  "controls": [],
+  "takeaway": "Sign off on evidence of a stopped attack, not on a description of a control.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "Described is not demonstrated",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "What to ask for",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Check yourself",
+      "file": "step-03.md"
+    }
+  ]
+}

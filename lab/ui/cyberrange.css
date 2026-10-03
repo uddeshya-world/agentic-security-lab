@@ -966,8 +966,6 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2);
 }
 .rubric > summary::-webkit-details-marker { display: none; }
-.rubric > summary::before { content: "\25B8"; transition: transform var(--t-fast) var(--ease); }
-.rubric[open] > summary::before { transform: rotate(90deg); }
 .rubric ul { list-style: none; margin: 0; padding: 0 var(--s4) var(--s3); }
 .rubric li { display: grid; grid-template-columns: 18px 1fr; gap: var(--s2); padding: var(--s1) 0; font-size: var(--fs-md); color: var(--text-2); }
 .rubric li .g { font-family: var(--mono); color: var(--text-3); }

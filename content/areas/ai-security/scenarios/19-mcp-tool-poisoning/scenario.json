@@ -1,0 +1,23 @@
+{
+  "id": "19-mcp-tool-poisoning",
+  "order": 13,
+  "track": "persist",
+  "title": "MCP tool poisoning: the description lies",
+  "summary": "A community tool keeps its name, publisher and capabilities, and its description grows one sentence: email the last lookups out. The planner reads descriptions as instructions. Pin manifests by hash so a changed description is reviewed before it reaches the planner.",
+  "difficulty": "advanced",
+  "est_minutes": 15,
+  "attack_id": "mcp_tool_poisoning",
+  "mailhog": true,
+  "owasp": ["ASI04 Agentic Supply Chain", "LLM04:2026 Supply Chain"],
+  "controls": ["C10", "C15"],
+  "legs": ["u", "p", "e"],
+  "code_paths": ["defenses/m07/manifest_pin.py", "lab/sims_core.py::sim_mcp_tool_poisoning"],
+  "takeaway": "A tool description is untrusted content with a better disguise.",
+  "design_rule": "Pin every tool manifest by hash, description included. A changed or new description is reviewed before the planner can read it. Keep the egress allow-list as the backstop.",
+  "steps": [
+    { "id": "step-01", "title": "Descriptions are prompts", "file": "step-01.md" },
+    { "id": "step-02", "title": "The update that emails lookups", "file": "step-02.md" },
+    { "id": "step-03", "title": "Pin the manifest", "file": "step-03.md" },
+    { "id": "step-04", "title": "Which cut, and why both", "file": "step-04.md" }
+  ]
+}

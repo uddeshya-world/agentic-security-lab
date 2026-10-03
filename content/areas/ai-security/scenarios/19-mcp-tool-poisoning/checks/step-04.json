@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "Both the manifest pin and the recipient allow-list stopped this run. Why keep the manifest pin if egress is already allow-listed?",
+  "options": [
+    "It makes the allow-list faster",
+    "A future description can steer the agent through a channel that is already allowed",
+    "Allow-lists only work for web requests, not email",
+    "The pin replaces the need for attestation"
+  ],
+  "answer": 1,
+  "asserts": [
+    "you can say what each cut protects against that the other does not"
+  ],
+  "pass_message": "Right. Egress is the backstop; the registry stops the next tool that leaks through an allowed channel.",
+  "fail_message": "Think about a description that tells the agent to send data to an address that is on the allow-list."
+}

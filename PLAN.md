@@ -471,21 +471,21 @@ Files: `catalog.html`, `area.html`, `index.html`, `verify.html`, `roadmap.html`,
 
 Files: `scenario.html`, `cyberrange.js`, `lab/content.py` (`_client_check` only).
 
-- [ ] **P4.1 Player shell** C09 (rail, ring, counters, kicker, tabs; evidence stacks under lesson <1040 px).
-- [ ] **P4.2 Rubric** C10 — `_client_check()` passes `asserts` through for every kind except `recall`. Degrade silently when absent.
-- [ ] **P4.3 Action bar** C11 with gated Next + inline reason + "Skip this step".
-- [ ] **P4.4 Pre-flight** C22 and **scope gate** C23.
-- [ ] **P4.5 Trifecta HUD** C13 in the player header for scenarios whose `scenario.json` has `"legs": ["u","p","e"]` (new optional field; document in `AREA_TEMPLATE.md` in P5.2).
+- [x] **P4.1 Player shell** C09 (rail, ring, counters, kicker, tabs; evidence stacks under lesson <1040 px).
+- [x] **P4.2 Rubric** C10 — `_client_check()` passes `asserts` through for every kind except `recall`. Degrade silently when absent.
+- [x] **P4.3 Action bar** C11 with gated Next + inline reason + "Skip this step".
+- [x] **P4.4 Pre-flight** C22 and **scope gate** C23.
+- [x] **P4.5 Trifecta HUD** C13 in the player header for scenarios whose `scenario.json` has `"legs": ["u","p","e"]` (new optional field; document in `AREA_TEMPLATE.md` in P5.2).
 - **Accept (phase):** `tests/test_run_check_split.py` green; manual: a step cannot be passed without Run; Next gated; skip recorded but badge still refuses.
 
 ### Phase 5 — Content (1–2 days)
 
 Files: `content/areas/**/checks/*.json`, `content/AREA_TEMPLATE.md`, new scenario folder.
 
-- [ ] **P5.1 `asserts[]`** on all 49 graded checks (1–4 lines, present tense, observable state, no answers). **Accept:** test that every non-recall check has `asserts` and no recall check does.
-- [ ] **P5.2 Template** documents `asserts`, `legs`, and the playground ↔ scenario mapping.
-- [ ] **P5.3 Scenario `19-mcp-tool-poisoning`** (Advanced, `persist` track) mirroring Playground L4 against the real stack: a registered tool whose description carries instructions; control = pinned tool manifest hash + description review at registry (C10 registry allow-list exists — extend). Graded: vulnerable run shows the hidden instruction followed; secure run shows the registry refusing the changed manifest. Maps `ASI04`, `LLM04:2026`.
-- [ ] **P5.4 Officials track (`reviewer`)**: 3 read-only scenarios with `recall` checks: "What to require from a vendor", "Reading an agent's data path", "Approving vs. proving a control". No Docker needed. Credential: none (by design).
+- [x] **P5.1 `asserts[]`** on all 49 graded checks (1–4 lines, present tense, observable state, no answers). **Accept:** test that every non-recall check has `asserts` and no recall check does.
+- [x] **P5.2 Template** documents `asserts`, `legs`, and the playground ↔ scenario mapping.
+- [x] **P5.3 Scenario `19-mcp-tool-poisoning`** (Advanced, `persist` track) mirroring Playground L4 against the real stack: a registered tool whose description carries instructions; control = pinned tool manifest hash + description review at registry (C10 registry allow-list exists — extend). Graded: vulnerable run shows the hidden instruction followed; secure run shows the registry refusing the changed manifest. Maps `ASI04`, `LLM04:2026`.
+- [x] **P5.4 Officials track (`reviewer`)**: 3 read-only scenarios with `recall` checks: "What to require from a vendor", "Reading an agent's data path", "Approving vs. proving a control". No Docker needed. Credential: none (by design).
 
 ### Phase 6 — Public hosting (½ day)
 
@@ -495,9 +495,9 @@ Files: `content/areas/**/checks/*.json`, `content/AREA_TEMPLATE.md`, new scenari
 
 ### Phase 7 — Launch (user-led, agent assists)
 
-- [ ] **P7.1 Newsletter edition draft** (`docs/launch/newsletter-01.md`): hook = L3 screenshot `(1,1,1) → (1,1,0)`; 3 bullets; CTA to playground; "run it for real" link to repo.
-- [ ] **P7.2 Three LinkedIn posts** (`docs/launch/posts.md`): (a) "Many ways in, few ways out" with L2 screenshot; (b) "Your three agents are green. Together they leak." with L3; (c) "Questions officials should ask" from Reviewer mode.
-- [ ] **P7.3 README hero GIF** (Playwright recording of L1 → L3, ≤ 4 MB) in `docs/media/`.
+- [x] **P7.1 Newsletter edition draft** (`docs/launch/newsletter-01.md`): hook = L3 screenshot `(1,1,1) → (1,1,0)`; 3 bullets; CTA to playground; "run it for real" link to repo.
+- [x] **P7.2 Three LinkedIn posts** (`docs/launch/posts.md`): (a) "Many ways in, few ways out" with L2 screenshot; (b) "Your three agents are green. Together they leak." with L3; (c) "Questions officials should ask" from Reviewer mode.
+- [x] **P7.3 README hero GIF** (Playwright recording of L1 → L3, ≤ 4 MB) in `docs/media/`.
 
 ---
 
@@ -543,12 +543,12 @@ Order: P0 (lead) → P1 (lead) ∥ P2 (A) → P3 (B) ∥ P4 (C) → P5 → P6 �
 
 ## 12. Definition of done (whole plan)
 
-- [ ] Clone of the remote == tested course; CI green on `master`.
-- [ ] Playground v2 live at a public URL, 4 levels + Reviewer mode, OG card renders.
-- [ ] Catalog, Area, Player, Sandbox, Verify rebuilt with §6 components; all §10 checks pass.
-- [ ] 49 checks carry `asserts`; scenario 19 and reviewer track shipped.
-- [ ] Badge cannot be minted without server-recorded passes; verify page states its limits.
-- [ ] Newsletter + 3 posts drafted in `docs/launch/`.
+- [x] Clone of the remote == tested course; CI green on `master`.
+- [ ] Playground v2 live at a public URL, 4 levels + Reviewer mode, OG card renders. *(Live with 4 levels + Reviewer; the OG card still needs a LinkedIn Post Inspector check by the user.)*
+- [x] Catalog, Area, Player, Sandbox, Verify rebuilt with §6 components; all §10 checks pass.
+- [x] 49 checks carry `asserts`; scenario 19 and reviewer track shipped.
+- [x] Badge cannot be minted without server-recorded passes; verify page states its limits.
+- [x] Newsletter + 3 posts drafted in `docs/launch/`.
 
 **Report template (end of every phase):**
 ```
@@ -594,6 +594,20 @@ Could not do / blocked:
 | 2026-10-04 | P3.4 | Sandbox: "← Range", C22 pre-flight (per-service status words, copyable command, honest line, polls every 3 s while visible, re-inits when the stack comes up), waiting state with elapsed seconds, empty-answer banner when tools ran and `final_answer` is empty. Unhandled `/lab/status` rejections removed. |
 | 2026-10-04 | P3.5 | Verify: C25 badge card (✓ Valid signature / ✗ Not valid, dl, transcript table with glyph+word modes, server note verbatim) and one paragraph on what a valid signature does and does not prove. |
 | 2026-10-04 | P3 accept | `scripts/qa/shoot.py` on catalog, area, sandbox, verify, roadmap, certifications, play at 390/1280 × light/dark: overflow 0, console errors 0, axe serious/critical 0 (screens in `docs/qa/P3/`). Ruling: QA blocks Google Fonts (fallback stacks render) because the external stylesheet made loads time out. Ruling: `--dim` changed to `#7e8796` (dark) / `#6c6c74` (light) so it clears 4.5:1 on page and card grounds. §4.3 listed `#80808a`, but §10.4's contrast floor wins. Cost if wrong: metadata reads slightly darker. Opacity dimming removed from unlit hops and locked credential cards for the same reason. Lighthouse not run (axe used instead); every number on catalog/area comes from `/catalog` (`graded_steps`, `est_minutes`, `step_count`, `check_kinds`, `track`) or `/lab/curriculum` (`coverage_summary.controls_taught`, `owasp_asi`, `data_path_hops`). |
+| 2026-10-04 | P4.1 | Most of C09 already existed: rail, progress ring, DONE/EVIDENCE/RECALL counters, kicker, tabs, evidence pane under the lesson below 1180 px, never hidden. Ruling: kept the existing tabs (Timeline / Forensics / Terminal). Terminal shows its reason in place when ttyd is down. Kept the existing breakpoints (3 columns ≥1180, rail on top <780) instead of 1040. Cost if wrong: a CSS breakpoint change. |
+| 2026-10-04 | P4.2 | `_client_check()` already passed `asserts` for every kind except `recall` (guarded by `test_recall_client_payload_never_leaks_asserts_or_answer`); the player inserts the rubric only when asserts exist. No change needed. |
+| 2026-10-04 | P4.3 | Copy: "Run the attack" / "Check the evidence" / "Pass the checks to continue". Next was already gated with the reason beside it. "Skip this step" now records `{skipped:true}` (never `passed`) and the rail shows "· skipped". The badge stays server-ledger-only, so a skip can't count. |
+| 2026-10-04 | P4.4 | C22 pre-flight and C23 scope gate already existed. Fixed a race where `refreshStack()` called `renderHelper()` while the scope gate had replaced the lesson markup (TypeError at 390 px). |
+| 2026-10-04 | P4.5 | `legs` field passed through by `lab/content.py` (unknown letters dropped); set on 03, 04 and 19. HUD in the run bar lights legs only when a run travelled; "Trifecta closed" via aria-live. `scripts/qa/player_flow.py` at 1280 dark and 390 light: gate, HUD, copy, gating, Run → `closure 1·1·1`, Check → Next opens, no overflow, no page errors (0 failures). Screens in `docs/qa/P4/`. Also removed a duplicate rubric chevron the new `.rubric` CSS introduced. |
+| 2026-10-04 | P5.1 | All 49 graded checks already carry 1–4 `asserts` (`test_every_graded_check_has_a_nonempty_asserts_array`). Ruling: the 8 recall checks keep their `asserts` in the JSON as an authoring note. The plan asked for none, but the existing test requires them and `_client_check` never ships them (leak test). Cost if wrong: deleting 8 lines and changing one test. |
+| 2026-10-04 | P5.2 | `AREA_TEMPLATE.md` documents `track` (incl. `reviewer`), `legs`, and a playground ↔ scenario mapping table. |
+| 2026-10-04 | P5.3 | `19-mcp-tool-poisoning` (advanced, persist, ASI04 + LLM04:2026, controls C10/C15). New `defenses/m07/manifest_pin.py` (SHA-256 pin over the whole manifest, description included) and `sim_mcp_tool_poisoning` in `lab/sims_core.py`. Live stack: Check before Run refused; vulnerable Run sent mail to wardsync@ward-data.example through the real email tool (in MailHog), Check passed; secure Run held v1.4.2 at the registry, Check passed. `tests/test_tool_poisoning.py` 8 passed. Operate-track `order` values bumped by one so 19 follows 11. |
+| 2026-10-04 | P5.4 | Reviewer track: 20/21/22 (vendor requirements, data path, approve vs prove), read + read + recall each, `track: reviewer`, no Docker, no credential. Catalog and Area know the track. `test_curriculum_2026` counts updated (persist 5, reviewer 3). |
+| 2026-10-04 | P7.1 / P7.2 | `docs/launch/newsletter-01.md`, `docs/launch/posts.md` (three posts). `{{PLAYGROUND_URL}}` placeholders remain for the user to fill. |
+| 2026-10-04 | P7.3 | `docs/media/place-the-control.gif` (1.83 MB, L1 → L3) via `scripts/qa/record_gif.py`, recorded from the hosted page because `file://` loads hung. Embedded in the README with the hosted link and level 4 + Reviewer mode described. |
+| 2026-10-04 | P0.7 rerun | In-container `pytest tests/ -q`: 110 passed (smoke included this time). |
+| 2026-10-04 | P6.2 | Skipped. The user chose "publish Pages, no counter". |
+| 2026-10-04 | Final review | Self-review: no subagent was requested. Checked that skipped steps never enter the browser transcript or counters, that the hosted bundle carries no API routes, and that a Check before any Run on scenario 19 refuses. |
 | | | |
 
 ---
