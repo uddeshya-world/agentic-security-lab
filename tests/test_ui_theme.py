@@ -118,14 +118,14 @@ def test_no_literal_colours_outside_the_token_blocks():
 
 
 def test_every_site_page_carries_the_full_nav():
-    """One nav, five links, exactly one marked current."""
-    expected = ["Range", "Roadmap", "Certifications", "Sandbox", "Verify a badge"]
+    """One nav, six links, exactly one marked current."""
+    expected = ["Playground", "Range", "Roadmap", "Certifications", "Sandbox", "Verify a badge"]
     for name in ("catalog.html", "area.html", "index.html", "verify.html",
                  "roadmap.html", "certifications.html"):
         s = (UI / name).read_text(encoding="utf-8")
         nav = re.search(r'<nav class="cr-links".*?</nav>', s, re.S)
         assert nav, f"{name} has no nav block"
-        labels = re.findall(r'<a class="link(?: is-active)?" href="[^"]+">([^<]+)</a>', nav.group(0))
+        labels = re.findall(r'<a class="link(?: is-active)?" href="[^"]+"(?: aria-current="page")?>([^<]+)</a>', nav.group(0))
         assert labels == expected, f"{name} nav is {labels}"
         assert nav.group(0).count("link is-active") == 1,             f"{name} must mark exactly one link current"
         assert "cr-search-btn" in s, f"{name} has no search trigger"

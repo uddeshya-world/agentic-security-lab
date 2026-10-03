@@ -32,6 +32,8 @@ def main() -> int:
     ap.add_argument("urls", nargs="+")
     ap.add_argument("--axe")
     ap.add_argument("--wait", type=int, default=800, help="ms to wait after load")
+    ap.add_argument("--webfonts", action="store_true",
+                    help="let Google Fonts load (slow and flaky offline); default renders the fallback stacks")
     a = ap.parse_args()
     out = ROOT / "docs" / "qa" / a.task
     out.mkdir(parents=True, exist_ok=True)
@@ -44,16 +46,22 @@ def main() -> int:
                 for scheme in ("light", "dark"):
                     ctx = browser.new_context(viewport={"width": width, "height": 900}, color_scheme=scheme)
                     page = ctx.new_page()
+                    if not a.webfonts:
+                        page.route("**/fonts.{googleapis,gstatic}.com/**", lambda r: r.abort())
                     errors: list[str] = []
                     page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
                     page.on("pageerror", lambda e: errors.append(str(e)))
                     page.goto(url, wait_until="load", timeout=30000)
                     page.wait_for_timeout(a.wait)
+                    # Walk the page so scroll-reveal sections enter the viewport, as a reader's would.
+                    page.evaluate("""async () => { for (let y = 0; y < document.body.scrollHeight; y += 400) {
+                        window.scrollTo(0, y); await new Promise(r => setTimeout(r, 60)); } window.scrollTo(0, 0); }""")
+                    page.wait_for_timeout(700)
                     overflow = page.evaluate("document.documentElement.scrollWidth - window.innerWidth")
                     name = f"{slug(url)}-{width}-{scheme}.png"
                     page.screenshot(path=str(out / name), full_page=True)
                     row = {"page": slug(url), "width": width, "scheme": scheme, "overflow": overflow,
-                           "console_errors": [e for e in errors if "fonts.g" not in e]}
+                           "console_errors": [e for e in errors if "fonts.g" not in e and "ERR_FAILED" not in e]}
                     if axe_src and width == 1280:
                         page.add_script_tag(content=axe_src)
                         res = page.evaluate("axe.run(document, {resultTypes: ['violations']}).then(r => r.violations.map(v => ({id: v.id, impact: v.impact, n: v.nodes.length, sample: v.nodes[0] && v.nodes[0].target.join(' ')})))")

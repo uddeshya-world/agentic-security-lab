@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
 <script src="/lab/ui/vendor/marked.min.js"></script>
 <style>
   html, body { height: 100%; }
@@ -295,6 +295,13 @@
         <span class="here" id="barTitle"></span>
       </div>
       <div class="facts" id="barFacts"></div>
+      <div class="hud" id="hud" hidden role="group" aria-label="Trifecta legs on this attack path">
+        <span class="leg" data-leg="u">Untrusted<span class="sr-only"> not reached</span></span>
+        <span class="leg" data-leg="p">Private<span class="sr-only"> not reached</span></span>
+        <span class="leg" data-leg="e">External<span class="sr-only"> not reached</span></span>
+        <span class="vec" id="hudVec"></span>
+        <span class="sr-only" id="hudLive" aria-live="polite"></span>
+      </div>
     </div>
 
     <div class="lessonbody" id="lessonBody">
@@ -311,7 +318,7 @@
         <button class="btn ghost lift" id="prev">← Previous</button>
         <div class="nextwrap">
           <button class="btn lift" id="next">Next →</button>
-          <span class="gatemsg" id="gateMsg" hidden>Pass the check to continue</span>
+          <span class="gatemsg" id="gateMsg" hidden>Pass the checks to continue</span>
           <a href="#" class="skiplink" id="skipLink" hidden>Skip this step</a>
         </div>
       </div>
@@ -368,7 +375,7 @@
 
 </div>
 
-<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script src="/lab/ui/cyberrange.js?v=17"></script>
 <script>
 const esc = CR.esc;
 const TTYD = `http://${location.hostname}:7681`;
@@ -437,9 +444,10 @@ function renderRail() {
   document.getElementById("cRecall").textContent = `RECALL ${c.recall}`;
   document.getElementById("stepList").innerHTML = data.steps.map((s, i) => {
     const ok = CR.isPassed(p, s.id);
-    const kind = stepType(s) + (s.optional ? " · optional" : "");
+    const skipped = !ok && !!(p[s.id] && p[s.id].skipped);
+    const kind = stepType(s) + (s.optional ? " · optional" : "") + (skipped ? " · skipped" : "");
     return `<li data-i="${i}" class="${i === idx ? "on" : ""} ${ok ? "ok" : ""}">
-      <span class="pip">${ok ? "✓" : i + 1}</span>
+      <span class="pip">${ok ? "✓" : skipped ? "↷" : i + 1}</span>
       <span class="lb"><span class="kind">${esc(kind)}</span>${esc(s.title || s.id)}</span></li>`;
   }).join("");
   document.querySelectorAll(".steps li").forEach((li) => (li.onclick = () => go(+li.dataset.i)));
@@ -485,6 +493,29 @@ function renderRunbar() {
     chips.map(([tone, text]) => `<span class="tag ${tone}">${esc(text)}</span>`).join("") +
     `<span class="grow"></span><span class="sid">${esc(data.legacy_id || data.id || SCEN)}</span>`;
   bar.hidden = false;
+  paintHud(null);
+}
+
+/* ---- trifecta HUD (C13) ---------------------------------------------------
+   Only for scenarios whose scenario.json declares `legs`. The legs light when
+   a run actually travelled (success), and stay dark when a control held. */
+function paintHud(result) {
+  const legs = data.legs || [];
+  const hud = document.getElementById("hud");
+  if (!legs.length) { hud.hidden = true; return; }
+  hud.hidden = false;
+  const travelled = !!(result && result.success);
+  const lit = { u: 0, p: 0, e: 0 };
+  hud.querySelectorAll(".leg").forEach((el) => {
+    const on = travelled && legs.includes(el.dataset.leg);
+    lit[el.dataset.leg] = on ? 1 : 0;
+    el.classList.toggle("on", on);
+    el.querySelector(".sr-only").textContent = on ? " reached" : " not reached";
+  });
+  const closed = lit.u && lit.p && lit.e;
+  hud.classList.toggle("closed", !!closed);
+  document.getElementById("hudVec").textContent = result ? `closure ${lit.u}·${lit.p}·${lit.e}` : "no run yet";
+  document.getElementById("hudLive").textContent = closed ? "Trifecta closed" : result ? "Trifecta open" : "";
 }
 
 /* ---- scope gate ----------------------------------------------------------
@@ -632,7 +663,7 @@ function renderActs(step) {
         <div class="bar">
           <span class="t">${esc(step.run.label || "Run it")}</span>
           <span class="d">Executes against the real tools${wanted ? ` in <b>${esc(wanted)}</b> mode` : ""}. Watch the timeline.</span>
-          <button class="btn attack sm lift" id="btnRun">Run</button>
+          <button class="btn attack sm lift" id="btnRun">Run the attack</button>
         </div>
         <div class="say" id="runSay"></div>
       </div>`);
@@ -679,7 +710,7 @@ function renderActs(step) {
     host.insertAdjacentHTML("beforeend", `
       <div class="act verify" id="actCheck">
         <div class="bar"><span class="t">Check</span><span class="d">${what}</span>
-          <button class="btn assert sm lift" id="btnCheck">Check</button></div>
+          <button class="btn assert sm lift" id="btnCheck">Check the evidence</button></div>
         <div class="say" id="checkSay"></div>
       </div>`);
   }
@@ -794,9 +825,10 @@ async function doRun(step) {
     renderTimeline(res.events || []);
     CR.paintTrace(document.getElementById("trace"), res.events || [], r);
     fillForensics(r);
+    paintHud(r);
     state.textContent = r.success ? "attack landed" : r.blocked ? "contained" : "ran";
     say.innerHTML = r.success
-      ? `Landed in <b>${esc(runMode)}</b> mode. Read the timeline before you check — the evidence is the lesson.`
+      ? `Landed in <b>${esc(runMode)}</b> mode. Read the timeline before you check. The evidence is the lesson.`
       : `Ran in <b>${esc(runMode)}</b> mode and was stopped. The timeline names the control that did it.`;
   } catch (e) {
     state.textContent = "error";
@@ -980,7 +1012,18 @@ const go = (i) => { idx = Math.max(0, Math.min(data.steps.length - 1, i)); rende
 function wireLessonControls() {
   document.getElementById("prev").onclick = () => go(idx - 1);
   document.getElementById("next").onclick = advance;
-  document.getElementById("skipLink").onclick = (e) => { e.preventDefault(); advance(); };
+  document.getElementById("skipLink").onclick = (e) => {
+    e.preventDefault();
+    // A skip is recorded so the rail can say so. It is never a pass: the badge
+    // is minted from the server's ledger, which only a passing Check writes.
+    const step = data.steps[idx];
+    const p = progress();
+    if (step && !CR.isPassed(p, step.id)) {
+      p[step.id] = { skipped: true, at: new Date().toISOString() };
+      CR.saveProgress(AREA, SCEN, p);
+    }
+    advance();
+  };
 }
 
 async function init() {

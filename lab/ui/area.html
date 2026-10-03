@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CyberRange — Area</title>
+<title>Area · CyberRange</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
 <style>
   /* ---- crumb ------------------------------------------------------------ */
   .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s5); display: flex; gap: 8px; align-items: center; }
@@ -65,6 +65,9 @@
 
   /* ---- track table (as catalog.html's, moved here) ----------------------- */
   .track-block { margin-bottom: var(--s6); }
+  .trackbar h3.th { margin: 0; font-weight: 500; }
+  .stepper .s { display: block; font-size: var(--fs-md); color: var(--text-2); margin-top: 2px; max-width: 70ch; }
+  .stepper .hiderow { display: none; }
   .track-block:last-child { margin-bottom: 0; }
   .trackbar { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s3) 0; }
   .trackbar .th { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--halon); }
@@ -128,7 +131,7 @@
   }
   .fchip:hover { border-color: var(--edge-hi); color: var(--chalk); }
   .fchip .n { color: var(--dim); margin-left: 5px; font-variant-numeric: tabular-nums; }
-  .fchip[aria-pressed="true"] { background: var(--halon-bed); border-color: var(--halon-line); color: var(--halon); }
+  .fchip[aria-pressed="true"] { background: var(--halon-bed); border-color: var(--halon-line); color: var(--halon-ink); }
   .fchip[aria-pressed="true"] .n { color: var(--halon-ink); }
   .fchip:focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; }
 
@@ -187,8 +190,9 @@
 
 <header class="cr-nav">
   <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
-  <nav class="cr-links" id="crlinks">
-    <a class="link is-active" href="/lab/ui/catalog.html">Range</a>
+  <nav class="cr-links" id="crlinks" aria-label="Primary">
+    <a class="link" href="/lab/ui/play.html">Playground</a>
+    <a class="link is-active" href="/lab/ui/catalog.html" aria-current="page">Range</a>
     <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
     <a class="link" href="/lab/ui/certifications.html">Certifications</a>
     <a class="link" href="/lab/ui/index.html">Sandbox</a>
@@ -222,7 +226,7 @@
 
 <dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
 
-<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script src="/lab/ui/cyberrange.js?v=17"></script>
 <script>
 const esc = CR.esc;
 const params = new URLSearchParams(location.search);
@@ -244,7 +248,7 @@ function callout(tone, html) {
   return `<div class="callout ${tone}"><div class="body">${html}</div></div>`;
 }
 function fmtMinutes(mins) {
-  if (!mins) return "—";
+  if (!mins) return "";
   const h = Math.floor(mins / 60), m = mins % 60;
   if (h && m) return `${h}h ${m}m`;
   if (h) return `${h}h`;
@@ -253,8 +257,8 @@ function fmtMinutes(mins) {
 
 const TRACKS = [
   { id: "core", label: "Core path", hint: "required for the badge" },
-  { id: "persist", label: "Advanced — persistence", hint: "RAG, memory, multi-agent, MCP" },
-  { id: "operate", label: "Advanced — operate", hint: "measure, CI, policy, spend" },
+  { id: "persist", label: "Advanced · persistence", hint: "RAG, memory, multi-agent, MCP" },
+  { id: "operate", label: "Advanced · operate", hint: "measure, CI, policy, spend" },
 ];
 
 function scenarioProgress(area) {
@@ -265,24 +269,39 @@ function scenarioProgress(area) {
   });
 }
 
-function rowFor(area, r, locked) {
-  const { s, complete } = r;
-  const href = locked ? "" : ` data-href="/lab/ui/scenario.html?area=${esc(area.id)}&id=${esc(s.id)}"`;
-  // The facets the find bar filters on travel with the row, so the filter never
-  // has to re-derive them from cell text.
+function compLine(s) {
+  // The composition line: what each step demands, counted from /catalog.
+  const recall = (s.check_kinds || {}).recall || 0;
+  const graded = s.graded_steps || 0;
+  const read = Math.max(0, (s.step_count || 0) - graded);
+  const parts = [];
+  if (read) parts.push(`▶ ${read} read`);
+  if (graded - recall) parts.push(`▤ ${graded - recall} run+check`);
+  if (recall) parts.push(`? ${recall} recall`);
+  if (s.est_minutes) parts.push(`${s.est_minutes} min`);
+  return parts.join(" · ");
+}
+
+function rowFor(area, r, locked, isNext) {
+  const { s, complete, done } = r;
+  const href = `/lab/ui/scenario.html?area=${encodeURIComponent(area.id)}&id=${encodeURIComponent(s.id)}`;
   const facets = ` data-track="${esc(s.track || "core")}" data-difficulty="${esc(s.difficulty || "")}"` +
                  ` data-state="${complete ? "done" : "todo"}"`;
+  const cls = locked ? "is-authoring" : complete ? "is-done" : isNext ? "is-current" : "";
+  const word = locked ? "Authoring" : complete ? "✓ Done" : done ? "In progress" : isNext ? "Up next" : "Not started";
+  const codes = (s.owasp || []).slice(0, 2).map((o) => String(o).split(" ")[0]).join(" · ");
   return `
-    <tr class="${locked ? "locked" : ""}"${href}${facets}>
-      <td class="ord"><span class="cell ${complete ? "done" : ""}">${complete ? "✓" : String(s.order ?? "").padStart(2, "0")}</span></td>
-      <td><span class="cell"><span class="t">${esc(s.title)}</span><span class="s">${esc(s.summary || "")}</span></span></td>
-      <td><span class="cell owasp">${(s.owasp || []).slice(0, 2).map((o) => `<span class="tag quiet">${esc(o)}</span>`).join("")}</span></td>
-      <td class="n"><span class="cell">${s.est_minutes || "—"} min</span></td>
-      <td class="n"><span class="cell">${s.graded_steps ? s.graded_steps + " graded" : "read"}</span></td>
-    </tr>`;
+    <li class="scen ${cls}"${facets}>
+      <span class="node" aria-hidden="true">${complete ? "✓" : ""}</span>
+      <span class="eb">${esc(String(s.order ?? "").padStart(2, "0"))} · ${esc(s.difficulty || "")}${codes ? " · " + esc(codes) : ""} · ${word}</span>
+      ${locked ? `<span class="ti">${esc(s.title)}</span>` : `<a class="ti" href="${href}">${esc(s.title)}</a>`}
+      <span class="s">${esc(s.summary || "")}</span>
+      <span class="comp">${esc(compLine(s))}</span>
+    </li>`;
 }
 
 function renderTracks(area, prog, locked) {
+  const firstOpen = prog.find((r) => (r.s.track || "core") === "core" && !r.complete);
   return TRACKS.map((t, i) => {
     const items = prog.filter((r) => (r.s.track || "core") === t.id);
     if (!items.length) return "";
@@ -291,23 +310,14 @@ function renderTracks(area, prog, locked) {
     return `
       <div class="track-block" data-reveal data-reveal-delay="${Math.min(i + 1, 3)}">
         <div class="trackbar">
-          <span class="th">${esc(t.label)}</span>
+          <h3 class="th">${esc(t.label)}</h3>
           <span class="hint">${esc(t.hint)}</span>
           <span class="grow"></span>
           <span class="meta">${items.length} scenarios · ${graded} graded · ${fmtMinutes(mins)}</span>
         </div>
-        <table class="slate" data-track="${esc(t.id)}">
-          <thead><tr><th>#</th><th>Scenario</th><th>Maps to</th><th style="text-align:right">Time</th><th style="text-align:right">Checks</th></tr></thead>
-          <tbody>${items.map((r) => rowFor(area, r, locked)).join("")}</tbody>
-        </table>
+        <ol class="stepper" data-track="${esc(t.id)}">${items.map((r) => rowFor(area, r, locked, r === firstOpen)).join("")}</ol>
       </div>`;
   }).join("");
-}
-
-function wireRows(root) {
-  root.querySelectorAll(".slate tbody tr[data-href]").forEach((tr) => {
-    tr.onclick = () => (location.href = tr.dataset.href);
-  });
 }
 
 /* ---- find bar ------------------------------------------------------------
@@ -370,7 +380,7 @@ function wireFilter(area) {
   const input = document.getElementById("scenarioFilter");
   if (!input) return;
   const blocks = Array.from(document.querySelectorAll(".track-block"));
-  const rows = Array.from(document.querySelectorAll(".slate tbody tr"));
+  const rows = Array.from(document.querySelectorAll(".stepper li.scen"));
   const chips = Array.from(document.querySelectorAll(".fchip"));
   const countEl = document.getElementById("findCount");
   const emptyEl = document.getElementById("findEmpty");
@@ -390,7 +400,7 @@ function wireFilter(area) {
     rows.forEach((tr) => {
       // Match only the scenario's own title + summary, not tag/time/check cell
       // text — otherwise typing "graded" or an OWASP code matches everything.
-      const t = tr.querySelector(".t")?.textContent || "";
+      const t = tr.querySelector(".ti")?.textContent || "";
       const s = tr.querySelector(".s")?.textContent || "";
       const match = (!q || (t + " " + s).toLowerCase().includes(q)) && matchesFacet(tr);
       tr.classList.toggle("hiderow", !match);
@@ -399,7 +409,7 @@ function wireFilter(area) {
     // A track section whose every row is filtered out must not keep showing
     // its own "N scenarios" meta line — that would be a stale count on screen.
     blocks.forEach((block) => {
-      const visible = Array.from(block.querySelectorAll(".slate tbody tr")).some(
+      const visible = Array.from(block.querySelectorAll(".stepper li.scen")).some(
         (tr) => !tr.classList.contains("hiderow")
       );
       block.hidden = !visible;
@@ -433,7 +443,7 @@ function wireFilter(area) {
 /* ---- render -------------------------------------------------------------- */
 function render(area) {
   document.getElementById("crumbTitle").textContent = area.title || area.id;
-  document.title = `CyberRange — ${area.title || area.id}`;
+  document.title = `${area.title || area.id} · CyberRange`;
 
   const prog = scenarioProgress(area);
   const coreProg = prog.filter((r) => (r.s.track || "core") === "core");
@@ -455,8 +465,8 @@ function render(area) {
   const locked = area.status !== "available";
   const callouts = [];
   if (locked) {
-    callouts.push(callout("ember", `<b>This Area is authoring.</b> The content below is the plan, not a finished
-      lab — scenarios do not open yet. Nothing here is fabricated; it is simply not built.`));
+    callouts.push(callout("ember", `<b>This Area is authoring.</b> The content below is the plan. Scenarios
+      do not open yet.`));
   }
   const gaps = Array.isArray(area.gaps) ? area.gaps.filter(Boolean) : [];
 
@@ -477,7 +487,7 @@ function render(area) {
       </div>
     </div>
 
-    <div class="statrow" data-reveal>${statCells.map(([n, l]) => `<div><span class="n">${esc(n)}</span><span class="l">${esc(l)}</span></div>`).join("")}</div>
+    <ul class="statchips" aria-label="Area at a glance" style="margin-bottom:var(--s6)">${statCells.filter(([n]) => n !== "" && n !== null && n !== undefined).map(([n, l]) => `<li><b>${esc(n)}</b>${esc(l)}</li>`).join("")}</ul>
 
     <div id="calloutHost">${callouts.join("")}</div>
 
@@ -493,7 +503,7 @@ function render(area) {
     </div>
 
     <section class="blk">
-      <div class="sechead"><h2>Scenarios</h2><span class="hint">grouped by track · click a row to open it</span></div>
+      <div class="sechead"><h2>Path</h2><span class="hint">grouped by track · the ringed node is your next step</span></div>
       <div id="filterHost"></div>
       <div id="tracksHost"></div>
     </section>
@@ -505,8 +515,8 @@ function render(area) {
           <h3>${esc(cred.title || "Completion badge")}</h3>
           ${credReq ? `<div class="req">${credReq}</div>` : ""}
           <p>${esc(cred.description || "")}</p>
-          <p class="honest">This instance signs its own badges — the signature only proves the transcript was
-            not edited after issuance, not that a third party graded it. <a href="/lab/ui/verify.html" style="color:var(--halon-ink);border-bottom:1px solid var(--halon-line)">Verify any badge</a> against this instance's key.</p>
+          <p class="honest">This instance signs its own badges. The signature proves the transcript was
+            not edited after issuance: tamper-evident, not third-party attested. <a href="/lab/ui/verify.html" style="color:var(--halon-ink);border-bottom:1px solid var(--halon-line)">Verify any badge</a> against this instance's key.</p>
         </div>
         <div class="side">
           <div class="progress-block">
@@ -521,11 +531,11 @@ function render(area) {
       </div>
     </section>
 
-    ${gaps.length ? `
-    <section class="blk" data-reveal>
-      <div class="sechead"><h2>Not covered by this Area</h2></div>
-      <ul class="checklist" style="max-width:74ch">${gaps.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
-    </section>` : ""}
+    <section class="blk" data-reveal id="gapsHost" ${gaps.length ? "" : "hidden"}>
+      <div class="sechead"><h2>What this Area does not teach</h2><span class="hint">listed so coverage is not self-selected</span></div>
+      ${gaps.length ? `<ul class="checklist" style="max-width:74ch">${gaps.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
+      <div id="gapTable"></div>
+    </section>
   `;
 
   // Below a handful of scenarios the find bar costs more attention than it saves.
@@ -534,11 +544,28 @@ function render(area) {
     document.getElementById("filterHost").innerHTML = findbarHTML(area, prog);
   }
   document.getElementById("tracksHost").innerHTML = renderTracks(area, prog, locked);
-  if (!locked) wireRows(document.getElementById("tracksHost"));
   if (wantsFilter) wireFilter(area);
+
+  if (area.id === "ai-security") renderGaps();
 
   const claimBtn = document.getElementById("claimBtn");
   if (claimBtn && !locked) claimBtn.onclick = () => openBadge(area);
+}
+
+/* ---- honest gaps: the OWASP Agentic entries no scenario covers ---------- */
+async function renderGaps() {
+  let cur;
+  try { cur = await CR.api("/lab/curriculum"); } catch (e) { return; }
+  const open = Object.entries(cur.owasp_asi || {}).filter(([, v]) => !v.covered);
+  if (!open.length) return;
+  const note = cur.coverage_summary && cur.coverage_summary.denominator_note;
+  document.getElementById("gapTable").innerHTML = `
+    <div class="tablewrap"><table class="tbl">
+      <thead><tr><th scope="col">OWASP id</th><th scope="col">Risk</th><th scope="col">Status</th></tr></thead>
+      <tbody>${open.map(([id, v]) => `<tr><td class="mono">${esc(id)}</td><td>${esc(v.name || "")}</td><td><span class="cstate authoring">· Not covered</span></td></tr>`).join("")}</tbody>
+    </table></div>
+    ${note ? `<p style="font-size:var(--fs-sm);color:var(--text-2);max-width:74ch">${esc(note)}</p>` : ""}`;
+  document.getElementById("gapsHost").hidden = false;
 }
 
 /* ---- badge (moved here from catalog.html — the credential lives on the
@@ -568,9 +595,9 @@ async function openBadge(area) {
       <div class="eyebrow">Badge requirements</div>
       <h3>${esc(el.passed_count)} of ${esc(el.required_count)} graded checks passed</h3>
       <p>The badge is issued when every graded check in this Area has passed on this machine.
-         Reading a step does not count — a check does. Still open:</p>
+         A check counts; reading a step does not. Still open:</p>
       <div class="missing">${el.missing.slice(0, 40).map((m) =>
-        `<div>${esc(m.scenario)} · ${esc(m.step)} — ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
+        `<div>${esc(m.scenario)} · ${esc(m.step)} · ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
       <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
   } else {
     const a = res.assertion;
@@ -612,8 +639,8 @@ async function init() {
   } catch (e) {
     document.getElementById("host").innerHTML = `
       <div class="state bad" style="margin:var(--s5) 0">
-        <h4>The lab is not answering on this port</h4>
-        <p>Start it from the repo folder with <code>docker compose up -d</code>, then reload.</p>
+        <h4>The agent isn't reachable at 127.0.0.1:8000</h4>
+        <p>Run <code>docker compose up -d</code> from the repo folder, then reload.</p>
       </div>`;
     return;
   }

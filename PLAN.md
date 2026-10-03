@@ -460,11 +460,11 @@ File: `lab/ui/cyberrange.css` only (+ `tests/test_ui_theme.py` if a new guard is
 
 Files: `catalog.html`, `area.html`, `index.html`, `verify.html`, `roadmap.html`, `certifications.html`, `tests/test_ui_theme.py` (nav list only).
 
-- [ ] **P3.1 Nav** adds `Playground` first; update nav test expected list to `["Playground","Range","Roadmap","Certifications","Sandbox","Verify a badge"]`.
-- [ ] **P3.2 Catalog** per §7.2: path cards (C04) from `/catalog` grouped by `track`; lab grid (C05) with chips (C06) and search (C27); stat chips (C07); announce bar (C01) pointing at the playground.
-- [ ] **P3.3 Area page** per §7.3 with C08 stepper and honest-gaps table from `GET /lab/curriculum`.
-- [ ] **P3.4 Sandbox** per §7.5 (pre-flight, waiting state, empty-answer banner, back to Range).
-- [ ] **P3.5 Verify** per §7.6 using C25.
+- [x] **P3.1 Nav** adds `Playground` first; update nav test expected list to `["Playground","Range","Roadmap","Certifications","Sandbox","Verify a badge"]`.
+- [x] **P3.2 Catalog** per §7.2: path cards (C04) from `/catalog` grouped by `track`; lab grid (C05) with chips (C06) and search (C27); stat chips (C07); announce bar (C01) pointing at the playground.
+- [x] **P3.3 Area page** per §7.3 with C08 stepper and honest-gaps table from `GET /lab/curriculum`.
+- [x] **P3.4 Sandbox** per §7.5 (pre-flight, waiting state, empty-answer banner, back to Range).
+- [x] **P3.5 Verify** per §7.6 using C25.
 - **Accept (phase):** all pages at 390/1280 × light/dark: no horizontal scroll, every number traceable to an API field, Lighthouse a11y ≥ 95 on catalog and area.
 
 ### Phase 4 — Player (Agent C) (2–3 days)
@@ -489,9 +489,9 @@ Files: `content/areas/**/checks/*.json`, `content/AREA_TEMPLATE.md`, new scenari
 
 ### Phase 6 — Public hosting (½ day)
 
-- [ ] **P6.1 Static site.** GitHub Pages (or Cloudflare Pages) workflow that publishes **only** `lab/ui/play.html`, `lab/ui/assets/*`, and a generated `index.html` redirect to it. **Accept:** published site has no API calls (grep `fetch(` in the published bundle = 0).
+- [x] **P6.1 Static site.** GitHub Pages (or Cloudflare Pages) workflow that publishes **only** `lab/ui/play.html`, `lab/ui/assets/*`, and a generated `index.html` redirect to it. **Accept:** published site has no API calls (grep `fetch(` in the published bundle = 0).
 - [ ] **P6.2 Hosted counter (optional, user decides):** a privacy-respecting, cookie-less counter (e.g. self-hosted Plausible/GoatCounter) on the hosted page only, events `level_complete`, `share_copy`, `outbound_repo`. Not in the local lab. Ask before adding.
-- [ ] **P6.3 Replace `{{PLAYGROUND_URL}}`** in share text and OG tags at deploy.
+- [x] **P6.3 Replace `{{PLAYGROUND_URL}}`** in share text and OG tags at deploy.
 
 ### Phase 7 — Launch (user-led, agent assists)
 
@@ -587,6 +587,13 @@ Could not do / blocked:
 | 2026-10-04 | P1.5 | `ptc-progress` kept (try/catch); "Reset progress" text button in the footer. Reload restores levels + mode; with `localStorage` throwing, level 1 completes and reset runs, no page errors. |
 | 2026-10-04 | P1.6 | Copy pass: removed "not X but Y" constructions, approved strings used verbatim, sim note matches §11, light tokens synced to the P2 tune. Share card uses the real held/spent values (it used to say "3 of 3" even after a worse rerun). Guarded by `test_copy_rules`. |
 | 2026-10-04 | P1.7 | `tests/test_playground.py` 8 tests: no remote script/fetch/shared assets, no literal colours, data matches the copy, the Python-ported evaluator finds the unique optimum {mail, url} at 2 pts, soft controls never stop, L4 has exactly two wins, approved strings, copy rules. 8 passed. |
+| 2026-10-04 | P6.1 / P6.3 | `.github/workflows/pages.yml` publishes only `play.html` (as `play.html` and `index.html`) plus `assets/*`; safety step fails the build on any `fetch(`, `/run`, `/lab/attack`, `/credential/` or leftover placeholder, and on more than 2 HTML files. Ruling: the root is a copy of the playground, not a redirect, so the shared URL carries the OG tags itself. Cost if wrong: one duplicate file. `{{PLAYGROUND_URL}}` → `https://uddeshya-world.github.io/agentic-security-lab/` and `data-build="hosted"` at deploy. Live: 200, og:url correct. Pages enabled via API with build_type=workflow. |
+| 2026-10-04 | P3.1 | Playground first in the nav on all six site pages, `aria-current="page"` + `aria-label="Primary"`; nav test updated to six labels. Asset version bumped to v=17 everywhere. |
+| 2026-10-04 | P3.2 | Catalog rebuilt: C01 announce (neutral, points at the playground, keeps the live secure-mode reading), static headline (typewriter removed per the motion contract), breach trace kept as the one motion moment, primary + secondary CTA, C07 stat chips, C04 path cards per `track` (Blue Team shows Authoring/Preview), C06 chips with counts + "Find a lab" field, C05 lab card grid, eight-hop explainer kept. "By the numbers" and the "Not built yet" list removed (stat chips and the roadmap page cover them). Ruling: `/` stays the site-wide search palette (C27), so the lab filter field has no `/` hint. Cost if wrong: one keybinding. |
+| 2026-10-04 | P3.3 | Area: C07 stat chips, C08 stepper grouped by track (ringed node = next core step, composition line from `check_kinds`), credential card with the tamper-evident note, honest-gaps table from `GET /lab/curriculum` (`owasp_asi` entries with `covered: false`: ASI05, ASI08, ASI09) plus the denominator note. |
+| 2026-10-04 | P3.4 | Sandbox: "← Range", C22 pre-flight (per-service status words, copyable command, honest line, polls every 3 s while visible, re-inits when the stack comes up), waiting state with elapsed seconds, empty-answer banner when tools ran and `final_answer` is empty. Unhandled `/lab/status` rejections removed. |
+| 2026-10-04 | P3.5 | Verify: C25 badge card (✓ Valid signature / ✗ Not valid, dl, transcript table with glyph+word modes, server note verbatim) and one paragraph on what a valid signature does and does not prove. |
+| 2026-10-04 | P3 accept | `scripts/qa/shoot.py` on catalog, area, sandbox, verify, roadmap, certifications, play at 390/1280 × light/dark: overflow 0, console errors 0, axe serious/critical 0 (screens in `docs/qa/P3/`). Ruling: QA blocks Google Fonts (fallback stacks render) because the external stylesheet made loads time out. Ruling: `--dim` changed to `#7e8796` (dark) / `#6c6c74` (light) so it clears 4.5:1 on page and card grounds. §4.3 listed `#80808a`, but §10.4's contrast floor wins. Cost if wrong: metadata reads slightly darker. Opacity dimming removed from unlit hops and locked credential cards for the same reason. Lighthouse not run (axe used instead); every number on catalog/area comes from `/catalog` (`graded_steps`, `est_minutes`, `step_count`, `check_kinds`, `track`) or `/lab/curriculum` (`coverage_summary.controls_taught`, `owasp_asi`, `data_path_hops`). |
 | | | |
 
 ---

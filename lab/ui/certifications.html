@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CyberRange — certifications</title>
+<title>Certifications · CyberRange</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
 <style>
   .page { max-width: 1000px; margin: 0 auto; padding: var(--s7) var(--s5) var(--s8); }
   .page h1 { font-family: var(--display); font-size: 32px; letter-spacing: -.03em; margin: var(--s3) 0 var(--s3); }
   .page .lede { color: var(--ash); font-size: 15px; line-height: 1.65; margin: 0 0 var(--s6); max-width: 68ch; }
 
   .cred { border: 1px solid var(--edge); border-radius: var(--r-lg); padding: var(--s5); margin-bottom: var(--s5); background: var(--plate); }
-  .cred.locked { opacity: .78; }
+  .cred.locked { border-style: dashed; }
   .credhead { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s5); flex-wrap: wrap; }
   .cred h2 { font-family: var(--display); font-size: 21px; letter-spacing: -.02em; margin: 0 0 var(--s2); }
   .cred .from { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
@@ -44,10 +44,11 @@
 
 <header class="cr-nav">
   <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
-  <nav class="cr-links" id="crlinks">
+  <nav class="cr-links" id="crlinks" aria-label="Primary">
+    <a class="link" href="/lab/ui/play.html">Playground</a>
     <a class="link" href="/lab/ui/catalog.html">Range</a>
     <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
-    <a class="link is-active" href="/lab/ui/certifications.html">Certifications</a>
+    <a class="link is-active" href="/lab/ui/certifications.html" aria-current="page">Certifications</a>
     <a class="link" href="/lab/ui/index.html">Sandbox</a>
     <a class="link" href="/lab/ui/verify.html">Verify a badge</a>
   </nav>
@@ -62,7 +63,7 @@
   <h1>Certifications</h1>
   <p class="lede">
     Each Area issues one credential. You earn it by passing every graded check on its required
-    path — and a graded check only passes on evidence a run of yours actually left in the lab, so
+    path, and a graded check only passes on evidence a run of yours actually left in the lab, so
     the badge records work you did rather than pages you opened.
   </p>
 
@@ -73,7 +74,7 @@
     The signature shows the transcript has not been edited since it was issued. It is not
     third-party attestation: whoever runs this lab also holds the signing key, so a badge is only
     as trustworthy as the instance that issued it. The frameworks listed on a credential are the
-    taxonomies its scenarios map to — they are not accreditation by those bodies, and no industry
+    taxonomies its scenarios map to. They are not accreditation by those bodies, and no industry
     certification is granted here. <a class="link" href="/lab/ui/verify.html">Verify a badge →</a>
   </div>
 </main>
@@ -82,7 +83,7 @@
   <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
 </footer>
 
-<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script src="/lab/ui/cyberrange.js?v=17"></script>
 <script>
 const esc = CR.esc;
 
@@ -143,7 +144,7 @@ function credCard(area) {
         <ol>
           <li>Pass <b>every one of the ${pr.required} graded checks</b> on the ${esc(trackLabel)}
               (${pr.scenTotal} scenarios).</li>
-          <li>Each check reads evidence a run of yours left behind — dumped rows, an intercepted
+          <li>Each check reads evidence a run of yours left behind: dumped rows, an intercepted
               message, or the named control that blocked a step. <b>No run, no pass.</b></li>
           <li>The issued badge carries the full transcript: which check, which kind, which mode.</li>
         </ol>
@@ -158,7 +159,7 @@ function credCard(area) {
       <div class="actions">
         <a class="btn assert" href="/lab/ui/area.html?id=${encodeURIComponent(area.id)}">Open ${esc(area.title)}</a>
         <span class="note">${pr.passed >= pr.required && pr.required > 0
-          ? "All checks passed — claim it from the Area page."
+          ? "All checks passed. Claim it from the Area page."
           : `${pr.required - pr.passed} checks left`}</span>
       </div>`}
     </section>`;

@@ -292,6 +292,8 @@ def scenario_payload(area_id: str, scenario_id: str) -> dict[str, Any] | None:
         "owasp": scen.get("owasp") or [],
         "track": scen.get("track") or "core",
         "controls": scen.get("controls") or [],
+        # Optional trifecta legs the scenario's attack path touches: any of "u", "p", "e".
+        "legs": [leg for leg in (scen.get("legs") or []) if leg in ("u", "p", "e")],
         "attack_id": scen.get("attack_id"),
         "mailhog": scen.get("mailhog", False),
         "code_paths": scen.get("code_paths") or [],

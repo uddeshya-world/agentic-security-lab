@@ -87,6 +87,38 @@ fastest way to lose a learner's trust.
 }
 ```
 
+### `track` — which path the scenario belongs to
+
+`core` (required for the badge), `persist` or `operate` in the AI Security Area, and
+`reviewer` for the read-only officials track (no Docker, `recall` checks only, no
+credential). The catalog builds its path cards from this field, so a missing value
+puts the scenario in `core`.
+
+### `legs` — optional trifecta legs
+
+```json
+"legs": ["u", "p", "e"]
+```
+
+Which legs of the lethal trifecta the scenario's attack path touches: `u` untrusted
+content, `p` private data, `e` external communication. Leave it out when the path is
+not about the trifecta. When present, the player shows the trifecta HUD in its header.
+A leg lights only when a run actually travelled (`result.success`), so a secure-mode
+run that held shows the legs dark. Unknown letters are dropped by `lab/content.py`.
+
+### Playground ↔ scenario mapping
+
+The browser playground (`lab/ui/play.html`) is the simulated front door. Each level
+has a real counterpart in the range; keep them in step when either changes:
+
+| Playground level | What it teaches | Range scenario(s) |
+|---|---|---|
+| L1 Watch the breach | indirect injection through retrieval, unscoped read, unrestricted send | `02-rag-poisoning`, `03-cross-tool-exfil`, `04-agent-exploit` |
+| L2 Place the controls | egress allow-lists beat input filters; soft controls never count | `05-guardrail-map`, `17-data-guards` |
+| L3 Find the composition cut | per-agent safety doesn't compose; property-flow cut at egress | `07-multi-agent` |
+| L4 The tool lies | tool descriptions are untrusted content; pin manifests | `11-supply-chain`, `19-mcp-tool-poisoning` |
+| Reviewer mode | the questions an approver asks | the `reviewer` track |
+
 ### `owasp` — always name the scheme
 
 Write ids as **`LLM03:2026 Excessive Agency`**, not bare `LLM03`. The 2026 list renumbered

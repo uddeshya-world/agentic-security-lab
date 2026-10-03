@@ -3,141 +3,58 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CyberRange — hands-on AI agent security</title>
+<title>CyberRange · hands-on AI agent security</title>
+<link rel="icon" href="/lab/ui/assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=16" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
 <style>
   /* ---- hero ---------------------------------------------------------- */
-  .hero { padding: var(--s8) 0 var(--s7); }
+  .hero { padding: var(--s8) 0 var(--s6); }
   .hero h1 {
     font-family: var(--display); font-weight: 700;
     font-size: var(--fs-hero); line-height: var(--lh-tight); letter-spacing: var(--tr-hero);
-    margin: var(--s4) 0 var(--s4); max-width: 16ch;
+    margin: var(--s4) 0 var(--s4); max-width: 17ch; text-wrap: balance;
   }
   .hero h1 .cool { color: var(--halon); }
-  .hero .lede { color: var(--text-2); font-size: var(--fs-lg); line-height: var(--lh-normal); max-width: 58ch; margin: 0; }
-  .hero .demo { margin: var(--s7) 0 var(--s6); max-width: 720px; }
+  .hero .lede { color: var(--text-2); font-size: var(--fs-lg); line-height: var(--lh-normal); max-width: 56ch; margin: 0; }
+  .hero .demo { margin: var(--s6) 0 var(--s5); max-width: 720px; }
   .hero .cta { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
-  .hero .cta .note { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
+  .hero .stats { margin-top: var(--s5); }
 
-  /* ---- callout primitive --------------------------------------------------
-     One shape, three tones, built only from tokens in the frozen palette.
-     halon = informational, brass = caveat, ember = warning. area.html copies
-     this block verbatim. */
-  .callout { display: flex; gap: var(--s3); padding: var(--s4); border-radius: var(--r); border: 1px solid var(--edge); border-left: 3px solid var(--edge-hi); background: var(--shelf); margin-bottom: var(--s6); }
-  .callout .body { font-size: var(--fs-md); line-height: var(--lh-normal); color: var(--text-2); }
-  .callout .body b { color: var(--text-1); font-weight: var(--fw-semibold); }
-  .callout.halon { border-left-color: var(--halon); background: var(--halon-bed); }
-  .callout.halon .body { color: var(--halon-ink); }
-  .callout.halon .body b { color: var(--halon); }
-  .callout.brass { border-left-color: var(--brass); background: var(--brass-bed); }
-  .callout.brass .body { color: var(--chalk); }
-  .callout.brass .body b { color: var(--brass); }
-  .callout.ember { border-left-color: var(--ember); background: var(--ember-bed); }
-  .callout.ember .body { color: var(--ember-ink); }
-  .callout.ember .body b { color: var(--ember); }
-
-  /* ---- section scaffolding -------------------------------------------- */
-  .sechead { display: flex; align-items: baseline; gap: var(--s3); margin: var(--s7) 0 var(--s4); }
-  .sechead h2 { font-family: var(--display); font-size: var(--fs-base); font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); margin: 0; }
-  .sechead .hint { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
-
-  /* ---- Area tiles -------------------------------------------------------
-     Media-top card: a banded head carrying the Area's mark, then the body.
-     The band is the same 64px grid as the page's own .gridfield, so the card
-     reads as a window cut into the range rather than a separate sticker. */
-  .areagrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--s5); }
-  .tile {
-    display: flex; flex-direction: column;
-    background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r-lg);
-    position: relative; overflow: hidden; transition: border-color .12s, background .12s;
+  .finder-row input[type="search"] {
+    width: 100%; min-height: 44px; box-sizing: border-box;
+    background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--r);
+    padding: var(--s2) var(--s4); font: inherit; font-size: var(--fs-base); color: var(--text-1);
   }
-  a.tile:hover { border-color: var(--edge-hi); background: var(--shelf); }
-  a.tile:hover .t { color: var(--halon-ink); }
-  a.tile:hover h3 { color: var(--halon-ink); }
-  .tile.locked { opacity: .68; }
+  .finder-row input[type="search"]::placeholder { color: var(--text-3); }
+  .finder-row input[type="search"]:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+  .labcount { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2); margin: var(--s3) 0 var(--s4); }
+  .more { margin-top: var(--s5); font-size: var(--fs-md); color: var(--text-2); }
+  .more a { color: var(--text-1); text-decoration: underline; text-underline-offset: 3px; }
 
-  .tile .band {
-    height: 72px; flex: none; position: relative;
-    background-color: var(--shelf);
-    background-image:
-      linear-gradient(to right, var(--edge) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--edge) 1px, transparent 1px);
-    background-size: 32px 32px;
-    border-bottom: 1px solid var(--edge);
-  }
-  a.tile:hover .band { background-color: var(--raise); }
-  /* The mark sits on the band's lower edge and straddles it, which is what
-     stops the band from reading as an empty header. */
-  .tile .mark {
-    position: absolute; left: var(--s5); bottom: -17px;
-    width: 34px; height: 34px; display: grid; place-items: center;
-    background: var(--plate); border: 1px solid var(--edge); border-radius: var(--r);
-    font-size: var(--fs-lg); line-height: 1;
-  }
-  a.tile:hover .mark { border-color: var(--edge-hi); }
-
-  .tile .body { display: flex; flex-direction: column; gap: var(--s3); padding: var(--s6) var(--s5) var(--s5); flex: 1; }
-  .tile .kicker-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s3); }
-  .tile .kicker { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
-  .tile h3 { font-family: var(--display); font-size: var(--fs-xl); font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); margin: 0; color: var(--text-1); line-height: var(--lh-snug); }
-  .tile .desc { font-size: var(--fs-md); color: var(--text-2); line-height: var(--lh-normal); margin: 0;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .tile .comp { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); }
-  /* --line is not a token in this stylesheet; these read as no border at all. */
-  .tile .progress { margin-top: auto; padding-top: var(--s3); border-top: 1px solid var(--edge); }
-  .tile .progress .row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); margin-bottom: 6px; }
-  .tile .progress .row b { color: var(--text-1); font-weight: var(--fw-medium); }
-  .tile .lockednote { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); margin-top: auto; padding-top: var(--s3); border-top: 1px solid var(--edge); }
-  /* The card's closing line: what the Area is worth, and the way in. On a
-     locked Area there is no way in, so the row carries the reason instead. */
-  .tile .foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding-top: var(--s4); }
-  .tile .foot .earns { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tile .foot .go {
-    flex: none; font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase;
-    color: var(--halon); border: 1px solid var(--halon-line); background: var(--halon-bed);
-    border-radius: var(--r); padding: 5px 10px;
-  }
-  a.tile:hover .foot .go { background: var(--halon); color: var(--on-halon); border-color: var(--halon); }
-
-  /* ---- roadmap: an index, not fake cards ------------------------------ */
-  .roadmap { border-top: 1px solid var(--edge); }
-  .roadmap li {
-    display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: var(--s4); align-items: baseline;
-    padding: 11px var(--s2); border-bottom: 1px solid var(--edge); cursor: default;
-  }
-  .roadmap { list-style: none; margin: 0; padding: 0; }
-  .roadmap .code { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); color: var(--text-3); }
-  .roadmap .nm { font-size: var(--fs-md); color: var(--text-2); }
-  .roadmap .nm span { display: block; font-size: var(--fs-sm); color: var(--text-3); margin-top: 1px; }
-  .roadmap .certs { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-3); text-align: right; }
-
-  /* ---- responsive ----------------------------------------------------- */
   @media (max-width: 620px) {
     .hero { padding: var(--s6) 0 var(--s5); }
-    .areagrid { grid-template-columns: 1fr; }
-    .roadmap li { grid-template-columns: 44px minmax(0,1fr); }
-    .roadmap .certs { display: none; }
   }
 </style>
 </head>
 <body>
 <div class="cr-progress" id="crProgress" aria-hidden="true"></div>
 
-<div class="cr-announce" role="note" aria-label="Lab scope">
-  <span class="scope">Synthetic estate</span>
-  <span class="said">Every target here is a fake record on your own machine. Nothing reaches an external host.</span>
+<div class="cr-announce note" role="region" aria-label="Announcement">
+  <span class="scope">Playground</span>
+  <span class="said">Place the Control: 15 minutes, runs in your browser, no install. <a href="/lab/ui/play.html">Play it →</a></span>
   <span class="grow"></span>
   <span class="mode"><span class="dot"></span><span class="t"></span></span>
-  <button class="x" type="button" aria-label="Dismiss">&times;</button>
+  <button class="x" type="button" aria-label="Dismiss announcement">&times;</button>
 </div>
 
 <header class="cr-nav">
   <a class="cr-mark" href="/lab/ui/catalog.html"><span class="glyph"></span>CyberRange</a>
-  <nav class="cr-links" id="crlinks">
-    <a class="link is-active" href="/lab/ui/catalog.html">Range</a>
+  <nav class="cr-links" id="crlinks" aria-label="Primary">
+    <a class="link" href="/lab/ui/play.html">Playground</a>
+    <a class="link is-active" href="/lab/ui/catalog.html" aria-current="page">Range</a>
     <a class="link" href="/lab/ui/roadmap.html">Roadmap</a>
     <a class="link" href="/lab/ui/certifications.html">Certifications</a>
     <a class="link" href="/lab/ui/index.html">Sandbox</a>
@@ -154,27 +71,54 @@
   <div class="gridfield" aria-hidden="true"></div>
 
   <section class="hero">
-    <div class="eyebrow" id="eyebrow">self-hosted · deliberately vulnerable · graded on real lab state</div>
-    <h1>Exploit <span class="tw" id="tw"><span class="tw-word" id="twWord">the agent</span><span class="tw-caret" aria-hidden="true"></span></span>.<br />Then find the line that <span class="cool">should have said&nbsp;no</span>.</h1>
+    <div class="eyebrow">self-hosted · deliberately vulnerable · graded on real lab state</div>
+    <h1>Exploit the agent. Then find the line that <span class="cool">should have said&nbsp;no</span>.</h1>
     <p class="lede">
-      A working LangGraph agent with a SQL tool, an email tool, retrieval and memory — built wrong on
-      purpose, running on your machine. You break it for real, build the control that stops it, and
-      the lab measures the difference.
+      A working LangGraph agent with a SQL tool, an email tool, retrieval and memory, built wrong on
+      purpose and running on your machine. You break it for real, build the control that stops it,
+      and the lab measures the difference.
     </p>
 
     <div class="trace demo" id="heroTrace" aria-label="How far an attack travels through an agent"></div>
 
     <div class="cta">
-      <a class="btn assert" href="/lab/ui/scenario.html?area=ai-security&id=00-orientation">Start the range</a>
-      <a class="btn" href="/lab/ui/play.html">New here? Play the 15-minute version</a>
-      <span class="note">19 scenarios · no account · progress stays in this browser</span>
+      <a class="btn primary lg" href="/lab/ui/scenario.html?area=ai-security&id=00-orientation">Start the range</a>
+      <a class="btn lg" href="/lab/ui/play.html">New here? Play the 15-minute version</a>
+    </div>
+    <ul class="statchips stats" id="stats" aria-label="Range at a glance"></ul>
+  </section>
+
+  <section data-reveal>
+    <div class="sec-head">
+      <h2>Choose a path</h2>
+      <p>Each path is an outcome. Progress is read from this browser.</p>
+    </div>
+    <div class="paths" id="paths">
+      <div class="skel-card" aria-hidden="true"><div class="skel skel-line w40"></div><div class="skel skel-line w80"></div><div class="skel skel-line w60"></div></div>
     </div>
   </section>
 
+  <section data-reveal>
+    <div class="sec-head">
+      <h2 id="labs-h">All labs</h2>
+      <p>Filter by path, or search titles, summaries and OWASP ids.</p>
+    </div>
+    <div class="finder-row">
+      <div class="cr-chipbar" id="chips" role="group" aria-label="Filter by path" style="margin-top:0"></div>
+      <div class="field">
+        <label class="sr-only" for="q">Find a lab</label>
+        <input id="q" type="search" placeholder="Find a lab" autocomplete="off" />
+      </div>
+    </div>
+    <p class="labcount" id="labcount" aria-live="polite"></p>
+    <div class="labgrid" id="labs" aria-labelledby="labs-h"></div>
+    <p class="more">Planned areas that are not written yet are listed on the <a href="/lab/ui/roadmap.html">roadmap</a>.</p>
+  </section>
+
   <section class="hops-sec" data-reveal>
-    <div class="sechead">
+    <div class="sec-head">
       <h2 class="wordreveal">Eight hops. A control on every one.</h2>
-      <span class="hint" id="hopHint"></span>
+      <p id="hopHint"></p>
     </div>
     <div class="rule lead"></div>
     <div class="hops-wrap">
@@ -183,56 +127,27 @@
     </div>
   </section>
 
-  <section data-reveal>
-    <div class="sechead">
-      <h2>By the numbers</h2>
-      <span class="hint">counted from the content tree, not claimed</span>
-    </div>
-    <div class="figs ticked" id="figs"></div>
-  </section>
-
-  <section data-reveal>
-    <div class="sechead">
-      <h2>Areas</h2>
-      <span class="hint" id="areaHint"></span>
-    </div>
-    <div class="areagrid" id="areaGrid">
-      <div class="skel-card" aria-hidden="true">
-        <div class="skel skel-line w40"></div>
-        <div class="skel skel-line w60"></div>
-        <div class="skel skel-line w80"></div>
-        <div class="skel skel-line w60"></div>
-      </div>
-    </div>
-  </section>
-
-  <section data-reveal>
-    <div class="sechead">
-      <h2>Not built yet</h2>
-      <span class="hint">planned at expert depth in docs/CURRICULUM.md — these do not open</span>
-    </div>
-    <ul class="roadmap" id="roadmap"></ul>
-  </section>
-
 </main>
 
 <footer class="cr-foot shell">
-  <p>Local only · synthetic records · fake credentials · no external targets. Built for authorized self-education and defensive research.</p>
+  <p>Mapped to the OWASP Top 10 for LLM Applications 2026 and the OWASP Top 10 for Agentic Applications (ASI01–ASI10). All names, records and domains are synthetic. <a href="https://github.com/uddeshya-world/agentic-security-lab">Source on GitHub</a></p>
 </footer>
 
 <script src="/lab/ui/vendor/gsap.min.js"></script>
 <script src="/lab/ui/vendor/ScrollTrigger.min.js"></script>
 <script src="/lab/ui/vendor/lenis.min.js"></script>
-<script src="/lab/ui/cyberrange.js?v=16"></script>
+<script src="/lab/ui/cyberrange.js?v=17"></script>
 <script>
 
 const esc = CR.esc;
 let AREAS = [];
+let LABS = [];             // flattened scenarios with area context
+let filter = "all";
 
 /* ---- hero: the product in three seconds -------------------------------
    Beat one: the attack runs the whole path and lands in the world.
-   Beat two: the same attack, contained at the executor. Nothing else on the
-   page needs to explain what this lab is for. */
+   Beat two: the same attack, contained at the executor. This is the page's
+   one orchestrated motion moment. */
 const HERO_BREACH = {
   events: [
     { phase: "user",     message: "How long does shipping take?" },
@@ -254,7 +169,6 @@ const HERO_CONTAINED = {
   ],
   result: { success: false, blocked: true, detail: "" },
 };
-
 function playHero() {
   const el = document.getElementById("heroTrace");
   el.innerHTML = CR.traceHTML("Reading the run…");
@@ -264,190 +178,202 @@ function playHero() {
   setTimeout(() => CR.paintTrace(el, HERO_CONTAINED.events, HERO_CONTAINED.result), 2600);
 }
 
-/* ---- Area tiles --------------------------------------------------------
-   Every number on a tile is derived from /catalog at render time — no rating,
-   no enrolment count, nothing invented. /catalog now carries per-step check
-   kinds, so the composition line reports the real three-way split: a `recall`
-   check is answered from the reading, every other kind asserts lab state the
-   learner had to produce by running the attack first. */
-function difficultyTag(d) {
-  const s = (d || "").toLowerCase();
-  if (["beginner", "easy"].includes(s)) return `<span class="tag cold">${esc(d)}</span>`;
-  if (["advanced", "hard", "expert"].includes(s)) return `<span class="tag hot">${esc(d)}</span>`;
-  if (s) return `<span class="tag warn">${esc(d)}</span>`;
-  return "";
-}
+/* ---- paths ------------------------------------------------------------
+   A path is a `track` within an Area. The outcome sentence is editorial; every
+   number beside it is counted from /catalog. */
+const TRACKS = {
+  "ai-security:core":    { label: "Core",        outcome: "Exploit an agent end to end, then bind it" },
+  "ai-security:persist": { label: "Persistence", outcome: "Attacks that outlive one conversation" },
+  "ai-security:operate": { label: "Operate",     outcome: "Run agent security in production" },
+  "blue-team:core":      { label: "Blue Team",   outcome: "Triage, detect and prove the fix" },
+};
+function trackKey(l) { return `${l.area.id}:${l.track || "core"}`; }
+
 function fmtMinutes(mins) {
-  if (!mins) return "0 min";
+  if (!mins) return "";
   const h = Math.floor(mins / 60), m = mins % 60;
-  if (h && m) return `~${h}h ${m}m`;
-  if (h) return `~${h}h`;
+  if (h && m) return `~${h} h ${m} min`;
+  if (h) return `~${h} h`;
   return `~${m} min`;
 }
-
-function coreProgress(area) {
-  const core = (area.scenarios || []).filter((s) => (s.track || "core") === "core");
-  const done = core.filter((s) => {
-    const p = CR.loadProgress(area.id, s.id);
-    const passed = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
-    return s.step_count > 0 && passed >= s.step_count;
-  }).length;
-  return { done, total: core.length, pct: core.length ? Math.round((done / core.length) * 100) : 0 };
+function labState(l) {
+  if (l.area.status !== "available") return "authoring";
+  const p = CR.loadProgress(l.area.id, l.id);
+  const passed = Object.keys(p).filter((k) => CR.isPassed(p, k)).length;
+  if (l.step_count > 0 && passed >= l.step_count) return "done";
+  return passed > 0 ? "doing" : "todo";
 }
 
-function tileHTML(area) {
-  const graded = (area.scenarios || []).reduce((n, s) => n + (s.graded_steps || 0), 0);
-  const steps = (area.scenarios || []).reduce((n, s) => n + (s.step_count || 0), 0);
-  const readOnly = Math.max(0, steps - graded);
-  // Split the graded steps by what they actually demand of the learner.
-  const recall = (area.scenarios || []).reduce(
-    (n, s) => n + ((s.check_kinds || {}).recall || 0), 0);
-  const runCheck = Math.max(0, graded - recall);
-  const parts = [];
-  if (runCheck) parts.push(`${runCheck} run+check`);
-  if (recall) parts.push(`${recall} recall`);
-  if (readOnly) parts.push(`${readOnly} read`);
-  const comp = `${parts.join(" · ")} · ${fmtMinutes(area.estimated_minutes)}`;
-  const locked = area.status !== "available";
-  const prog = coreProgress(area);
-
-  // What the Area is worth on the way out. Falls back to the scenario count
-  // when an Area has no credential defined, so the row is never empty.
-  const earns = area.credential?.title
-    ? `Earns ${area.credential.title}`
-    : `${area.scenario_count ?? 0} scenarios · ${fmtMinutes(area.estimated_minutes)}`;
-
-  const inner = `
-    <div class="band" aria-hidden="true">
-      <span class="mark">${esc(area.icon || "◆")}</span>
-    </div>
-    <div class="body">
-      <div class="kicker-row">
-        <span class="kicker">AREA · ${esc(area.scenario_count ?? 0)} SCENARIOS</span>
-        ${difficultyTag(area.difficulty)}
-      </div>
-      <h3>${esc(area.title)}</h3>
-      <p class="desc">${esc(area.blurb || "")}</p>
-      <div class="comp">${esc(comp)}</div>
-      ${locked
-        ? `<div class="lockednote"><span class="pip"></span><span class="tag warn">authoring</span> — not open yet</div>`
-        : `<div class="progress">
-             <div class="row"><span>Core progress</span><b>${prog.done} / ${prog.total} · ${prog.pct}%</b></div>
-             <div class="meter"><i style="width:${prog.pct}%"></i></div>
-           </div>`}
+function pathCardHTML(key, labs) {
+  const t = TRACKS[key] || { label: key, outcome: "" };
+  const area = labs[0].area;
+  const authoring = area.status !== "available";
+  const graded = labs.reduce((n, l) => n + (l.graded_steps || 0), 0);
+  const mins = labs.reduce((n, l) => n + (l.est_minutes || 0), 0);
+  const states = labs.map(labState);
+  const done = states.filter((s) => s === "done").length;
+  const started = states.some((s) => s === "done" || s === "doing");
+  const pct = labs.length ? Math.round((done / labs.length) * 100) : 0;
+  const next = labs.find((l, i) => states[i] !== "done") || labs[0];
+  const href = authoring
+    ? `/lab/ui/area.html?id=${encodeURIComponent(area.id)}`
+    : `/lab/ui/scenario.html?area=${encodeURIComponent(area.id)}&id=${encodeURIComponent(next.id)}`;
+  let state = `<span class="cstate">○ Not started</span>`;
+  if (authoring) state = `<span class="cstate authoring">· Authoring</span>`;
+  else if (done === labs.length) state = `<span class="cstate done">✓ Complete</span>`;
+  else if (started) state = `<span class="cstate doing">◐ In progress</span>`;
+  const cta = authoring ? "Preview →" : done === labs.length ? "Review →" : started ? "Continue →" : "Start →";
+  const meta = [`${labs.length} labs`, `${graded} graded checks`, fmtMinutes(mins)].filter(Boolean).join(" · ");
+  return `
+    <article class="path-card${authoring ? " is-authoring" : ""}">
+      <div class="kicker"><span>Path · ${esc(t.label)}</span>${state}</div>
+      <h3>${esc(t.outcome)}</h3>
+      <ul>${labs.slice(0, 3).map((l) => `<li>${esc(l.title)}</li>`).join("")}</ul>
+      <div class="meta">${esc(meta)}</div>
       <div class="foot">
-        <span class="earns">${esc(locked ? "Being written" : earns)}</span>
-        ${locked ? "" : `<span class="go">${prog.done ? "Continue" : "Open"}</span>`}
+        ${authoring ? "" : `<div class="pbar"><span class="track"><i style="width:${pct}%"></i></span><span>${pct}%</span></div>`}
+        <a class="btn${authoring ? "" : " primary"}" href="${href}">${cta}<span class="sr-only"> ${esc(t.label)} path</span></a>
       </div>
-    </div>
-  `;
-  return locked
-    ? `<div class="tile locked" aria-disabled="true">${inner}</div>`
-    : `<a class="tile" href="/lab/ui/area.html?id=${encodeURIComponent(area.id)}">${inner}</a>`;
+    </article>`;
+}
+function renderPaths() {
+  const groups = {};
+  LABS.forEach((l) => { (groups[trackKey(l)] = groups[trackKey(l)] || []).push(l); });
+  const order = Object.keys(TRACKS).filter((k) => groups[k]).concat(Object.keys(groups).filter((k) => !TRACKS[k]));
+  document.getElementById("paths").innerHTML = order.map((k) => pathCardHTML(k, groups[k])).join("");
 }
 
-function renderAreaGrid() {
-  document.getElementById("areaGrid").innerHTML = AREAS.map(tileHTML).join("");
-  const liveCount = AREAS.filter((a) => a.status === "available").length;
-  document.getElementById("areaHint").textContent =
-    `${liveCount} live · ${AREAS.length - liveCount} authoring`;
+/* ---- lab cards ---------------------------------------------------------- */
+const FAMILY = {
+  LLM01: "Injection", LLM02: "Disclosure", LLM03: "Agency", LLM04: "Supply chain", LLM05: "Poisoning",
+  LLM06: "Consumption", LLM07: "Misinformation", LLM08: "Hidden context", LLM09: "Retrieval", LLM10: "Output",
+  ASI01: "Goal hijack", ASI03: "Identity", ASI04: "Supply chain", ASI06: "Memory", ASI07: "Inter-agent",
+};
+const GLYPH = {
+  Injection: "M4 12h10M10 6l6 6-6 6M18 4v16",
+  Disclosure: "M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM12 9.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z",
+  Agency: "M14 4l6 6-9 9H5v-6zM12 6l6 6",
+  Poisoning: "M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z",
+  Memory: "M5 5h14v14H5zM9 9h6v6H9z",
+  _: "M12 3l8 4v6c0 4-3.5 7-8 8-4.5-1-8-4-8-8V7z",
+};
+function codeOf(tag) { return (String(tag).match(/^(LLM\d\d|ASI\d\d)/) || [])[1] || ""; }
+function family(l) {
+  const c = codeOf((l.owasp || [])[0] || "");
+  return c ? (FAMILY[c] || c) : "Orientation";
+}
+function labCardHTML(l) {
+  const st = labState(l);
+  const fam = family(l);
+  const path = GLYPH[fam] || GLYPH._;
+  const codes = (l.owasp || []).map(codeOf).filter(Boolean).slice(0, 2);
+  const chips = [
+    l.difficulty ? `<span class="tag">${esc(l.difficulty)}</span>` : "",
+    ...codes.map((c) => `<span class="tag">${esc(c.startsWith("LLM") ? c + ":2026" : c)}</span>`),
+    `<span class="tag">Local</span>`,
+  ].join("");
+  const href = `/lab/ui/scenario.html?area=${encodeURIComponent(l.area.id)}&id=${encodeURIComponent(l.id)}`;
+  const word = { done: `<span class="cstate done">✓ Done</span>`, doing: `<span class="cstate doing">◐ In progress</span>`,
+                 todo: `<span class="cstate">○ Not started</span>`, authoring: `<span class="cstate authoring">· Authoring</span>` }[st];
+  const title = st === "authoring" ? esc(l.title) : `<a href="${href}">${esc(l.title)}</a>`;
+  return `
+    <article class="lab-card${st === "authoring" ? " is-authoring" : ""}">
+      <div class="band" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="${path}"/></svg></div>
+      <div class="body">
+        <div class="kicker"><span>Threat · ${esc(fam)}</span><span>${esc(l.est_minutes || "")} min</span></div>
+        <h3>${title}</h3>
+        <p class="sum">${esc(l.summary || "")}</p>
+        <div class="chips">${chips}</div>
+      </div>
+      <div class="foot">${word}<span class="go" aria-hidden="true">${st === "authoring" ? "Being written" : st === "done" ? "Review →" : "Open lab →"}</span></div>
+    </article>`;
 }
 
-/* ---- roadmap ---------------------------------------------------------- */
-function renderRoadmap() {
-  // This list is "planned, nothing written yet". Anything that exists in /catalog -- at
-  // any status -- already has its own tile above, so it must not appear here too: an
-  // Area being authored was showing up twice on one page under two different labels
-  // ("authoring - not open yet" as a tile, "in progress" as a row), and listing it under
-  // a heading that reads "these do not open" contradicted the tile next to it.
-  const rows = CR.roadmapGaps(AREAS);
-  document.getElementById("roadmap").innerHTML = rows.map((r) => `
-    <li aria-disabled="true">
-      <span class="code">${esc(r.code)}</span>
-      <span class="nm">${esc(r.title)}<span>${esc(r.note)}</span></span>
-      <span class="certs">${esc(r.certs)}</span>
-    </li>`).join("");
+function matches(l, q) {
+  if (!q) return true;
+  const hay = [l.title, l.summary, l.area.title, ...(l.owasp || [])].join(" ").toLowerCase();
+  return q.toLowerCase().split(/\s+/).every((w) => hay.includes(w));
+}
+function renderChips() {
+  const counts = { all: LABS.length };
+  LABS.forEach((l) => { const k = trackKey(l); counts[k] = (counts[k] || 0) + 1; });
+  const keys = ["all", ...Object.keys(TRACKS).filter((k) => counts[k])];
+  document.getElementById("chips").innerHTML = keys.map((k) => `
+    <button type="button" class="cr-chip" data-k="${k}" aria-pressed="${k === filter}">
+      ${esc(k === "all" ? "All" : TRACKS[k].label)} <span class="n">${counts[k]}</span>
+    </button>`).join("");
+  document.querySelectorAll("#chips .cr-chip").forEach((b) => b.addEventListener("click", () => {
+    filter = b.dataset.k; renderChips(); renderLabs();
+  }));
+}
+function renderLabs() {
+  const q = document.getElementById("q").value.trim();
+  const rows = LABS.filter((l) => (filter === "all" || trackKey(l) === filter) && matches(l, q));
+  document.getElementById("labcount").textContent = `${rows.length} of ${LABS.length} labs`;
+  document.getElementById("labs").innerHTML = rows.length ? rows.map(labCardHTML).join("") : `
+    <div class="empty" style="grid-column:1/-1">
+      <h4>No lab matches</h4>
+      <p>Nothing in this path matches “${esc(q)}”.</p>
+      <button class="btn" type="button" id="clear">Clear filters</button>
+    </div>`;
+  const c = document.getElementById("clear");
+  if (c) c.addEventListener("click", () => { filter = "all"; document.getElementById("q").value = ""; renderChips(); renderLabs(); });
 }
 
-/* ---- boot -------------------------------------------------------------- */
+/* ---- stat chips: every value computed, a missing one is omitted ------- */
+function renderStats(cur) {
+  const live = AREAS.filter((a) => a.status === "available");
+  const liveLabs = LABS.filter((l) => l.area.status === "available");
+  const graded = liveLabs.reduce((n, l) => n + (l.graded_steps || 0), 0);
+  const mins = live.reduce((n, a) => n + (a.estimated_minutes || 0), 0);
+  const chips = [
+    [liveLabs.length, "scenarios"],
+    [graded, "graded checks"],
+    cur && cur.coverage_summary ? [cur.coverage_summary.controls_taught, "controls"] : null,
+    mins ? [fmtMinutes(mins).replace("~", "~"), "hands-on"] : null,
+  ].filter((c) => c && c[0] !== undefined && c[0] !== null);
+  document.getElementById("stats").innerHTML = chips.map(([n, l]) => `<li><b>${esc(String(n))}</b>${esc(l)}</li>`).join("");
+}
 
-/* ---- the eight-hop data path + live figures ----------------------------
-   Both read from the API. `data_path_hops` is defined once in
-   lab/curriculum.py alongside CONTROLS, and a test ties every hop's control
-   ids back to that catalog -- so this page renders the map, it does not
-   own a second copy of it. */
-async function renderNarrative() {
-  let cur = null;
-  try { cur = await CR.api("/lab/curriculum"); } catch (e) { return; }
-
+/* ---- the eight-hop data path ----------------------------------------- */
+function renderNarrative(cur) {
+  if (!cur) return;
   const byId = {};
   (cur.controls || []).forEach((c) => { byId[c.id] = c; });
   const hops = cur.data_path_hops || [];
   CR.renderHops(document.getElementById("hops"), hops, byId);
-  const hint = document.getElementById("hopHint");
-  if (hint) {
-    const named = new Set();
-    hops.forEach((h) => (h.controls || []).forEach((c) => named.add(c)));
-    hint.textContent = hops.length + " hops · " + named.size + " distinct controls";
-  }
+  const named = new Set();
+  hops.forEach((h) => (h.controls || []).forEach((c) => named.add(c)));
+  document.getElementById("hopHint").textContent = `${hops.length} hops · ${named.size} distinct controls`;
   CR.initHopScrub(document.querySelector(".hops-sec"));
-
-  // Every figure below is counted at render time. Nothing here is written by hand.
-  const cov = cur.coverage_summary || {};
-  const scen = AREAS.reduce((n, a) => n + (a.scenarios || []).length, 0);
-  const graded = AREAS.reduce((n, a) =>
-    n + (a.scenarios || []).reduce((m, s) => m + (s.graded_steps || 0), 0), 0);
-  const mins = AREAS.reduce((n, a) => n + (a.estimated_minutes || 0), 0);
-  const figs = [
-    [scen, "", "scenarios", "across " + AREAS.length + " areas"],
-    [graded, "", "graded checks", "each one reads real lab state"],
-    [Math.round(mins / 60), "h", "hands-on", "estimated, from the content tree"],
-    [cov.llm_top10_full + "/" + (cov.llm_top10_total || 10), "", "OWASP LLM 2026", "one worked scenario each"],
-    [cov.asi_full + "/" + (cov.asi_listed || 10), "", "OWASP ASI 2026", "gaps published, not hidden"],
-    [cov.controls_taught, "", "controls taught", "mapped to the file that implements it"],
-  ];
-  document.getElementById("figs").innerHTML = figs.map(([n, unit, label, note]) => `
-    <div class="fig">
-      <b>${CR.esc(String(n))}${unit ? `<span class="unit">${unit}</span>` : ""}</b>
-      <span>${CR.esc(label)}</span>
-      <em>${CR.esc(note)}</em>
-    </div>`).join("");
-
   document.querySelectorAll(".wordreveal").forEach((el) => CR.initWordReveal(el));
 }
 
 async function init() {
   playHero();
-  // The words are the surfaces this Area actually teaches you to attack, in the
-  // order the Core path teaches them -- not adjectives.
-  CR.initTypewriter(document.getElementById("twWord"),
-    ["the agent", "the planner", "the retriever", "the memory", "the tools"],
-    { minChars: 4 });
   CR.initSmoothScroll();
+  document.getElementById("q").addEventListener("input", renderLabs);
   try {
     const cat = await CR.api("/catalog");
     AREAS = cat.areas || [];
   } catch (e) {
-    document.getElementById("areaGrid").innerHTML = `
-      <div class="state bad" style="grid-column:1/-1">
-        <h4>The lab is not answering on this port</h4>
-        <p>Start it from the repo folder with <code>docker compose up -d</code>, then reload.</p>
-      </div>`;
-    document.getElementById("areaHint").textContent = "";
-    renderRoadmap();
+    const err = `<div class="state bad" style="grid-column:1/-1">
+        <h4>The agent isn't reachable at 127.0.0.1:8000</h4>
+        <p>Run <code>docker compose up -d</code> from the repo folder, then reload.</p></div>`;
+    document.getElementById("paths").innerHTML = err;
     return;
   }
-  if (!AREAS.length) {
-    document.getElementById("areaGrid").innerHTML = `
-      <div class="state" style="grid-column:1/-1"><h4>No areas loaded</h4>
-      <p>The content tree came back empty. Check <code>content/areas/</code> is mounted into the agent container.</p></div>`;
-    document.getElementById("areaHint").textContent = "";
-    renderRoadmap();
+  LABS = AREAS.flatMap((a) => (a.scenarios || []).map((s) => ({ ...s, area: a })));
+  if (!LABS.length) {
+    document.getElementById("paths").innerHTML = `<div class="empty" style="grid-column:1/-1"><h4>No labs loaded</h4>
+      <p>The content tree came back empty. Check that <code>content/areas/</code> is mounted into the agent container.</p></div>`;
     return;
   }
-  renderAreaGrid();
-  renderRoadmap();
-  renderNarrative();
+  renderPaths(); renderChips(); renderLabs();
+  let cur = null;
+  try { cur = await CR.api("/lab/curriculum"); } catch (e) { /* stats omit what they can't count */ }
+  renderStats(cur);
+  renderNarrative(cur);
 }
 init();
 </script>
