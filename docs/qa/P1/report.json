@@ -1,0 +1,176 @@
+[
+ {
+  "page": "play-html",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "play-html",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "play-html-level-2",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html-level-2",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html-level-2",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "play-html-level-2",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "play-html-level-4",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html-level-4",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "play-html-level-4",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "play-html-level-4",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "landmark-one-main",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   },
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 6,
+    "sample": ".hero > div > .eyebrow"
+   }
+  ],
+  "axe_serious": []
+ }
+]
