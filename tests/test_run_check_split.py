@@ -155,9 +155,24 @@ def test_badge_is_refused_until_every_graded_check_passes():
     assert result["eligibility"]["required_count"] > 0
 
 
-def test_badge_issues_with_a_full_transcript_and_verifies():
+@pytest.fixture()
+def _fresh_ledger(tmp_path, monkeypatch):
+    """The badge is minted from the server ledger, so seed a throwaway one."""
+    from lab import ledger
+    monkeypatch.setattr(ledger, "PATH", tmp_path / "ledger.json")
+    monkeypatch.setattr(ledger, "_data", {"passes": {}})
+    return ledger
+
+
+def _record_all(ledger, required):
+    for r in required:
+        ledger.record_pass("ai-security", r["scenario"], r["step"], r["kind"], r["mode"])
+
+
+def test_badge_issues_with_a_full_transcript_and_verifies(_fresh_ledger):
     required = credential.required_checks("ai-security")
-    issued = credential.issue("ai-security", learner="tester", passed=required)
+    _record_all(_fresh_ledger, required)
+    issued = credential.issue("ai-security", learner="tester", passed=[])
     assert issued["ok"] is True
     assert len(issued["assertion"]["evidence"]["transcript"]) == len(required)
 
@@ -165,9 +180,10 @@ def test_badge_issues_with_a_full_transcript_and_verifies():
     assert verified["valid"] is True
 
 
-def test_an_edited_badge_fails_verification():
+def test_an_edited_badge_fails_verification(_fresh_ledger):
     required = credential.required_checks("ai-security")
-    issued = credential.issue("ai-security", learner="tester", passed=required)
+    _record_all(_fresh_ledger, required)
+    issued = credential.issue("ai-security", learner="tester", passed=[])
 
     tampered = dict(issued["assertion"])
     tampered["recipient"] = {"type": "identity", "hashed": False, "identity": "someone else"}

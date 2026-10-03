@@ -426,13 +426,13 @@ Paste token → C25 card. Explain in one paragraph what a valid signature does a
 
 ### Phase 0 — Make the repo tell the truth (½ day)
 
-- [ ] **P0.1 Commit everything that belongs.** Files: git only. `git add` the 56 untracked files except secrets/progress (`token.txt`, `.env`, `data/*.db`, `data/ledger.json`, `data/.credential_key`, `workspace/*`). Commit message: "Track Core labs 16–18, sims_core, 2026 tests, area/roadmap/cert pages, playground, ledger". **Accept:** `git status --porcelain` shows only ignored/runtime files; `git ls-files lab/sims_core.py content/areas/ai-security/scenarios/18-agent-identity/scenario.json` both listed.
-- [ ] **P0.2 CI on master.** File: `.github/workflows/redteam.yml` → `branches: [main, master, "lab/**"]`. Add a job step `python -m pytest tests/test_credential.py tests/test_ui_theme.py tests/test_owasp_2026_consistency.py -q` that runs **without** Docker before the stack starts. **Accept:** workflow YAML lints; local `act` optional.
-- [ ] **P0.3 Secrets audit.** Confirm `token.txt` was never committed (`git log --all -- token.txt` empty). If it ever was, stop and tell the user to rotate it. **Accept:** written result in §13.
-- [ ] **P0.4 Move `feedback.txt`** to `docs/research/STUDENT-WALKTHROUGH-2026-09.md` (or `git rm --cached` + ignore, if user prefers private). Ask the user which before doing it.
-- [ ] **P0.5 Park the mockup.** Move `lab/ui/preview/` → `docs/research/preview/` after Phase 2 harvest. **Accept:** no shipped page links to `preview/`.
-- [ ] **P0.6 Starfield decision.** `catalog.html` has `<canvas id="starfield">`; MOTION contract says no starfield. Default: remove canvas + its JS + CSS. **Accept:** no `starfield` string in `lab/ui/*.html` or `cyberrange.*`.
-- [ ] **P0.7 Full test run.** `python -m pytest tests/ -q` with stack up. Known flaky: `tests/test_smoke.py::test_agent_end_to_end_with_tool_call` (live Ollama timeout). Everything else green. Record results.
+- [x] **P0.1 Commit everything that belongs.** Files: git only. `git add` the 56 untracked files except secrets/progress (`token.txt`, `.env`, `data/*.db`, `data/ledger.json`, `data/.credential_key`, `workspace/*`). Commit message: "Track Core labs 16–18, sims_core, 2026 tests, area/roadmap/cert pages, playground, ledger". **Accept:** `git status --porcelain` shows only ignored/runtime files; `git ls-files lab/sims_core.py content/areas/ai-security/scenarios/18-agent-identity/scenario.json` both listed.
+- [x] **P0.2 CI on master.** File: `.github/workflows/redteam.yml` → `branches: [main, master, "lab/**"]`. Add a job step `python -m pytest tests/test_credential.py tests/test_ui_theme.py tests/test_owasp_2026_consistency.py -q` that runs **without** Docker before the stack starts. **Accept:** workflow YAML lints; local `act` optional.
+- [x] **P0.3 Secrets audit.** Confirm `token.txt` was never committed (`git log --all -- token.txt` empty). If it ever was, stop and tell the user to rotate it. **Accept:** written result in §13.
+- [x] **P0.4 Move `feedback.txt`** to `docs/research/STUDENT-WALKTHROUGH-2026-09.md` (or `git rm --cached` + ignore, if user prefers private). Ask the user which before doing it.
+- [x] **P0.5 Park the mockup.** Move `lab/ui/preview/` → `docs/research/preview/` after Phase 2 harvest. **Accept:** no shipped page links to `preview/`.
+- [x] **P0.6 Starfield decision.** `catalog.html` has `<canvas id="starfield">`; MOTION contract says no starfield. Default: remove canvas + its JS + CSS. **Accept:** no `starfield` string in `lab/ui/*.html` or `cyberrange.*`.
+- [x] **P0.7 Full test run.** `python -m pytest tests/ -q` with stack up. Known flaky: `tests/test_smoke.py::test_agent_end_to_end_with_tool_call` (live Ollama timeout). Everything else green. Record results.
 - [ ] **P0.8 Remote.** Create a GitHub repo (user decides public/private and name), push `master`, confirm the red-team workflow runs green.
 
 ### Phase 1 — Playground v2 (the front door) (2 days)
@@ -567,6 +567,13 @@ Could not do / blocked:
 | Date | Task | Result / evidence |
 |---|---|---|
 | 2026-10-03 | (pre-plan) | play.html, ledger, credential key, tests, README/ROADMAP/LEARN fixes written to folder; `tests/test_credential.py` 5 passed. Not committed. |
+| 2026-10-03 | P0.3 | `git log --all -- token.txt` empty; tracked + staged tree and full history grepped for gho_/ghp_/github_pat_/sk-/AKIA/private-key patterns: none. `.env`, `token.txt` ignored (`git check-ignore`). |
+| 2026-10-03 | P0.4 | User chose private. `feedback.txt` untracked + ignored, and purged from history with `git filter-branch` (repo never pushed, so the rewrite was local-only). |
+| 2026-10-03 | P0.5 | Ruling: moved `lab/ui/preview/` to `docs/research/preview/` inside the P0.1 commit, before the harvest, so its fabricated copy never sits under the served UI of a public repo. Added a README there marking it a mockup. Cost if wrong: one `git mv` back. |
+| 2026-10-03 | P0.6 | Removed starfield canvas, `initStarfield`, `.starfield` CSS and comments; `grep -i starfield lab/ui/*.html lab/ui/cyberrange.*` empty; theme test 8 passed. Typewriter + gridfield remain (handled in P3.2). |
+| 2026-10-03 | P0.1 | Commit "Track Core labs 16–18, …". `git status --porcelain` clean; `lab/sims_core.py` and `18-agent-identity/scenario.json` listed by `git ls-files`. |
+| 2026-10-03 | P0.2 | `redteam.yml` branches `[main, master, "lab/**"]`; added setup-python + "Fast guards (no Docker needed)" step (pytest only; the three tests are stdlib-only). YAML parses. |
+| 2026-10-03 | P0.7 | In-container `pytest tests/ -q`: 90 passed, 3 failed. Smoke = known Ollama flake. Two `test_run_check_split` badge tests were stale after the ledger change (they minted from a browser list). Ruling: updated them to seed a temp server ledger, matching the new rule; now 20/20 with `test_credential.py`. Note: agent startup on the OneDrive bind mount took ~10 min (process in disk sleep). |
 | | | |
 
 ---
