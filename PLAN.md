@@ -433,7 +433,7 @@ Paste token → C25 card. Explain in one paragraph what a valid signature does a
 - [x] **P0.5 Park the mockup.** Move `lab/ui/preview/` → `docs/research/preview/` after Phase 2 harvest. **Accept:** no shipped page links to `preview/`.
 - [x] **P0.6 Starfield decision.** `catalog.html` has `<canvas id="starfield">`; MOTION contract says no starfield. Default: remove canvas + its JS + CSS. **Accept:** no `starfield` string in `lab/ui/*.html` or `cyberrange.*`.
 - [x] **P0.7 Full test run.** `python -m pytest tests/ -q` with stack up. Known flaky: `tests/test_smoke.py::test_agent_end_to_end_with_tool_call` (live Ollama timeout). Everything else green. Record results.
-- [ ] **P0.8 Remote.** Create a GitHub repo (user decides public/private and name), push `master`, confirm the red-team workflow runs green.
+- [x] **P0.8 Remote.** Create a GitHub repo (user decides public/private and name), push `master`, confirm the red-team workflow runs green.
 
 ### Phase 1 — Playground v2 (the front door) (2 days)
 
@@ -451,10 +451,10 @@ File: `lab/ui/play.html` only (plus a test file). Stays single-file, no external
 
 File: `lab/ui/cyberrange.css` only (+ `tests/test_ui_theme.py` if a new guard is added).
 
-- [ ] **P2.1 Light-theme tune** per §4.3, both light blocks identical. **Accept:** theme test green; contrast table in §13.
-- [ ] **P2.2 New tokens** `--primary`, `--on-primary`, `--focus-ring`, `--chip-bg`, `--chip-fg`, `--progress-track`, `--progress-fill` in all three blocks.
-- [ ] **P2.3 Components** C01, C04, C05, C06, C07, C08, C10, C12 (restyle), C13, C15, C16, C17, C21, C26, C27, C28, C30 into the *Catalogue & player components* section, built from tier-2 aliases only. Add `.btn.primary` (charcoal fanout CTA) beside existing `.btn.attack` / `.btn.assert`. Add `.sr-only`.
-- [ ] **P2.4 Motion:** only `--t-fast` (hover/press/focus) and `--t-slow` (reveal). `[data-reveal]` per MOTION contract. **Accept:** grep shows no other durations.
+- [x] **P2.1 Light-theme tune** per §4.3, both light blocks identical. **Accept:** theme test green; contrast table in §13.
+- [x] **P2.2 New tokens** `--primary`, `--on-primary`, `--focus-ring`, `--chip-bg`, `--chip-fg`, `--progress-track`, `--progress-fill` in all three blocks.
+- [x] **P2.3 Components** C01, C04, C05, C06, C07, C08, C10, C12 (restyle), C13, C15, C16, C17, C21, C26, C27, C28, C30 into the *Catalogue & player components* section, built from tier-2 aliases only. Add `.btn.primary` (charcoal fanout CTA) beside existing `.btn.attack` / `.btn.assert`. Add `.sr-only`.
+- [x] **P2.4 Motion:** only `--t-fast` (hover/press/focus) and `--t-slow` (reveal). `[data-reveal]` per MOTION contract. **Accept:** grep shows no other durations.
 
 ### Phase 3 — Site pages (Agent B) (2 days)
 
@@ -574,6 +574,12 @@ Could not do / blocked:
 | 2026-10-03 | P0.1 | Commit "Track Core labs 16–18, …". `git status --porcelain` clean; `lab/sims_core.py` and `18-agent-identity/scenario.json` listed by `git ls-files`. |
 | 2026-10-03 | P0.2 | `redteam.yml` branches `[main, master, "lab/**"]`; added setup-python + "Fast guards (no Docker needed)" step (pytest only; the three tests are stdlib-only). YAML parses. |
 | 2026-10-03 | P0.7 | In-container `pytest tests/ -q`: 90 passed, 3 failed. Smoke = known Ollama flake. Two `test_run_check_split` badge tests were stale after the ledger change (they minted from a browser list). Ruling: updated them to seed a temp server ledger, matching the new rule; now 20/20 with `test_credential.py`. Note: agent startup on the OneDrive bind mount took ~10 min (process in disk sleep). |
+| 2026-10-03 | P0.8 | User chose public. Created `github.com/uddeshya-world/agentic-security-lab` (default name = folder name), pushed `master` only. First red-team workflow run on master: success. |
+| 2026-10-03 | P2.1 | Light tune applied to both blocks; theme tests green. Contrast (dark / light), computed from the token hex values: see table in the next row. |
+| 2026-10-03 | P2.1 contrast | Fails: dark `--dim` on `--plate` 2.99 (dark unchanged by plan; `--dim` is non-essential metadata only). Light `--ember`/`--halon` on their beds 4.33. Ruling: text on a bed uses the `-ink` variant (new aliases `--state-*-ink`); `.tag.hot/.cold`, `.check .verdict`, `.modebanner` switched to `-ink`. Cost if wrong: slightly darker label text. |
+| 2026-10-03 | P2.2 | Seven tokens added to `:root`, both light blocks. Ruling: also added `--state-pending-bed/-line` and `--state-{vuln,secure,pending}-ink` aliases to `:root` only (var refs, follow theme) so components avoid the raw palette. |
+| 2026-10-03 | P2.3 | Pattern layer added: `.sr-only`, `.btn.primary/.lg/.link`, C01 `.cr-announce.note`, C04 `.path-card`, C05 `.lab-card`, C06 chip focus + `.finder-row`, C07 `.statchips`, C08 `.stepper`, C10 `.rubric`, C11 `.actionbar`, C12 `.seg` restyle + `.seg-note`, C13 `.hud`, C15 `.apath`, `.verdict-pill`, C16 `.picker/.pick/.budget`, C17 `.closure`, C21 `.outcome`, C22 `.preflight`, C23 `.scopegate`, C25 `.badgecard/.tbl`, C26 `.empty`, C28 toast moved bottom-centre `--r-xl`. Nav controls and buttons raised to 40px touch height. Existing C27 search and C30 theme toggle kept. Visual check deferred to P3/P4 page renders. |
+| 2026-10-03 | P2.4 | All literal durations replaced with `--t-fast`/`--t-slow` (loop indicators as `calc()` multiples). New guard `test_motion_uses_only_the_two_speed_tokens`: 11 offenders on the old CSS, 0 now; 9 theme tests pass. |
 | | | |
 
 ---

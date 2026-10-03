@@ -190,3 +190,18 @@ def test_scroll_layer_degrades_without_the_vendor_directory():
     # The reveal system that pages fall back to must not depend on the libraries.
     m = re.search(r"function revealScan\(.*?\n  \}", js, re.S)
     assert m and "gsap" not in m.group(0).lower(), "revealScan must not depend on GSAP"
+
+
+def test_motion_uses_only_the_two_speed_tokens():
+    """Two speeds only (--t-fast, --t-slow). A literal duration is a third."""
+    css = CSS.read_text(encoding="utf-8")
+    dur = re.compile(r"(?<![\w.-])\d*\.?\d+m?s\b")
+    offenders = []
+    for n, line in enumerate(css.splitlines(), 1):
+        if not re.search(r"transition|animation", line):
+            continue
+        if re.match(r"\s*--t-(fast|slow)\s*:", line) or _in_comment(css, n):
+            continue
+        if dur.search(line):
+            offenders.append(f"cyberrange.css:{n}: {line.strip()[:80]}")
+    assert not offenders, "literal durations (use var(--t-fast) / var(--t-slow)):\n" + "\n".join(offenders)

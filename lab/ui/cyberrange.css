@@ -152,6 +152,21 @@
   --state-pass:        var(--halon);
   --state-fail:        var(--ember);
   --state-pending:     var(--brass);
+  --state-pending-bed:  var(--brass-bed);
+  --state-pending-line: var(--brass-line);
+  --state-vuln-ink:     var(--ember-ink);
+  --state-secure-ink:   var(--halon-ink);
+  --state-pending-ink:  var(--brass-ink);
+
+  /* Pattern-layer roles (PLAN.md §4.3): the charcoal primary CTA, one focus
+     colour, chips and progress bars. Aliases, so both themes follow. */
+  --primary:        var(--chalk);   /* charcoal CTA fill */
+  --on-primary:     var(--void);    /* text on primary */
+  --focus-ring:     var(--brass);   /* one focus colour, both themes */
+  --chip-bg:        var(--shelf);
+  --chip-fg:        var(--text-2);
+  --progress-track: var(--edge);
+  --progress-fill:  var(--halon);
 }
 
 * { box-sizing: border-box; }
@@ -167,7 +182,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 a { color: inherit; text-decoration: none; }
-:focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
 
 /* --------------------------------------------------------------------------
    Motion — scroll reveal.
@@ -183,9 +198,9 @@ a { color: inherit; text-decoration: none; }
               transform var(--t-slow) var(--ease);
 }
 [data-reveal].is-in { opacity: 1; transform: none; }
-[data-reveal-delay="1"] { transition-delay:  60ms; }
-[data-reveal-delay="2"] { transition-delay: 120ms; }
-[data-reveal-delay="3"] { transition-delay: 180ms; }
+[data-reveal-delay="1"] { transition-delay: calc(var(--t-fast) * .4); }
+[data-reveal-delay="2"] { transition-delay: calc(var(--t-fast) * .8); }
+[data-reveal-delay="3"] { transition-delay: calc(var(--t-fast) * 1.2); }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
@@ -341,7 +356,7 @@ a { color: inherit; text-decoration: none; }
   position: absolute; inset: 0 auto 0 0; width: calc(var(--reach) * 100%);
   background: linear-gradient(90deg, var(--ember-line), var(--ember));
   box-shadow: 0 0 14px -2px var(--ember);
-  transition: width .5s cubic-bezier(.22,.61,.36,1);
+  transition: width var(--t-slow) var(--ease);
 }
 .trace.contained .flow {
   background: linear-gradient(90deg, var(--ember-line), var(--ember));
@@ -350,7 +365,7 @@ a { color: inherit; text-decoration: none; }
   position: absolute; top: -5px; left: calc(var(--reach) * 100%);
   width: 2px; height: 12px; background: var(--halon);
   box-shadow: 0 0 10px 0 var(--halon);
-  transition: left .5s cubic-bezier(.22,.61,.36,1);
+  transition: left var(--t-slow) var(--ease);
   display: none;
 }
 .trace.contained .stopmark { display: block; }
@@ -440,8 +455,8 @@ a { color: inherit; text-decoration: none; }
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
               border-color var(--t-fast) var(--ease);
 }
-.tag.hot     { color: var(--ember); border-color: var(--ember-line); background: var(--ember-bed); }
-.tag.cold    { color: var(--halon); border-color: var(--halon-line); background: var(--halon-bed); }
+.tag.hot     { color: var(--state-vuln-ink); border-color: var(--ember-line); background: var(--ember-bed); }
+.tag.cold    { color: var(--state-secure-ink); border-color: var(--halon-line); background: var(--halon-bed); }
 .tag.warn    { color: var(--brass); border-color: var(--brass-line); background: var(--brass-bed); }
 .tag.quiet   { color: var(--dim); }
 
@@ -459,13 +474,13 @@ a { color: inherit; text-decoration: none; }
 
 .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
 
-.meter { height: 3px; background: var(--edge); border-radius: 2px; overflow: hidden; }
-.meter > i { display: block; height: 100%; background: var(--halon); transition: width .35s ease; }
+.meter { height: 3px; background: var(--progress-track); border-radius: 2px; overflow: hidden; }
+.meter > i { display: block; height: 100%; background: var(--progress-fill); transition: width var(--t-slow) var(--ease); }
 
 .spinner {
   display: inline-block; width: 10px; height: 10px; vertical-align: -1px;
   border: 2px solid var(--edge-hi); border-top-color: var(--halon); border-radius: 50%;
-  animation: cr-spin .7s linear infinite;
+  animation: cr-spin calc(var(--t-slow) * 1.5) linear infinite;
 }
 @keyframes cr-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
@@ -479,7 +494,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Skeletons — a loading state that has the shape of the content it replaces. */
 .skel { background: linear-gradient(90deg, var(--shelf) 0%, var(--raise) 50%, var(--shelf) 100%);
-        background-size: 200% 100%; animation: cr-shimmer 1.2s linear infinite; border-radius: var(--r-sm); }
+        background-size: 200% 100%; animation: cr-shimmer calc(var(--t-slow) * 2) linear infinite; border-radius: var(--r-sm); }
 @keyframes cr-shimmer { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 
@@ -514,7 +529,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0 var(--r) var(--r) 0; overflow-x: auto;
 }
 .md pre code { background: none; border: 0; padding: 0; color: var(--code-ink); font-size: 12.5px; line-height: 1.6; }
-.codebar { position: absolute; top: 6px; right: 6px; display: flex; gap: var(--s1); opacity: 0; transition: opacity .12s; }
+.codebar { position: absolute; top: 6px; right: 6px; display: flex; gap: var(--s1); opacity: 0; transition: opacity var(--t-fast) var(--ease); }
 .md pre:hover .codebar, .md pre:focus-within .codebar { opacity: 1; }
 .codebar button {
   font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase;
@@ -644,9 +659,11 @@ a { color: inherit; text-decoration: none; }
 .check code { font-family: var(--mono); font-size: var(--fs-sm); color: var(--code-ink); }
 
 .check.pass    { border-left-color: var(--state-pass);    background: var(--halon-bed); color: var(--halon-ink); }
-.check.pass    .glyph, .check.pass    .verdict { color: var(--state-pass); }
+.check.pass    .glyph { color: var(--state-pass); }
+.check.pass    .verdict { color: var(--state-secure-ink); }
 .check.fail    { border-left-color: var(--state-fail);    background: var(--ember-bed); color: var(--ember-ink); }
-.check.fail    .glyph, .check.fail    .verdict { color: var(--state-fail); }
+.check.fail    .glyph { color: var(--state-fail); }
+.check.fail    .verdict { color: var(--state-vuln-ink); }
 .check.pending { border-left-color: var(--state-pending); background: var(--brass-bed); color: var(--brass-ink); }
 .check.pending .glyph, .check.pending .verdict { color: var(--state-pending); }
 
@@ -660,8 +677,8 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: var(--tr-caps); text-transform: uppercase;
   padding: 4px var(--s3); border-radius: var(--r-sm); border: 1px solid transparent;
 }
-.modebanner.vulnerable { color: var(--state-vuln);   background: var(--state-vuln-bed);   border-color: var(--state-vuln-line); }
-.modebanner.secure     { color: var(--state-secure); background: var(--state-secure-bed); border-color: var(--state-secure-line); }
+.modebanner.vulnerable { color: var(--state-vuln-ink); background: var(--state-vuln-bed);   border-color: var(--state-vuln-line); }
+.modebanner.secure     { color: var(--state-secure-ink); background: var(--state-secure-bed); border-color: var(--state-secure-line); }
 
 /* --------------------------------------------------------------------------
    Stat — the before/after number a scenario produces. The delta is the point,
@@ -737,10 +754,11 @@ a { color: inherit; text-decoration: none; }
 .dialog .actions { display: flex; gap: var(--s3); justify-content: flex-end; }
 
 .toast {
-  position: fixed; right: var(--s5); bottom: var(--s5); z-index: 70;
+  position: fixed; left: 50%; bottom: var(--s5); z-index: 70; transform: translateX(-50%);
+  max-width: calc(100% - var(--s5) * 2);
   display: flex; align-items: center; gap: var(--s3);
   background: var(--glass-panel); backdrop-filter: blur(8px);
-  border: 1px solid var(--line); border-radius: var(--r-full);
+  border: 1px solid var(--line); border-radius: var(--r-xl);
   box-shadow: var(--sh-lg); padding: var(--s2) var(--s4);
   font-size: var(--fs-md); color: var(--text-1);
 }
@@ -764,6 +782,339 @@ a { color: inherit; text-decoration: none; }
 .cr-foot { border-top: 1px solid var(--edge); margin-top: var(--s8); padding: var(--s5) 0 var(--s7); }
 .cr-foot p { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--dim); }
 .cr-foot a { color: var(--ash); border-bottom: 1px solid var(--edge); }
+
+/* ==========================================================================
+   Pattern layer (PLAN.md §6). Mapped paths, cards you can scan in two
+   seconds, instruments instead of paragraphs. Built from the tier-2 aliases;
+   every state is glyph + word + hue.
+   ========================================================================== */
+
+/* Visually hidden, still read aloud. Used wherever colour or position alone
+   would otherwise carry a state. */
+.sr-only {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Primary CTA: charcoal on light, chalk on dark. One per screen. */
+.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); font-weight: var(--fw-semibold); }
+.btn.primary:hover:not(:disabled) { background: var(--primary); border-color: var(--primary); opacity: .88; }
+.btn.lg { padding: var(--s3) var(--s5); font-size: var(--fs-base); min-height: 44px; }
+.btn { min-height: 40px; }
+.btn.sm { min-height: 32px; }
+.btn.link {
+  background: none; border: 0; padding: var(--s2) 0; min-height: 40px;
+  color: var(--text-2); text-decoration: underline; text-underline-offset: 3px;
+}
+.btn.link:hover:not(:disabled) { background: none; color: var(--text-1); transform: none; }
+
+/* Touch floor for the nav controls (constraint 9: ≥ 40px targets). */
+.cr-theme, .cr-burger { width: 40px; height: 40px; }
+.cr-search-btn { height: 40px; }
+
+/* C01 — neutral announce variant. The brass scope strip stays for caveats;
+   this one is for a single true, time-bound notice. */
+.cr-announce.note {
+  background: var(--surface-raised); border-bottom-color: var(--line); color: var(--text-2);
+}
+.cr-announce.note .scope { color: var(--text-1); }
+.cr-announce.note a { color: var(--state-secure-ink); text-decoration: underline; text-underline-offset: 3px; }
+.cr-announce.note .x { color: var(--text-3); width: 40px; height: 32px; }
+.cr-announce.note .x:hover { color: var(--text-1); background: var(--surface-card); }
+
+/* C07 — stat chips. Every value is computed at render time; a missing value
+   omits its chip rather than showing a dash. */
+.statchips { display: flex; flex-wrap: wrap; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+.statchips li {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .06em;
+  padding: 5px var(--s3); border-radius: var(--r-full);
+  background: var(--chip-bg); color: var(--chip-fg); border: 1px solid var(--line);
+}
+.statchips b { color: var(--text-1); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; }
+
+/* Progress bar shared by path and lab cards. */
+.pbar { display: flex; align-items: center; gap: var(--s2); font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); }
+.pbar .track { flex: 1; height: 4px; border-radius: var(--r-full); background: var(--progress-track); overflow: hidden; }
+.pbar .track > i { display: block; height: 100%; width: 0; background: var(--progress-fill); transition: width var(--t-slow) var(--ease); }
+
+/* Card state words: glyph + word + hue. */
+.cstate {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase;
+  color: var(--text-3);
+}
+.cstate.done { color: var(--state-secure-ink); }
+.cstate.doing { color: var(--text-1); }
+.cstate.authoring { color: var(--state-pending-ink); }
+
+/* C04 — path card. An outcome, three named labs, derived meta, one action. */
+.paths { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--s4); }
+.path-card {
+  display: flex; flex-direction: column; gap: var(--s3);
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s5); box-shadow: var(--sh-sm);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.path-card:hover { border-color: var(--line-strong); }
+.path-card .kicker {
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps);
+  text-transform: uppercase; color: var(--text-3); display: flex; justify-content: space-between; gap: var(--s2);
+}
+.path-card h3 {
+  margin: 0; font-family: var(--display); font-size: var(--fs-xl); font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-tight); line-height: var(--lh-snug); color: var(--text-1); text-wrap: balance;
+}
+.path-card ul { margin: 0; padding-left: 1.1em; color: var(--text-2); font-size: var(--fs-md); line-height: 1.55; }
+.path-card ul li::marker { color: var(--text-3); }
+.path-card .meta { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); letter-spacing: .04em; }
+.path-card .foot { margin-top: auto; display: flex; flex-direction: column; gap: var(--s3); }
+.path-card.is-authoring { border-style: dashed; }
+
+/* C05 — lab card. Header band, kicker, title, summary, chips, footer. */
+.labgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--s4); }
+.lab-card {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--r-lg);
+  overflow: hidden; color: inherit;
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.lab-card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+.lab-card:focus-within { border-color: var(--line-strong); }
+.lab-card .band {
+  position: relative; height: 56px; display: flex; align-items: center; padding: 0 var(--s4);
+  background: var(--surface-raised); border-bottom: 1px solid var(--line); color: var(--text-2);
+}
+.lab-card .band::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: url(assets/texture-halftone.svg); background-size: 120px; opacity: .18;
+}
+.lab-card .band svg { position: relative; width: 20px; height: 20px; }
+.lab-card .body { display: flex; flex-direction: column; gap: var(--s2); padding: var(--s4); flex: 1; }
+.lab-card .kicker {
+  display: flex; justify-content: space-between; gap: var(--s2);
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps);
+  text-transform: uppercase; color: var(--text-3);
+}
+.lab-card h3 {
+  margin: 0; font-family: var(--display); font-size: var(--fs-lg); font-weight: var(--fw-semibold);
+  letter-spacing: -.01em; line-height: var(--lh-snug); color: var(--text-1);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lab-card h3 a::after { content: ""; position: absolute; inset: 0; }   /* whole card is the target */
+.lab-card h3 a:focus-visible { outline: none; }
+.lab-card:has(h3 a:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.lab-card .sum {
+  margin: 0; font-size: var(--fs-md); line-height: 1.5; color: var(--text-2);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.lab-card .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--s1); }
+.lab-card .foot {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s3);
+  padding: var(--s3) var(--s4); border-top: 1px solid var(--line);
+  font-size: var(--fs-md); color: var(--text-2);
+}
+.lab-card .foot .go { color: var(--text-1); font-weight: var(--fw-medium); }
+.lab-card.is-authoring .band { background: var(--state-pending-bed); color: var(--state-pending-ink); }
+@media (prefers-reduced-motion: reduce) { .lab-card:hover { transform: none; } }
+
+/* C06 — chips get a visible focus and a 40px touch height. */
+.cr-chip { min-height: 40px; }
+.cr-chip:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.finder-row { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
+.finder-row .field { position: relative; flex: 1 1 240px; }
+.finder-row .field kbd {
+  position: absolute; right: var(--s3); top: 50%; transform: translateY(-50%);
+  font-family: var(--mono); font-size: var(--fs-2xs); color: var(--text-3);
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 1px 5px; pointer-events: none;
+}
+
+/* C08 — connected stepper rail. A 2px spine with a node per item. */
+.stepper { list-style: none; margin: 0; padding: 0; position: relative; }
+.stepper > li { position: relative; padding: 0 0 var(--s5) 32px; }
+.stepper > li::before {           /* spine segment */
+  content: ""; position: absolute; left: 7px; top: 18px; bottom: 0; width: 2px; background: var(--line);
+}
+.stepper > li:last-child::before { display: none; }
+.stepper > li.is-done::before { background: var(--state-secure-line); }
+.stepper .node {
+  position: absolute; left: 0; top: 3px; width: 16px; height: 16px; border-radius: var(--r-full);
+  border: 2px solid var(--line-strong); background: var(--surface-page);
+  display: grid; place-items: center; font-size: var(--fs-2xs); line-height: 1; color: var(--on-halon);
+}
+.stepper .is-done .node { background: var(--state-secure); border-color: var(--state-secure); }
+.stepper .is-current .node { border-color: var(--text-1); box-shadow: 0 0 0 3px var(--surface-raised); }
+.stepper .is-locked .node, .stepper .is-authoring .node { border-style: dashed; border-color: var(--text-3); }
+.stepper .eb {
+  display: block; font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps);
+  text-transform: uppercase; color: var(--text-3);
+}
+.stepper .ti { display: block; color: var(--text-1); font-weight: var(--fw-medium); font-size: var(--fs-base); line-height: 1.35; margin-top: 2px; }
+.stepper a.ti:hover { text-decoration: underline; text-underline-offset: 3px; }
+.stepper .comp { display: block; font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); margin-top: var(--s1); }
+.stepper .group {
+  padding: 0 0 var(--s3) 0; font-family: var(--mono); font-size: var(--fs-xs);
+  letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2);
+}
+.stepper .group::before { display: none; }
+
+/* C10 — checks rubric disclosure. */
+.rubric { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-card); margin: var(--s4) 0; }
+.rubric > summary {
+  list-style: none; cursor: pointer; padding: var(--s3) var(--s4); min-height: 40px;
+  display: flex; align-items: center; gap: var(--s2);
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2);
+}
+.rubric > summary::-webkit-details-marker { display: none; }
+.rubric > summary::before { content: "\25B8"; transition: transform var(--t-fast) var(--ease); }
+.rubric[open] > summary::before { transform: rotate(90deg); }
+.rubric ul { list-style: none; margin: 0; padding: 0 var(--s4) var(--s3); }
+.rubric li { display: grid; grid-template-columns: 18px 1fr; gap: var(--s2); padding: var(--s1) 0; font-size: var(--fs-md); color: var(--text-2); }
+.rubric li .g { font-family: var(--mono); color: var(--text-3); }
+.rubric li.ok .g { color: var(--state-pass); }
+.rubric li.no .g { color: var(--state-fail); }
+.rubric li .msg { display: block; font-size: var(--fs-sm); color: var(--text-3); }
+
+/* C11 — action bar. The reason sits beside the disabled control. */
+.actionbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); padding-top: var(--s4); border-top: 1px solid var(--line); }
+.actionbar .grow { flex: 1; }
+.actionbar .why { font-size: var(--fs-sm); color: var(--text-2); }
+
+/* C12 — mode switch restyle: glyph + word, 40px target. */
+.seg button { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+.seg button[aria-pressed="true"][data-mode="vulnerable"] { color: var(--state-vuln-ink); }
+.seg button[aria-pressed="true"][data-mode="secure"] { color: var(--state-secure-ink); }
+.seg-note { display: block; font-size: var(--fs-xs); color: var(--text-2); margin-top: var(--s1); }
+
+/* C13 — trifecta HUD. */
+.hud { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--s2); padding: var(--s1); border: 1px solid var(--line); border-radius: var(--r-full); }
+.hud .leg {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px var(--s3); border-radius: var(--r-full);
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .06em; color: var(--text-3);
+  border: 1px dashed var(--line-strong);
+}
+.hud .leg::before { content: ""; width: 7px; height: 7px; border-radius: 50%; border: 1px solid currentColor; }
+.hud .leg.on { color: var(--state-vuln-ink); background: var(--state-vuln-bed); border: 1px solid var(--state-vuln-line); }
+.hud .leg.on::before { background: var(--state-vuln); border-color: var(--state-vuln); }
+.hud.closed { border-color: var(--state-vuln); }
+.hud .vec { font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); padding: 0 var(--s2); }
+
+/* C15 — attack path strip. */
+.apath { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface-card); }
+.apath-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line); }
+.apath-head .nm { font-weight: var(--fw-semibold); color: var(--text-1); }
+.apath-head .src { font-size: var(--fs-sm); color: var(--text-2); flex: 1; min-width: 160px; }
+.apath-segs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.apath-seg { padding: var(--s3) var(--s4); border-right: 1px solid var(--line); font-size: var(--fs-sm); color: var(--text-2); }
+.apath-seg:last-child { border-right: 0; }
+.apath-seg .lbl { display: block; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); }
+.apath-seg.hit { background: var(--state-vuln-bed); color: var(--state-vuln-ink); }
+.apath-seg.stop { background: var(--state-secure-bed); color: var(--state-secure-ink); box-shadow: inset 0 0 0 1px var(--state-secure); }
+.apath-seg.after { opacity: .4; }
+.apath-seg .mk { display: block; font-family: var(--mono); font-size: var(--fs-xs); margin-top: var(--s1); }
+@media (max-width: 520px) {
+  .apath-segs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .apath-seg:nth-child(2) { border-right: 0; }
+  .apath-seg:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+
+/* Verdict pill: shared by attack paths and outcomes. */
+.verdict-pill {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px var(--s2); border-radius: var(--r-full);
+  font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--line); color: var(--text-3);
+}
+.verdict-pill.held { color: var(--state-secure-ink); background: var(--state-secure-bed); border-color: var(--state-secure-line); }
+.verdict-pill.leak { color: var(--state-vuln-ink); background: var(--state-vuln-bed); border-color: var(--state-vuln-line); }
+.verdict-pill.caveat { color: var(--state-pending-ink); background: var(--state-pending-bed); border-color: var(--state-pending-line); }
+
+/* C16 — control picker + budget meter. */
+.picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s3); }
+.pick {
+  display: grid; grid-template-columns: 20px 1fr auto; gap: var(--s1) var(--s3); align-items: start;
+  padding: var(--s3) var(--s4); border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-card); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.pick:hover { border-color: var(--line-strong); }
+.pick:has(input:checked) { border-color: var(--text-1); background: var(--surface-raised); }
+.pick input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--primary); }
+.pick .where { grid-column: 2; font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); }
+.pick .name { grid-column: 2; color: var(--text-1); font-size: var(--fs-md); font-weight: var(--fw-medium); }
+.pick .cav { grid-column: 2; font-size: var(--fs-sm); color: var(--state-pending-ink); }
+.pick .pts { grid-column: 3; grid-row: 1 / span 2; font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); }
+.budget { display: flex; align-items: center; gap: var(--s3); font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); }
+.budget .track { flex: 1; max-width: 220px; height: 6px; border-radius: var(--r-full); background: var(--progress-track); overflow: hidden; }
+.budget .track > i { display: block; height: 100%; background: var(--text-1); transition: width var(--t-fast) var(--ease); }
+.budget.over { color: var(--state-vuln-ink); }
+.budget.over .track > i { background: var(--state-vuln); }
+
+/* C17 — closure vector readout. */
+.closure { display: flex; align-items: center; gap: var(--s5); flex-wrap: wrap; }
+.closure .vec { font-family: var(--mono); font-size: var(--fs-3xl); font-weight: var(--fw-semibold); letter-spacing: -.02em; color: var(--text-1); }
+.closure .vec.open { color: var(--state-vuln); }
+.closure .vec.cut { color: var(--state-secure); }
+.closure .cap { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); }
+.closure .biz { font-size: var(--fs-md); color: var(--text-2); margin-top: var(--s1); }
+@media (max-width: 520px) { .closure { flex-direction: column; align-items: flex-start; gap: var(--s2); } }
+
+/* C21 — outcome callout. Always glyph + word + hue. */
+.outcome { display: grid; grid-template-columns: 22px 1fr; gap: var(--s3); padding: var(--s4); border: 1px solid var(--line); border-left-width: 3px; border-radius: var(--r); background: var(--surface-raised); }
+.outcome .g { font-family: var(--mono); font-weight: var(--fw-bold); font-size: var(--fs-lg); line-height: 1.2; }
+.outcome h4 { margin: 0 0 var(--s1); font-family: var(--display); font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--text-1); }
+.outcome p { margin: 0; font-size: var(--fs-md); color: var(--text-2); }
+.outcome.leak { border-left-color: var(--state-vuln); background: var(--state-vuln-bed); }
+.outcome.leak .g, .outcome.leak h4 { color: var(--state-vuln-ink); }
+.outcome.held { border-left-color: var(--state-secure); background: var(--state-secure-bed); }
+.outcome.held .g, .outcome.held h4 { color: var(--state-secure-ink); }
+.outcome.caveat { border-left-color: var(--state-pending); background: var(--state-pending-bed); }
+.outcome.caveat .g, .outcome.caveat h4 { color: var(--state-pending-ink); }
+
+/* C22 — pre-flight environment pane. */
+.preflight { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface-card); padding: var(--s5); }
+.preflight h3 { margin: 0 0 var(--s2); font-family: var(--display); font-size: var(--fs-xl); color: var(--text-1); }
+.preflight ul { list-style: none; margin: var(--s3) 0; padding: 0; display: grid; gap: var(--s1); }
+.preflight li { display: flex; align-items: center; gap: var(--s2); font-family: var(--mono); font-size: var(--fs-sm); color: var(--text-2); }
+.preflight li .st { margin-left: auto; }
+.preflight li.up .st { color: var(--state-secure-ink); }
+.preflight li.down .st { color: var(--state-vuln-ink); }
+.preflight li.wait .st { color: var(--state-pending-ink); }
+.preflight pre { margin: var(--s3) 0; padding: var(--s3); background: var(--surface-sunk); border: 1px solid var(--line); border-radius: var(--r); font-family: var(--mono); font-size: var(--fs-sm); color: var(--code-ink); overflow-x: auto; }
+.preflight .honest { font-size: var(--fs-sm); color: var(--text-2); margin: 0; }
+
+/* C23 — scope gate. */
+.scopegate { border: 1px solid var(--line-strong); border-radius: var(--r-lg); background: var(--surface-card); padding: var(--s5); }
+.scopegate .cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin: var(--s3) 0; }
+.scopegate h4 { margin: 0 0 var(--s1); font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2); }
+.scopegate ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-md); color: var(--text-2); }
+.scopegate label { display: flex; gap: var(--s2); align-items: flex-start; font-size: var(--fs-md); color: var(--text-1); margin: var(--s3) 0; cursor: pointer; }
+.scopegate input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--primary); }
+@media (max-width: 560px) { .scopegate .cols { grid-template-columns: 1fr; } }
+
+/* C25 — badge / verify card. */
+.badgecard { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface-card); padding: var(--s5); }
+.badgecard .sig { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: var(--fs-sm); letter-spacing: .06em; text-transform: uppercase; }
+.badgecard .sig.ok { color: var(--state-secure-ink); }
+.badgecard .sig.bad { color: var(--state-vuln-ink); }
+.badgecard dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--s1) var(--s4); margin: var(--s4) 0; font-size: var(--fs-md); }
+.badgecard dt { font-family: var(--mono); font-size: var(--fs-xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-3); padding-top: 2px; }
+.badgecard dd { margin: 0; color: var(--text-1); word-break: break-word; }
+.badgecard .honesty { font-size: var(--fs-sm); color: var(--text-2); border-top: 1px solid var(--line); padding-top: var(--s3); margin: var(--s3) 0 0; }
+.tablewrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-md); }
+.tbl th, .tbl td { text-align: left; padding: var(--s2) var(--s3); border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-family: var(--mono); font-size: var(--fs-2xs); letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--text-2); font-weight: var(--fw-medium); }
+.tbl td { color: var(--text-1); }
+
+/* C26 — empty state with one action. */
+.empty { padding: var(--s6) var(--s5); text-align: center; border: 1px dashed var(--line-strong); border-radius: var(--r-lg); color: var(--text-2); }
+.empty h4 { margin: 0 0 var(--s2); font-family: var(--display); font-size: var(--fs-lg); color: var(--text-1); }
+.empty p { margin: 0 0 var(--s4); font-size: var(--fs-md); }
+
+/* Section heading pattern used across catalog / area. */
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s2) var(--s4); margin: var(--s7) 0 var(--s4); }
+.sec-head h2 { margin: 0; font-family: var(--display); font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: var(--tr-tight); color: var(--text-1); }
+.sec-head p { margin: 0; color: var(--text-2); font-size: var(--fs-md); max-width: 60ch; }
+
 
 /* --------------------------------------------------------------------------
    Hero atmosphere.
@@ -790,7 +1141,7 @@ a { color: inherit; text-decoration: none; }
   vertical-align: baseline;
   transform: translateY(0.06em);
   background: var(--ember);
-  animation: cr-caret 1.05s steps(1, end) infinite;
+  animation: cr-caret calc(var(--t-slow) * 2) steps(1, end) infinite;
 }
 @keyframes cr-caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
 
@@ -886,16 +1237,16 @@ a { color: inherit; text-decoration: none; }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --void:      #f4f6f9;
+    --void:      #f7f7f8;
     --plate:     #ffffff;
-    --shelf:     #eef1f6;
-    --raise:     #e4e8ef;
-    --edge:      #d7dce5;
-    --edge-hi:   #b0b9c7;
+    --shelf:     #f4f4f5;
+    --raise:     #ececee;
+    --edge:      #e8e8ea;
+    --edge-hi:   #c9c9cf;
 
-    --chalk:     #11151c;
-    --ash:       #4e586a;
-    --dim:       #7a8496;
+    --chalk:     #1d1d1d;
+    --ash:       #5f5f66;
+    --dim:       #80808a;
 
     --ember:     #c8410d;
     --ember-ink: #8e2c06;
@@ -930,21 +1281,29 @@ a { color: inherit; text-decoration: none; }
     --sh-md: 0 1px 2px rgba(59, 59, 59, .09), 0 2px 4px rgba(59, 59, 59, .05), 0 0 0 1px rgba(59, 59, 59, .04);
     --sh-lg: 0 2px 4px rgba(59, 59, 59, .05), 0 4px 8px rgba(59, 59, 59, .09), 0 8px 16px rgba(59, 59, 59, .10), 0 0 0 1px rgba(59, 59, 59, .04);
 
+
+    --primary:        var(--chalk);   /* charcoal CTA fill */
+    --on-primary:     var(--void);    /* text on primary */
+    --focus-ring:     var(--brass);   /* one focus colour, both themes */
+    --chip-bg:        var(--shelf);
+    --chip-fg:        var(--text-2);
+    --progress-track: var(--edge);
+    --progress-fill:  var(--halon);
     color-scheme: light;
   }
 }
 
 :root[data-theme="light"] {
-  --void:      #f4f6f9;
+  --void:      #f7f7f8;
   --plate:     #ffffff;
-  --shelf:     #eef1f6;
-  --raise:     #e4e8ef;
-  --edge:      #d7dce5;
-  --edge-hi:   #b0b9c7;
+  --shelf:     #f4f4f5;
+  --raise:     #ececee;
+  --edge:      #e8e8ea;
+  --edge-hi:   #c9c9cf;
 
-  --chalk:     #11151c;
-  --ash:       #4e586a;
-  --dim:       #7a8496;
+  --chalk:     #1d1d1d;
+  --ash:       #5f5f66;
+  --dim:       #80808a;
 
   --ember:     #c8410d;
   --ember-ink: #8e2c06;
@@ -979,6 +1338,14 @@ a { color: inherit; text-decoration: none; }
   --sh-md: 0 1px 2px rgba(59, 59, 59, .09), 0 2px 4px rgba(59, 59, 59, .05), 0 0 0 1px rgba(59, 59, 59, .04);
   --sh-lg: 0 2px 4px rgba(59, 59, 59, .05), 0 4px 8px rgba(59, 59, 59, .09), 0 8px 16px rgba(59, 59, 59, .10), 0 0 0 1px rgba(59, 59, 59, .04);
 
+
+  --primary:        var(--chalk);   /* charcoal CTA fill */
+  --on-primary:     var(--void);    /* text on primary */
+  --focus-ring:     var(--brass);   /* one focus colour, both themes */
+  --chip-bg:        var(--shelf);
+  --chip-fg:        var(--text-2);
+  --progress-track: var(--edge);
+  --progress-fill:  var(--halon);
   color-scheme: light;
 }
 
