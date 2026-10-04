@@ -24,7 +24,7 @@ prove the cut on the graph, not on each agent.
   keeps its publisher and capabilities, and one new sentence tells the agent to email
   lookups out.
 
-**Play it in 15 minutes, no install:** {{PLAYGROUND_URL}}
+**Play it in 15 minutes, no install:** https://uddeshya-world.github.io/agentic-security-lab/
 
 **Run it for real** against a working agent stack on your own machine, with graded
 checks that read real lab state: https://github.com/uddeshya-world/agentic-security-lab

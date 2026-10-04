@@ -1,5 +1,45 @@
 # Changelog
 
+## v2.0.0 — 2026-10-04
+
+First public release.
+
+### Added
+- **Place the Control**, a 15-minute playground that runs entirely in the browser
+  (`lab/ui/play.html`, hosted at https://uddeshya-world.github.io/agentic-security-lab/).
+  Four levels: watch the breach, stop three attacks on a 3-point budget, find the
+  composition cut (MESA INV-01), and catch a tool whose description lies.
+  Learner and Reviewer modes; Reviewer ends with questions to ask before
+  approving an AI agent.
+- Scenario 19 *MCP tool poisoning* (ASI04, LLM04:2026) with a manifest-pinning
+  control (`defenses/m07/manifest_pin.py`).
+- Reviewer track: three read-only scenarios for officials and approvers.
+- Core labs 16 direct injection, 17 data guards, 18 agent identity.
+- Site rebuilt on a shared component layer: path cards, lab cards, filter chips,
+  stepper rail, checks rubric, trifecta HUD, pre-flight pane, scope gate,
+  badge card. Playground is first in the nav.
+- Server-side ledger of passed checks (`lab/ledger.py`).
+- GitHub Pages workflow that publishes only the static playground and fails on
+  any API route or network call.
+- `LICENSE` (Apache-2.0), `NOTICE`, `SECURITY.md`, `CONTRIBUTING.md`.
+
+### Changed
+- OWASP mappings use the **2026** LLM Top 10 numbering throughout.
+- Light theme retuned; motion limited to two speeds; contrast fixes so metadata
+  text clears 4.5:1.
+
+### Fixed
+- **Completion badges could be forged.** The signing key was a constant shared by
+  every install, and the transcript came from the browser. Each install now
+  generates its own random key, and badges are built only from checks the server
+  recorded as passed.
+- CI now runs on `master`.
+
+### Content
+- AI & Agent Security: 23 scenarios (Core 9, Persistence 5, Operate 6,
+  Reviewer 3), 49 graded checks.
+- Blue Team / SOC: 4 scenarios, 6 graded checks (authoring; no credential yet).
+
 ## v1.1.0 — 2026-07-11
 
 ### Added

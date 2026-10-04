@@ -171,3 +171,12 @@ pip install -r requirements.txt
 - `defenses/m01/` — secure-mode controls  
 - `docs/LEARN.md` — Core path (~2.5 hours)  
 - `lab/ui/play.html` — 15-minute in-browser preview (no Docker)  
+
+## Contributing and security
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to add a scenario and what the tests guard
+- [SECURITY.md](SECURITY.md): which weaknesses are intentional, and how to report one that isn't
+
+## License
+
+[Apache License 2.0](LICENSE). Copyright 2026 Uddeshya Kumar. See [NOTICE](NOTICE).

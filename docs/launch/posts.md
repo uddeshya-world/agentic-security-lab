@@ -1,7 +1,6 @@
 # LinkedIn posts (drafts)
 
-Replace `{{PLAYGROUND_URL}}` with https://uddeshya-world.github.io/agentic-security-lab/
-before posting. Screenshots: `docs/qa/P1/` (level 2 at 1280, level 3 closure, reviewer finish).
+Screenshots to attach: `docs/qa/P1/` (level 2 at 1280, level 3 closure, reviewer finish).
 
 ---
 
@@ -20,7 +19,7 @@ can rephrase.
 The optimal answer costs 2 points: an approved recipient list on email and an approved
 domain list on web requests. Many ways in, few ways out.
 
-Try it, 15 minutes, no install: {{PLAYGROUND_URL}}
+Try it, 15 minutes, no install: https://uddeshya-world.github.io/agentic-security-lab/
 
 #AISecurity #AgenticAI #OWASP
 
@@ -39,7 +38,7 @@ Firewall Reporting and the leak stops, along with the report. The cut that holds
 property flow: private-labelled data can't reach external egress. Closure goes from
 (1, 1, 1) to (1, 1, 0) and the service keeps running.
 
-Per-agent safety doesn't compose. Find the cut yourself: {{PLAYGROUND_URL}}
+Per-agent safety doesn't compose. Find the cut yourself: https://uddeshya-world.github.io/agentic-security-lab/
 
 #AISecurity #MultiAgent #MESA
 
@@ -62,6 +61,6 @@ these questions:
 5. How are third-party tools vetted, pinned and re-reviewed when they change?
 
 Switch the playground to Reviewer mode and it builds this list from the safeguards you
-chose: {{PLAYGROUND_URL}}
+chose: https://uddeshya-world.github.io/agentic-security-lab/
 
 #PublicSector #AIGovernance #AISecurity
