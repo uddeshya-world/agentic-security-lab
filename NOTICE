@@ -1,0 +1,8 @@
+CyberRange (agentic-security-lab)
+Copyright 2026 Uddeshya Kumar
+
+This product includes software developed as part of the MESA project.
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Vendored third-party libraries in lab/ui/vendor/ keep their own licenses;
+see lab/ui/vendor/README.md for provenance.
