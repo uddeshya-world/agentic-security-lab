@@ -1,6 +1,6 @@
 {
   "id": "20-reviewer-vendor-requirements",
-  "order": 20,
+  "order": 21,
   "track": "reviewer",
   "title": "What to require from a vendor",
   "summary": "For officials and reviewers. Five requirements that decide whether an AI agent can leak records, written so you can put them in a tender or an approval note. No Docker needed.",

@@ -1,0 +1,16 @@
+{
+  "kind": "recall",
+  "prompt": "In the secure run, which control stopped the leak?",
+  "options": [
+    "The pattern scanner, because it inspected the skill first",
+    "The skill's permission manifest, enforced by the runtime before the read",
+    "The file tool's workspace jail",
+    "A line in the system prompt telling the agent to ignore skill instructions"
+  ],
+  "answer": 1,
+  "asserts": [
+    "you can name the control that refused the action and why the others did not"
+  ],
+  "pass_message": "Right. The scanner called it clean, the jail allows that path, and a prompt line proves nothing. The manifest refused the read.",
+  "fail_message": "Look at the secure run's timeline: which event says 'refused', and before which step?"
+}

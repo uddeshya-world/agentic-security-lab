@@ -1,6 +1,6 @@
 {
   "id": "21-reviewer-data-path",
-  "order": 21,
+  "order": 22,
   "track": "reviewer",
   "title": "Reading an agent's data path",
   "summary": "For officials and reviewers. How to read a data-path diagram, find where untrusted content, private records and outgoing messages meet, and spot the one place a control holds for every path. No Docker needed.",

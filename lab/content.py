@@ -216,6 +216,16 @@ def _check_kind_counts(scenario: dict[str, Any]) -> dict[str, int]:
     return counts
 
 
+def _standards(scen: dict[str, Any]) -> dict[str, Any]:
+    """AISVS (derived from the scenario's controls, so it cannot overclaim) and AST (authored)."""
+    from lab import curriculum, standards
+
+    return {
+        "aisvs": standards.scenario_aisvs(scen["id"], scen.get("controls") or [], curriculum.CONTROLS),
+        "ast": [a for a in (scen.get("ast") or []) if a in standards.AST],
+    }
+
+
 def catalog_payload() -> dict[str, Any]:
     """Killercoda-style Area tiles: what it teaches, who it is for, what it maps to."""
     areas = []
@@ -256,6 +266,7 @@ def catalog_payload() -> dict[str, Any]:
                         # other kind asserts lab state the learner had to produce by running
                         # the attack first. Without this split the tile can only say "graded".
                         "check_kinds": _check_kind_counts(s),
+                        **_standards(s),
                     }
                     for s in scenarios
                 ],
@@ -294,6 +305,7 @@ def scenario_payload(area_id: str, scenario_id: str) -> dict[str, Any] | None:
         "controls": scen.get("controls") or [],
         # Optional trifecta legs the scenario's attack path touches: any of "u", "p", "e".
         "legs": [leg for leg in (scen.get("legs") or []) if leg in ("u", "p", "e")],
+        **_standards(scen),
         "attack_id": scen.get("attack_id"),
         "mailhog": scen.get("mailhog", False),
         "code_paths": scen.get("code_paths") or [],

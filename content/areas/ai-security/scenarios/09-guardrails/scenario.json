@@ -1,7 +1,7 @@
 {
   "id": "09-guardrails",
   "legacy_id": "m5",
-  "order": 14,
+  "order": 15,
   "title": "Production guardrails & observability",
   "summary": "Module 5. Move from ad-hoc defenses to a measured guardrail layer. Run input/output scanners over a labeled probe set and report the numbers that matter — catch rate, false-positive rate, p50/p95 latency.",
   "difficulty": "intermediate",

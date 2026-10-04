@@ -1,6 +1,6 @@
 {
   "id": "22-reviewer-approve-vs-prove",
-  "order": 22,
+  "order": 23,
   "track": "reviewer",
   "title": "Approving vs. proving a control",
   "summary": "For officials and reviewers. The difference between a control someone describes and a control someone demonstrates, and what evidence to ask for before you sign. No Docker needed.",

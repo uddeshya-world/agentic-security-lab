@@ -1,0 +1,62 @@
+{
+  "id": "23-poisoned-skill",
+  "order": 14,
+  "track": "persist",
+  "title": "The skill that reads like documentation",
+  "summary": "A community agent skill has no code, only a SKILL.md. One sentence under Usage notes tells the agent to mail a private export. The registry's pattern scanner calls it clean. The skill's own permission manifest is what stops it.",
+  "difficulty": "advanced",
+  "est_minutes": 18,
+  "attack_id": "poisoned_skill",
+  "mailhog": true,
+  "owasp": [
+    "ASI04 Agentic Supply Chain",
+    "LLM04:2026 Supply Chain"
+  ],
+  "ast": [
+    "AST01",
+    "AST03",
+    "AST05",
+    "AST08"
+  ],
+  "controls": [
+    "C22"
+  ],
+  "legs": [
+    "u",
+    "p",
+    "e"
+  ],
+  "code_paths": [
+    "defenses/m07/skill_manifest.py",
+    "lab/sims_core.py::sim_poisoned_skill"
+  ],
+  "takeaway": "A skill's prose is untrusted instructions. Enforce what its manifest declares; a scanner that looks for code will not see a sentence.",
+  "design_rule": "Every skill declares the files and network it needs. The runtime refuses anything undeclared. Scanning is a hint, never the control.",
+  "steps": [
+    {
+      "id": "step-01",
+      "title": "A skill with no code",
+      "file": "step-01.md"
+    },
+    {
+      "id": "step-02",
+      "title": "Run the skill",
+      "file": "step-02.md"
+    },
+    {
+      "id": "step-03",
+      "title": "Scan it, then run it again",
+      "file": "step-03.md"
+    },
+    {
+      "id": "step-04",
+      "title": "Enforce the manifest",
+      "file": "step-04.md"
+    },
+    {
+      "id": "step-05",
+      "title": "Which control stopped it?",
+      "file": "step-05.md"
+    }
+  ]
+}

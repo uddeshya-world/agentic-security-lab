@@ -44,5 +44,8 @@
       "file": "step-04.md"
     }
   ],
-  "track": "persist"
+  "track": "persist",
+  "ast": [
+    "AST02"
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "12-governance",
   "legacy_id": "m8",
-  "order": 16,
+  "order": 17,
   "title": "Governance & policy-as-code",
   "summary": "Module 8. Make security expressible and auditable. Replace the always-allow policy stub with a real engine that gates every action by blast radius, denies external egress, and writes a queryable audit trail.",
   "difficulty": "intermediate",

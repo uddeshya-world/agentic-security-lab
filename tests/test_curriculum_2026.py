@@ -14,7 +14,7 @@ def test_ai_area_has_core_persist_operate_tracks():
     operate = [s for s in scen if s.get("track") == "operate"]
     assert len(core) == 9, [s["id"] for s in core]
     reviewer = [s for s in scen if s.get("track") == "reviewer"]
-    assert len(persist) == 5   # + 19-mcp-tool-poisoning (PLAN.md P5.3)
+    assert len(persist) == 6   # + 19-mcp-tool-poisoning (P5.3), 23-poisoned-skill (P8.7)
     assert len(operate) == 6
     assert len(reviewer) == 3  # read-only officials track (PLAN.md P5.4)
     assert tracks["16-direct-injection"] == "core"

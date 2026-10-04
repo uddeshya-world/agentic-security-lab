@@ -1,7 +1,7 @@
 {
   "id": "15-resource-limits",
   "legacy_id": "m11",
-  "order": 19,
+  "order": 20,
   "title": "Unbounded consumption — denial of wallet",
   "summary": "LLM06. A runaway plan repeats one 'valid' tool call 40 times. A step cap alone won't save you — add a cost budget, loop detection, and rate limiting, and see exactly which control fires.",
   "difficulty": "intermediate",
