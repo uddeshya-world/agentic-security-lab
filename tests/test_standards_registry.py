@@ -145,7 +145,9 @@ def test_scenario_strength_never_exceeds_its_controls():
 
 
 # Files that hold the registry itself, or the plan that drafted it, may use bare ids.
-BARE_OK = {"lab/standards.py", "lab/curriculum.py", "PLAN.md", "tests/test_standards_registry.py"}
+# docs/AISVS_COVERAGE.md is generated from the registry and its chapter column gives the context.
+BARE_OK = {"lab/standards.py", "lab/curriculum.py", "lab/coverage_doc.py", "PLAN.md",
+           "tests/test_standards_registry.py", "docs/AISVS_COVERAGE.md"}
 SCAN_ROOTS = ["content", "lab/ui", "docs", "README.md", "CHANGELOG.md"]
 SKIP = ("docs/qa/", "docs/research/preview/")
 DOTTED = re.compile(r"(?<![\w.])C\d{1,2}\.\d{1,2}\.\d{1,2}(?![\w.])")
@@ -182,3 +184,10 @@ def test_every_ast_id_in_the_repo_is_registered():
     for rel, text in _files():
         bad += [f"{rel}: {a}" for a in AST_ID.findall(text) if a not in standards.AST]
     assert not bad, bad
+
+
+def test_coverage_doc_matches_the_generator():
+    from lab import coverage_doc
+
+    committed = coverage_doc.OUT.read_text(encoding="utf-8").replace(chr(13) + chr(10), chr(10))
+    assert committed == coverage_doc.render(), "docs/AISVS_COVERAGE.md is stale: run python -m lab.coverage_doc"

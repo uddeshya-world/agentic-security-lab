@@ -24,7 +24,7 @@ The list was renumbered on 4 Aug 2026. **Excessive Agency is LLM03** (was LLM06)
 | LLM01 | Prompt Injection (direct & indirect) | **Yes** | `ai-security/02-rag-poisoning`, `ai-security/04-agent-exploit`, `ai-security/05-guardrail-map`, `ai-security/06-rag-deep-poisoning`, `ai-security/08-memory-poisoning`, `ai-security/09-guardrails`, `ai-security/10-redteam-pipeline`, `ai-security/13-prompt-leakage`, `ai-security/16-direct-injection` |
 | LLM02 | Sensitive Information Disclosure | **Yes** | `ai-security/03-cross-tool-exfil`, `ai-security/05-guardrail-map`, `ai-security/09-guardrails`, `ai-security/10-redteam-pipeline`, `ai-security/17-data-guards`, `blue-team/00-orientation`, `blue-team/01-triage-the-exfil`, `blue-team/03-prove-the-control` |
 | LLM03 | Excessive Agency | **Yes** | `ai-security/01-tool-abuse-sqli`, `ai-security/03-cross-tool-exfil`, `ai-security/04-agent-exploit`, `ai-security/05-guardrail-map`, `ai-security/10-redteam-pipeline`, `ai-security/12-governance`, `ai-security/16-direct-injection`, `ai-security/18-agent-identity`, `blue-team/01-triage-the-exfil`, `blue-team/02-write-the-detection` |
-| LLM04 | Supply Chain | **Yes** | `ai-security/11-supply-chain` |
+| LLM04 | Supply Chain | **Yes** | `ai-security/11-supply-chain`, `ai-security/19-mcp-tool-poisoning`, `ai-security/23-poisoned-skill` |
 | LLM05 | Data and Model Poisoning | **Yes** | `ai-security/02-rag-poisoning`, `ai-security/06-rag-deep-poisoning`, `ai-security/14-grounding` |
 | LLM06 | Unbounded Consumption | **Yes** | `ai-security/15-resource-limits` |
 | LLM07 | Misinformation | **Yes** | `ai-security/14-grounding` |
@@ -44,7 +44,7 @@ not self-selected.
 | ASI01 | Agent Goal Hijack | **Yes** | `ai-security/04-agent-exploit`, `ai-security/07-multi-agent`, `ai-security/08-memory-poisoning` |
 | ASI02 | Tool Misuse and Exploitation | **Yes** | `ai-security/01-tool-abuse-sqli`, `ai-security/03-cross-tool-exfil`, `ai-security/04-agent-exploit`, `ai-security/05-guardrail-map` |
 | ASI03 | Identity and Privilege Abuse | **Yes** | `ai-security/05-guardrail-map`, `ai-security/12-governance`, `ai-security/17-data-guards`, `ai-security/18-agent-identity` |
-| ASI04 | Agentic Supply Chain Vulnerabilities | **Yes** | `ai-security/11-supply-chain` |
+| ASI04 | Agentic Supply Chain Vulnerabilities | **Yes** | `ai-security/11-supply-chain`, `ai-security/19-mcp-tool-poisoning`, `ai-security/23-poisoned-skill` |
 | ASI05 | Unexpected Code Execution (RCE) | No | — |
 | ASI06 | Memory and Context Poisoning | **Yes** | `ai-security/02-rag-poisoning`, `ai-security/06-rag-deep-poisoning`, `ai-security/08-memory-poisoning` |
 | ASI07 | Insecure Inter-Agent Communication | **Yes** | `ai-security/07-multi-agent` |
@@ -54,7 +54,7 @@ not self-selected.
 
 **Full: 7 · Partial: 0 · Not yet: 3** of 10 (open: ASI05, ASI08, ASI09)
 
-Controls taught: **21** (`C1`–`C21`, see `lab/curriculum.py::CONTROLS`).
+Controls taught: **22** (`C1`–`C22`, see `lab/curriculum.py::CONTROLS`). AISVS v1.0 and Agentic Skills Top 10 coverage: `docs/AISVS_COVERAGE.md`.
 
 ## Where the learning actually happens
 
