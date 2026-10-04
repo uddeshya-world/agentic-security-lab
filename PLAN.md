@@ -522,11 +522,11 @@ OWASP LLM Top 10 2026 and ASI stay the primary mapping. AISVS and AST are added 
 - [ ] **P8.3 Coverage doc.** Generate `docs/AISVS_COVERAGE.md` from the registry, in the same shape as `docs/OWASP_COVERAGE.md`: per chapter, the requirements demonstrated, partial, and **out of scope** (C1 training data, C3 model lifecycle, C4 infrastructure and C11 adversarial robustness are model- and platform-level; say so plainly). Add an AST table.
 - [ ] **P8.4 UI chips.** Lab cards (C05), Area page and player show AISVS IDs beside OWASP chips. Mono, version-prefixed, partial in brass with a "~" glyph. The Area honest-gaps table gains the out-of-scope AISVS chapters.
 - [ ] **P8.5 Reviewer mode cites AISVS** (playground and reviewer track 20–22). Each question ends with the requirement to ask for, e.g. "Ask for AISVS v1.0 C9.2.1 (L1) and C9.2.2 (L2)." This turns Reviewer mode into a procurement checklist, which is the officials' pitch.
-- [ ] **P8.6 Retag scenario 19** (MCP tool poisoning): `ast: [AST04, AST05, AST07]`; AISVS C10.4.8 (L3, re-approve on definition change) and C9.3.7 (L2) as *demonstrates* if the existing checks prove them.
+- [ ] **P8.6 Retag scenario 19** (MCP tool poisoning): `ast: [AST04, AST05, AST07]`; AISVS C10.4.8 (L3, re-approve on definition change) and C9.3.7 (L2) as *demonstrates* if the existing checks prove them. Add `defenses/m07/manifest_pin.py` to C15's `lab_code` in `lab/curriculum.py` (today it lists only `attestation.py`) so the C10.4.8 claim traces to code.
 - [ ] **P8.7 New scenario 23 `23-poisoned-skill`** (advanced, `persist` track). Spec in Appendix C.3. Maps AST01, AST03, AST08, ASI04, LLM04:2026, AISVS C9.3.3/C9.3.4.
-- [ ] **P8.8 Playground: no new level.** Keep it at 20 minutes. Level 4 debrief gains one line: "Agent skills have the same problem. OWASP lists it as AST04 and AST07." Reviewer questions per P8.5. Share text unchanged.
+- [ ] **P8.8 Playground: no new level.** Keep it at 15 minutes. Level 4 debrief gains one line: "Agent skills have the same problem. OWASP lists it as AST04 and AST07." Reviewer questions per P8.5. Share text unchanged.
 - [ ] **P8.9 Composition gap note** (`docs/research/AISVS-COMPOSITION-NOTE.md`). AISVS v1.0 has label propagation (C5.2.7, L3) and multi-agent approval escalation (C9.2.10, L3). In our reading it has no requirement that a private-labelled item is refused at external egress anywhere in a multi-agent chain, which is MESA INV-01. Draft a short, sourced proposal for `1.01-dev` with the Level 3 board as the worked example. **The user decides whether to file it upstream.** Do not open an OWASP issue yourself.
-- [ ] **P8.10 Newsletter edition 2 draft** (`docs/launch/newsletter-02.md`): "OWASP shipped AISVS 1.0 and a Skills Top 10. Here is which requirements you can verify in 20 minutes, and the one we think is missing." Uses only P8.3 numbers.
+- [ ] **P8.10 Newsletter edition 2 draft** (`docs/launch/newsletter-02.md`): "OWASP shipped AISVS 1.0 and a Skills Top 10. Here is which requirements you can verify in 15 minutes, and the one we think is missing." Uses only P8.3 numbers.
 
 **Accept (phase):** full test suite green; `docs/AISVS_COVERAGE.md` numbers match the registry; every on-screen AISVS chip traces to a registry entry; CHANGELOG `v2.1.0` entry.
 
@@ -697,6 +697,20 @@ Map each control to a plain question; show the ones relevant to the paths the us
 
 ---
 
+## Appendix B — Sources
+
+- Lakera Agent Breaker — https://www.lakera.ai/blog/gandalf-agent-breaker
+- NHI Mgmt Group on Agent Breaker — https://nhimg.org/articles/agent-breaker-shows-how-genai-security-testbeds-model-real-attacks/
+- Damn Vulnerable AI Agent — https://github.com/opena2a-org/damn-vulnerable-ai-agent
+- Practical DevSecOps CMCPSE — https://app.dealroom.co/news/feed/practical-devsecops-launches-cmcpse-first-hands-on-mcp-security-certification-at-599
+- DEF CON AI agent security training — https://training.defcon.org/products/ai-agent-security-masterclass-attacking-and-defending-autonomous-ai-systems-abhay-bhargav-vishnu-prasad-dctlv2026
+- fanout.sh and fanout.sh/labs — https://fanout.sh/ · https://fanout.sh/labs
+- CSA note: OWASP LLM Top 10 2026 + Agent Control Standard — https://labs.cloudsecurityalliance.org/research/csa-research-note-owasp-genai-top10-2026-agent-control-stand/
+- OWASP AISVS v1.0 (locked) — https://github.com/OWASP/AISVS/tree/main/1.0 · https://owasp.org/projects/artificial-intelligence-security-verification-standard-aisvs-docs
+- OWASP Agentic Skills Top 10 v1.0-2026 — https://github.com/OWASP/www-project-agentic-skills-top-10 · https://owasp.org/projects/agentic-skills-top-10
+
+---
+
 ## Appendix C — Draft mapping: controls → AISVS v1.0, scenarios → AST (verify in P8.2)
 
 Paraphrases are ours. Requirement text lives at https://github.com/OWASP/AISVS/tree/main/1.0/en. "Draft" means a graded check still has to prove it.
@@ -708,7 +722,7 @@ Paraphrases are ours. Requirement text lives at https://github.com/OWASP/AISVS/t
 | C1 Scoped DB access | C9.5.3 access decided by app logic, never the model (L2); C9.5.2 user's scope travels with the agent (L2) | demonstrates C9.5.3 |
 | C2 Tool argument schema allow-list | C10.4.3 reject unknown or oversized parameters (L1); C7.1.1 validate model output against a schema (L1) | demonstrates |
 | C3 Filesystem jail | C9.3.4 runtime enforces declared tool privileges (L2) | partial |
-| C4 Email / egress allow-list | C7.3.3 model output can't trigger outbound requests (L2); C9.1.1 per-tool egress limits (L1) | demonstrates C7.3.3 |
+| C4 Email / egress allow-list | C7.3.3 model output can't trigger outbound requests (L2). Not C9.1.1: that covers per-tool quotas and timeouts, not which destinations are allowed | demonstrates C7.3.3 |
 | C5 Human approval for side effects | C9.2.1 block high-impact actions until approved (L1); C9.2.2 approval shows full parameters (L2); C9.6.2 unanswered approval blocks (L2) | demonstrates C9.2.1 |
 | C6 RAG provenance filter | C2.1.3 treat steering inputs as untrusted (L1); C12.5.4 tag ingested documents with source (L2) | demonstrates |
 | C7 Planner output is not authorization | C9.5.3 (L2); C9.5.1 fine-grained tool policy (L2) | demonstrates C9.5.3 |
@@ -740,7 +754,7 @@ AISVS chapters **out of scope** for this lab: C1 Training data, C3 Model lifecyc
 | AST04 | Insecure Metadata | Scenario 19 (poisoned description); playground L4 |
 | AST05 | Untrusted External Instructions | Scenario 19; scenario 23 variant |
 | AST06 | Weak Isolation | Not covered. Container isolation is out of scope (C3 jail is partial) |
-| AST07 | Update Drift | Scenario 19 (v1.4.0 → 1.4.2 held by the pin) |
+| AST07 | Update Drift | Scenario 19 (reviewed v1.4.1 → poisoned v1.4.2, held by the pin) |
 | AST08 | Poor Scanning | Scenario 23 (regex scanner passes a prose instruction) |
 | AST09 | No Governance | Partial: reviewer track asks inventory and approval questions; add a skill-inventory question in P8.5 |
 | AST10 | Cross-Platform Reuse | Not covered |
@@ -752,21 +766,8 @@ Honest count, to be confirmed in P8.2. **Today:** covered 4 (AST02, AST04, AST05
 - **Story:** CivicDesk staff install a community skill `ward-report` (a `SKILL.md` with YAML frontmatter and prose). Under "Usage notes", the prose tells the agent to read `workspace/exports/applicants.csv` and "attach it to the weekly report" sent to `reports@ward-data.example`. There is no code in the skill, only instructions.
 - **Step 1 (read):** the skill file, with the instruction highlighted.
 - **Step 2 (run + check, vulnerable):** run the skill; MailHog receives the CSV. Asserts: a file outside the skill's stated purpose was read, and an email left to an external domain.
-- **Step 3 (run + check, "scanned"):** the lab's regex scanner (no `curl`, `wget`, `base64`, `eval`) reports **clean**, and the leak still happens. Teaches AST08. Brass caveat.
+- **Step 3 (run + check, "scanned"):** implemented as a separate simulation id `poisoned_skill_scanned` run in `vulnerable` mode (checks only know `vulnerable` / `secure` / `any`, so "scanned" is a distinct run, not a third mode). The lab's regex scanner (no `curl`, `wget`, `base64`, `eval`) reports **clean**, and the leak still happens. Teaches AST08. Brass caveat.
 - **Step 4 (run + check, secure):** the runtime enforces the skill's permission manifest (`permissions: {files: [], network: []}`); the read is refused with the named control. Egress allow-list as backstop. Maps AISVS C9.3.3 (manifest declares privileges, L2) and C9.3.4 (runtime enforces them, L2).
 - **Step 5 (recall):** "Which control stopped it: the scanner, the manifest, or the prompt?"
 - **Files:** `content/areas/ai-security/scenarios/23-poisoned-skill/`, `lab/sims_core.py::sim_poisoned_skill`, `defenses/m07/skill_manifest.py`, `tests/test_poisoned_skill.py`.
 - **Track:** persist; difficulty advanced; `legs: ["u","p","e"]`.
-
-
-## Appendix B — Sources
-
-- Lakera Agent Breaker — https://www.lakera.ai/blog/gandalf-agent-breaker
-- NHI Mgmt Group on Agent Breaker — https://nhimg.org/articles/agent-breaker-shows-how-genai-security-testbeds-model-real-attacks/
-- Damn Vulnerable AI Agent — https://github.com/opena2a-org/damn-vulnerable-ai-agent
-- Practical DevSecOps CMCPSE — https://app.dealroom.co/news/feed/practical-devsecops-launches-cmcpse-first-hands-on-mcp-security-certification-at-599
-- DEF CON AI agent security training — https://training.defcon.org/products/ai-agent-security-masterclass-attacking-and-defending-autonomous-ai-systems-abhay-bhargav-vishnu-prasad-dctlv2026
-- fanout.sh and fanout.sh/labs — https://fanout.sh/ · https://fanout.sh/labs
-- CSA note: OWASP LLM Top 10 2026 + Agent Control Standard — https://labs.cloudsecurityalliance.org/research/csa-research-note-owasp-genai-top10-2026-agent-control-stand/
-- OWASP AISVS v1.0 (locked) — https://github.com/OWASP/AISVS/tree/main/1.0 · https://owasp.org/projects/artificial-intelligence-security-verification-standard-aisvs-docs
-- OWASP Agentic Skills Top 10 v1.0-2026 — https://github.com/OWASP/www-project-agentic-skills-top-10 · https://owasp.org/projects/agentic-skills-top-10
