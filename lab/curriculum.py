@@ -521,7 +521,20 @@ def curriculum_payload() -> dict:
     partial_asi = sum(1 for v in OWASP_ASI.values() if v["covered"] == "partial")
     open_asi = [k for k, v in OWASP_ASI.items() if v["covered"] is False]
 
+    from lab import standards
+
     return {
+        # AISVS v1.0 / Agentic Skills Top 10: versions and the chapters this lab does not
+        # exercise, so the Area's honest-gaps table can list them without a second copy.
+        "standards": {
+            "aisvs_version": standards.AISVS_VERSION,
+            "aisvs_url": standards.AISVS_URL,
+            "aisvs_out_of_scope": [
+                {"chapter": c, "name": standards.AISVS_CHAPTERS[c]["name"], "reason": r}
+                for c, r in standards.AISVS_OUT_OF_SCOPE.items()
+            ],
+            "ast_version": standards.AST_VERSION,
+        },
         "title": "AI Security curriculum map (this lab)",
         "mission": (
             "Students learn how AI agents are attacked (tool abuse, RAG injection, exfil) "

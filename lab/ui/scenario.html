@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
 <script src="/lab/ui/vendor/marked.min.js"></script>
 <style>
   html, body { height: 100%; }
@@ -375,7 +375,7 @@
 
 </div>
 
-<script src="/lab/ui/cyberrange.js?v=17"></script>
+<script src="/lab/ui/cyberrange.js?v=18"></script>
 <script>
 const esc = CR.esc;
 const TTYD = `http://${location.hostname}:7681`;
@@ -491,6 +491,7 @@ function renderRunbar() {
 
   document.getElementById("barFacts").innerHTML =
     chips.map(([tone, text]) => `<span class="tag ${tone}">${esc(text)}</span>`).join("") +
+    CR.aisvsChips(data.aisvs, 2) + CR.astChips(data.ast) +
     `<span class="grow"></span><span class="sid">${esc(data.legacy_id || data.id || SCEN)}</span>`;
   bar.hidden = false;
   paintHud(null);

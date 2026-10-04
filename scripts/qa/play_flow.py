@@ -96,7 +96,8 @@ def keyboard_run(page) -> None:
     # Reviewer mode
     page.click(".mode button[data-mode=reviewer]")
     qs = page.locator("#questions li")
-    check(qs.count() == 3, f"reviewer questions: egress + composition + tools (got {qs.count()})")
+    check(qs.count() == 4, f"reviewer questions: egress + composition + tools + skills (got {qs.count()})")
+    check("AISVS v1.0 C7.3.3 (L2)" in page.inner_text("#questions"), "reviewer questions cite the AISVS requirement to ask for")
     check(page.is_visible("#print"), "print button visible in reviewer mode")
     check(not page.is_visible("#share-text"), "share card hidden in reviewer mode")
     page.screenshot(path=str(ROOT / "docs" / "qa" / "P1" / "reviewer-finish.png"), full_page=True)

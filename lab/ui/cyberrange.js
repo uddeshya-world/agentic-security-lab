@@ -491,6 +491,28 @@ const CR = (() => {
   }
 
   /** Just the id from a tag: "LLM03:2026 Excessive Agency" -> "LLM03". */
+  /* ---- AISVS v1.0 / Agentic Skills chips --------------------------------
+     `list` comes from the API (derived in lab/standards.py, never typed here).
+     Demonstrated = a graded secure-mode check proves it (✓, halon); partial =
+     related control, no proof (~, brass). Capped so a card stays scannable; the
+     rest are named in the "+n" chip's title. Labels are always version-prefixed
+     because lab controls are also numbered C1–C22. */
+  function aisvsChips(list, max = 2) {
+    const rows = list || [];
+    if (!rows.length) return "";
+    const one = (r) => r.strength === "demonstrates"
+      ? `<span class="tag cold" title="${esc(r.label)}: demonstrated by a graded check">✓ ${esc(r.label.replace(/ \(L\d\)$/, ""))}</span>`
+      : `<span class="tag warn" title="${esc(r.label)}: partial, no graded check proves it">~ ${esc(r.label.replace(/ \(L\d\)$/, ""))}</span>`;
+    const shown = rows.slice(0, max).map(one).join("");
+    const rest = rows.slice(max);
+    return shown + (rest.length
+      ? `<span class="tag quiet" title="${esc(rest.map((r) => `${r.label} (${r.strength})`).join(", "))}">+${rest.length} AISVS</span>`
+      : "");
+  }
+  function astChips(list) {
+    return (list || []).map((a) => `<span class="tag quiet" title="OWASP Agentic Skills Top 10 (v1.0-2026)">${esc(a)}</span>`).join("");
+  }
+
   function owaspId(tag) {
     const m = String(tag || "").match(/^(LLM[0-9]{2}|ASI[0-9]{2})/);
     return m ? m[1] : owaspLabel(tag);
@@ -829,6 +851,6 @@ const CR = (() => {
            initTypewriter, initSearch, openSearch, initAnnounce,
            initTheme, setTheme, activeTheme,
            hasGsap, initSmoothScroll, renderHops, initHopScrub, initWordReveal,
-           esc, api, loadProgress, saveProgress, recordPass, isPassed,
+           esc, api, loadProgress, saveProgress, recordPass, isPassed, aisvsChips, astChips,
            transcript, traceHTML, paintTrace, enhanceCode, revealScan };
 })();

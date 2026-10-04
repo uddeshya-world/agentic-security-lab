@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
 <style>
   /* ---- crumb ------------------------------------------------------------ */
   .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s5); display: flex; gap: 8px; align-items: center; }
@@ -68,6 +68,7 @@
   .trackbar h3.th { margin: 0; font-weight: 500; }
   .stepper .s { display: block; font-size: var(--fs-md); color: var(--text-2); margin-top: 2px; max-width: 70ch; }
   .stepper .hiderow { display: none; }
+  .stepper .stds { display: flex; flex-wrap: wrap; gap: 4px; margin-top: var(--s2); }
   .track-block:last-child { margin-bottom: 0; }
   .trackbar { display: flex; align-items: baseline; gap: var(--s3); padding: var(--s3) 0; }
   .trackbar .th { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--halon); }
@@ -226,7 +227,7 @@
 
 <dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
 
-<script src="/lab/ui/cyberrange.js?v=17"></script>
+<script src="/lab/ui/cyberrange.js?v=18"></script>
 <script>
 const esc = CR.esc;
 const params = new URLSearchParams(location.search);
@@ -298,6 +299,7 @@ function rowFor(area, r, locked, isNext) {
       ${locked ? `<span class="ti">${esc(s.title)}</span>` : `<a class="ti" href="${href}">${esc(s.title)}</a>`}
       <span class="s">${esc(s.summary || "")}</span>
       <span class="comp">${esc(compLine(s))}</span>
+      ${(s.aisvs || []).length || (s.ast || []).length ? `<span class="stds">${CR.aisvsChips(s.aisvs, 2)}${CR.astChips(s.ast)}</span>` : ""}
     </li>`;
 }
 
@@ -533,7 +535,7 @@ function render(area) {
     </section>
 
     <section class="blk" data-reveal id="gapsHost" ${gaps.length ? "" : "hidden"}>
-      <div class="sechead"><h2>What this Area does not teach</h2><span class="hint">listed so coverage is not self-selected</span></div>
+      <div class="sechead"><h2>What this Area does not teach</h2><span class="hint">listed so coverage is not self-selected · <a href="https://github.com/uddeshya-world/agentic-security-lab/blob/master/docs/AISVS_COVERAGE.md">AISVS coverage</a></span></div>
       ${gaps.length ? `<ul class="checklist" style="max-width:74ch">${gaps.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>` : ""}
       <div id="gapTable"></div>
     </section>
@@ -558,12 +560,14 @@ async function renderGaps() {
   let cur;
   try { cur = await CR.api("/lab/curriculum"); } catch (e) { return; }
   const open = Object.entries(cur.owasp_asi || {}).filter(([, v]) => !v.covered);
-  if (!open.length) return;
+  const std = cur.standards || {};
+  const outScope = std.aisvs_out_of_scope || [];
+  if (!open.length && !outScope.length) return;
   const note = cur.coverage_summary && cur.coverage_summary.denominator_note;
   document.getElementById("gapTable").innerHTML = `
     <div class="tablewrap"><table class="tbl">
       <thead><tr><th scope="col">OWASP id</th><th scope="col">Risk</th><th scope="col">Status</th></tr></thead>
-      <tbody>${open.map(([id, v]) => `<tr><td class="mono">${esc(id)}</td><td>${esc(v.name || "")}</td><td><span class="cstate authoring">· Not covered</span></td></tr>`).join("")}</tbody>
+      <tbody>${open.map(([id, v]) => `<tr><td class="mono">${esc(id)}</td><td>${esc(v.name || "")}</td><td><span class="cstate authoring">· Not covered</span></td></tr>`).join("")}${outScope.map((c) => `<tr><td class="mono">AISVS ${esc(std.aisvs_version)} ${esc(c.chapter)}</td><td>${esc(c.name)}<span class="sr-only">. </span><br><span style="font-size:var(--fs-sm);color:var(--text-2)">${esc(c.reason)}</span></td><td><span class="cstate authoring">· Out of scope</span></td></tr>`).join("")}</tbody>
     </table></div>
     ${note ? `<p style="font-size:var(--fs-sm);color:var(--text-2);max-width:74ch">${esc(note)}</p>` : ""}`;
   document.getElementById("gapsHost").hidden = false;

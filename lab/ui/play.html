@@ -251,6 +251,7 @@ html:not([data-mode="reviewer"]) .v-r { display: none !important; }
 .qs { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--prose); font-size: 15px; }
 .qs li::marker { color: var(--ash); font-family: var(--mono); font-size: 12px; }
 .qs .why { display: block; font-size: 12.5px; color: var(--ash); margin-top: 2px; }
+.qs .ask { display: block; font-family: var(--mono); font-size: 12px; color: var(--chalk); margin-top: 4px; }
 .deeper { display: grid; gap: 10px; align-content: start; }
 .deeper ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--prose); font-size: 14px; }
 .foot { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--edge); color: var(--ash); font-size: 12.5px; display: flex; gap: 8px 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
@@ -434,7 +435,7 @@ html:not([data-mode="reviewer"]) .v-r { display: none !important; }
       <div class="card-share v-r">
         <p class="eyebrow">Before you approve an AI agent</p>
         <h3 style="font-size:22px">Questions to ask</h3>
-        <p style="font-size:13px;color:var(--ash)">Built from the safeguards you chose. Ask the vendor or the team, and ask who proves each answer.</p>
+        <p style="font-size:13px;color:var(--ash)">Built from the safeguards you chose. Ask the vendor or the team, and ask who proves each answer. Requirement ids are OWASP AISVS v1.0 (L1 to L3); asking for them does not make a system compliant, it tells you what to verify.</p>
         <ol class="qs" id="questions"></ol>
         <div class="row"><button class="btn primary" id="print">Print these questions</button></div>
       </div>
@@ -944,7 +945,7 @@ html:not([data-mode="reviewer"]) .v-r { display: none !important; }
       box.appendChild(b);
     });
     if (opt && opt.win) {
-      box.insertAdjacentHTML("beforeend", '<div class="outcome safe"><b>✓ ' + (opt.id === "pin" ? "Cut at the registry" : "Cut at egress") + '</b><span><span class="lesson">A tool description is untrusted content with a better disguise.</span> Two valid cuts. Egress is your backstop; the registry stops the next tool that leaks through an allowed channel.</span></div>');
+      box.insertAdjacentHTML("beforeend", '<div class="outcome safe"><b>✓ ' + (opt.id === "pin" ? "Cut at the registry" : "Cut at egress") + '</b><span><span class="lesson">A tool description is untrusted content with a better disguise.</span> Two valid cuts. Egress is your backstop; the registry stops the next tool that leaks through an allowed channel. Agent skills have the same problem: the OWASP Agentic Skills Top 10 (v1.0-2026) lists it as AST04 and AST07.</span></div>');
     } else if (opt) {
       box.insertAdjacentHTML("beforeend", '<div class="outcome' + (opt.biz === "soft" ? " warn" : "") + '"><b>' + (opt.biz === "soft" ? "~ Not provable" : "✗ Service broken") + "</b><span>" + esc(opt.why) + " Try another.</span></div>");
     }
@@ -973,14 +974,17 @@ html:not([data-mode="reviewer"]) .v-r { display: none !important; }
   });
 
   /* ---------- Questions (reviewer) ---------- */
+  // Each question ends with the AISVS v1.0 requirement to ask for (ids and levels as in
+  // lab/standards.py; tests/test_standards_registry.py checks every id on this page).
   var Q = {
-    egress: { q: "Which external addresses and domains can the agent send data to, and who approves additions to that list?", why: "You funded an approved-recipient or approved-website list." },
-    prov: { q: "Can members of the public change any content the agent reads? How is that content marked?", why: "You funded trusted-author filtering on help pages." },
-    hitl: { q: "Which agent actions need a human, and how many approvals a day will that person handle?", why: "You funded human approval of outgoing messages." },
-    rows: { q: "What is the most records the agent can read in one request, and is that logged?", why: "You funded a per-request record limit." },
-    soft: { q: "Which protections only lower the odds of an attack, and what stops the attack when they miss?", why: "You chose a safeguard that is probabilistic." },
-    l3: { q: "If several agents share storage, can private data from one reach another agent that sends data outside? Who proves it can't?", why: "Level 3: three approved assistants leaked together." },
-    l4: { q: "How are third-party tools vetted, pinned and re-reviewed when they change?", why: "Level 4: a tool description carried hidden instructions." }
+    egress: { q: "Which external addresses and domains can the agent send data to, and who approves additions to that list?", why: "You funded an approved-recipient or approved-website list.", ask: "Ask for AISVS v1.0 C7.3.3 (L2)." },
+    prov: { q: "Can members of the public change any content the agent reads? How is that content marked?", why: "You funded trusted-author filtering on help pages.", ask: "Ask for AISVS v1.0 C2.1.3 (L1) and AISVS v1.0 C12.5.4 (L2)." },
+    hitl: { q: "Which agent actions need a human, and how many approvals a day will that person handle?", why: "You funded human approval of outgoing messages.", ask: "Ask for AISVS v1.0 C9.2.1 (L1) and AISVS v1.0 C9.2.2 (L2)." },
+    rows: { q: "What is the most records the agent can read in one request, and is that logged?", why: "You funded a per-request record limit.", ask: "Ask for AISVS v1.0 C9.5.1 (L2) and AISVS v1.0 C12.4.2 (L2)." },
+    soft: { q: "Which protections only lower the odds of an attack, and what stops the attack when they miss?", why: "You chose a safeguard that is probabilistic.", ask: "Ask for AISVS v1.0 C2.1.3 (L1), and for the control behind it." },
+    l3: { q: "If several agents share storage, can private data from one reach another agent that sends data outside? Who proves it can't?", why: "Level 3: three approved assistants leaked together.", ask: "Ask for AISVS v1.0 C5.2.7 (L3) and AISVS v1.0 C9.2.10 (L3). In our reading neither covers the whole chain, so ask who proves it." },
+    l4: { q: "How are third-party tools vetted, pinned and re-reviewed when they change?", why: "Level 4: a tool description carried hidden instructions.", ask: "Ask for AISVS v1.0 C10.4.8 (L3) and AISVS v1.0 C9.3.7 (L2)." },
+    skills: { q: "Which agent skills are installed, who approved each one, and what may each one read or send?", why: "Skills carry instructions the same way tool descriptions do (OWASP Agentic Skills Top 10 v1.0-2026: AST09).", ask: "Ask for AISVS v1.0 C9.3.3 (L2) and AISVS v1.0 C9.3.4 (L2)." }
   };
   function paintQuestions() {
     var keys = [];
@@ -991,9 +995,9 @@ html:not([data-mode="reviewer"]) .v-r { display: none !important; }
     if (p.rows) keys.push("rows");
     if (p.inj || p.spot) keys.push("soft");
     if (store.done[3]) keys.push("l3");
-    if (store.done[4]) keys.push("l4");
+    if (store.done[4]) keys.push("l4", "skills");
     $("#questions").innerHTML = keys.map(function (k) {
-      return "<li>" + esc(Q[k].q) + '<span class="why">' + esc(Q[k].why) + "</span></li>";
+      return "<li>" + esc(Q[k].q) + '<span class="why">' + esc(Q[k].why) + '</span><span class="ask">' + esc(Q[k].ask) + "</span></li>";
     }).join("");
   }
   $("#print").addEventListener("click", function () { window.print(); });

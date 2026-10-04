@@ -106,6 +106,26 @@ not about the trifecta. When present, the player shows the trifecta HUD in its h
 A leg lights only when a run actually travelled (`result.success`), so a secure-mode
 run that held shows the legs dark. Unknown letters are dropped by `lab/content.py`.
 
+### `ast` — optional Agentic Skills Top 10 ids
+
+```json
+"ast": ["AST04", "AST05"]
+```
+
+OWASP Agentic Skills Top 10 (v1.0-2026) entries the scenario exercises. Ids must exist in
+`lab/standards.py`. They show as chips in the catalog, Area page and player, and feed the
+AST table in `docs/AISVS_COVERAGE.md`.
+
+### AISVS v1.0 — never typed into a scenario
+
+Scenarios do **not** carry AISVS ids. What a scenario lets you verify is derived from the
+controls it lists (`controls`) and the mappings on those controls in `lab/curriculum.py`
+(`aisvs: [{id, strength, proven_by}]`). A requirement shows as *demonstrates* only when a
+control's `proven_by` names a graded, non-recall, secure-mode check in this scenario;
+otherwise it shows as *partial*. `tests/test_standards_registry.py` enforces this. Anywhere
+in prose, write the id as `AISVS v1.0 C9.2.1` (lab controls are also numbered C1–C22), and
+regenerate the coverage doc with `python -m lab.coverage_doc`.
+
 ### Playground ↔ scenario mapping
 
 The browser playground (`lab/ui/play.html`) is the simulated front door. Each level
@@ -116,7 +136,7 @@ has a real counterpart in the range; keep them in step when either changes:
 | L1 Watch the breach | indirect injection through retrieval, unscoped read, unrestricted send | `02-rag-poisoning`, `03-cross-tool-exfil`, `04-agent-exploit` |
 | L2 Place the controls | egress allow-lists beat input filters; soft controls never count | `05-guardrail-map`, `17-data-guards` |
 | L3 Find the composition cut | per-agent safety doesn't compose; property-flow cut at egress | `07-multi-agent` |
-| L4 The tool lies | tool descriptions are untrusted content; pin manifests | `11-supply-chain`, `19-mcp-tool-poisoning` |
+| L4 The tool lies | tool descriptions are untrusted content; pin manifests | `11-supply-chain`, `19-mcp-tool-poisoning`, `23-poisoned-skill` |
 | Reviewer mode | the questions an approver asks | the `reviewer` track |
 
 ### `owasp` — always name the scheme

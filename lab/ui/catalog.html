@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=17" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
 <style>
   /* ---- hero ---------------------------------------------------------- */
   .hero { padding: var(--s8) 0 var(--s6); }
@@ -101,7 +101,7 @@
   <section data-reveal>
     <div class="sec-head">
       <h2 id="labs-h">All labs</h2>
-      <p>Filter by path, or search titles, summaries and OWASP ids.</p>
+      <p>Filter by path, or search titles, summaries, OWASP, AISVS and AST ids.</p>
     </div>
     <div class="finder-row">
       <div class="cr-chipbar" id="chips" role="group" aria-label="Filter by path" style="margin-top:0"></div>
@@ -136,7 +136,7 @@
 <script src="/lab/ui/vendor/gsap.min.js"></script>
 <script src="/lab/ui/vendor/ScrollTrigger.min.js"></script>
 <script src="/lab/ui/vendor/lenis.min.js"></script>
-<script src="/lab/ui/cyberrange.js?v=17"></script>
+<script src="/lab/ui/cyberrange.js?v=18"></script>
 <script>
 
 const esc = CR.esc;
@@ -271,6 +271,7 @@ function labCardHTML(l) {
   const chips = [
     l.difficulty ? `<span class="tag">${esc(l.difficulty)}</span>` : "",
     ...codes.map((c) => `<span class="tag">${esc(c.startsWith("LLM") ? c + ":2026" : c)}</span>`),
+    CR.aisvsChips(l.aisvs, 1),
     `<span class="tag">Local</span>`,
   ].join("");
   const href = `/lab/ui/scenario.html?area=${encodeURIComponent(l.area.id)}&id=${encodeURIComponent(l.id)}`;
@@ -292,7 +293,8 @@ function labCardHTML(l) {
 
 function matches(l, q) {
   if (!q) return true;
-  const hay = [l.title, l.summary, l.area.title, ...(l.owasp || [])].join(" ").toLowerCase();
+  const hay = [l.title, l.summary, l.area.title, ...(l.owasp || []), ...(l.ast || []),
+               ...(l.aisvs || []).map((a) => a.label)].join(" ").toLowerCase();
   return q.toLowerCase().split(/\s+/).every((w) => hay.includes(w));
 }
 function renderChips() {
