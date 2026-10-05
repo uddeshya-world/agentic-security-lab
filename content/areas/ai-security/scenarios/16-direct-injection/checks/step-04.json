@@ -1,16 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "In this lab the harmful instruction arrived through which channel?",
+  "prompt": "In your secure run, which part refused the injected request?",
   "options": [
-    "A retrieved shipping FAQ (indirect / RAG)",
-    "The user chat message (direct)",
-    "A memory entry from a previous session",
-    "A signed MCP tool manifest"
+    "The database tool refused the unscoped filter (customer_id required)",
+    "The planner refused to follow the chat message",
+    "The RAG trust filter dropped the message",
+    "The email allow-list blocked the send"
   ],
-  "answer": 1,
+  "answer": 0,
   "asserts": [
-    "you can identify which channel carried the harmful instruction in this run"
+    "you can name the component that stopped the direct injection, from your own run"
   ],
-  "pass_message": "Right. Direct injection is the chat box. Indirect is content the agent reads.",
-  "fail_message": "You did not retrieve a document in this lab. The instruction was in the user prompt."
+  "pass_message": "Right. The plan still asked for filter=1=1; the model went along with the chat message. The tool's rule held regardless.",
+  "fail_message": "Read the DEFENSE line in your secure run. Which actor wrote it?"
 }

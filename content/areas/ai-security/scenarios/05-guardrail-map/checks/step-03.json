@@ -1,16 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "The planner asks for all customers. The signed-in user is Alice. Which control stops the confused deputy?",
+  "prompt": "A new tool lets the agent save reports to a shared folder that partner companies can read. Which pair of controls belongs on that hop?",
   "options": [
-    "Recipient domain allow-list",
-    "Binding customer_id from the session principal",
-    "Output DLP masking emails in the answer",
-    "RAG trust metadata on the corpus"
+    "RAG trust filter and input DLP",
+    "Session-bound identity only",
+    "DLP on the report's content, plus an allow-list of destinations with approval for writes",
+    "Output DLP on the model's chat answer only"
   ],
-  "answer": 1,
+  "answer": 2,
   "asserts": [
-    "you can identify which control layer stops this specific confused-deputy scenario"
+    "you can place controls on a hop you have not seen in the labs, using the map"
   ],
-  "pass_message": "Right. Identity is a different hop from DLP and from egress. The model does not get to name the principal.",
-  "fail_message": "Allow-list and DLP do not decide *whose* row is in scope. Re-read the identity layer on the map."
+  "pass_message": "Right. A shared folder partners read is a send tool in disguise: check what leaves (DLP) and where it goes (allow-list), and default-deny the write.",
+  "fail_message": "Ask what this tool does on the map: does it bring data in, or let data leave? Then pick the controls for that hop."
 }

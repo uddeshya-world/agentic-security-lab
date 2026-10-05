@@ -1,16 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "In vulnerable mode, what does the executor do with the tool call the planner proposed?",
+  "prompt": "The planner proposes db_tool(filter=1=1) and this executor re-checks nothing. What is now the only thing between that plan and the database?",
   "options": [
-    "Re-validates it against a schema before running it",
-    "Treats the planner's output as authorization and runs it",
-    "Asks the user to approve it first",
-    "Rejects it unless the planner signed it"
+    "The model's safety training",
+    "The tool's own handling of its arguments",
+    "The RAG trust filter",
+    "The user's original question"
   ],
   "answer": 1,
   "asserts": [
-    "you can describe what the executor does with the planner's output in vulnerable mode"
+    "you can say what is left to stop a harmful call once the executor trusts the planner"
   ],
-  "pass_message": "That is the confused-deputy problem: the planner's output is treated as authorization. Every exploit in this Area rides on it.",
-  "fail_message": "Re-read the step. The question is what the executor does when it is NOT hardened — does it re-check the planner, or trust it?"
+  "pass_message": "Right. With a trusting executor, the tool's input handling is the last line. The next scenario shows that line failing.",
+  "fail_message": "The model already produced the plan, and retrieval and the question come before it. Think about what runs after the executor hands the call on."
 }

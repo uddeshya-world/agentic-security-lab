@@ -1,16 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "Read the SQL line in the timeline from the run you just performed. Which statement reached the database?",
+  "prompt": "Read the TOOL lines your run wrote under the SQL line. Which pair did your run print?",
   "options": [
-    "SELECT * FROM customers WHERE customer_id = ?",
-    "SELECT * FROM customers WHERE 1=1",
-    "SELECT name, email FROM customers LIMIT 10",
-    "DROP TABLE customers"
+    "count=1, mode=secure",
+    "count=3, mode=secure",
+    "count=3, mode=vulnerable",
+    "count=0, mode=vulnerable"
   ],
-  "answer": 1,
+  "answer": 2,
   "asserts": [
-    "you can read the literal SQL statement the run produced in the timeline"
+    "you can read the row count and the tool's mode from your own run's timeline"
   ],
-  "pass_message": "Correct — and note it is a perfectly valid SELECT. Nothing malformed happened; the tool just let the caller write the WHERE clause.",
-  "fail_message": "Open the timeline pane and find the SQL event from your run. The answer is the literal statement printed there."
+  "pass_message": "Correct. Every row in the table, from a perfectly valid SELECT. Nothing was malformed; the tool let the caller write the WHERE clause.",
+  "fail_message": "Open the Timeline pane and find the line that starts 'Query returned'. The answer is printed there."
 }

@@ -1,16 +1,16 @@
 {
   "kind": "recall",
-  "prompt": "The planner asks for all customers. The signed-in user is Alice. Where must customer_id come from?",
+  "prompt": "Compare your two runs. What did the secure run return?",
   "options": [
-    "The planner's tool arguments",
-    "The system prompt",
-    "The authenticated session principal",
-    "The RAG chunk that mentioned Alice"
+    "3 rows, the whole table",
+    "0 rows, the query was refused",
+    "1 row, whichever row came first in the table",
+    "1 row, Alice's (customer_id=1)"
   ],
-  "answer": 2,
+  "answer": 3,
   "asserts": [
-    "you can name where the executor is required to source the customer_id from"
+    "you can tell scoping a request apart from refusing it, from your own runs"
   ],
-  "pass_message": "Right. Session is the principal. The model does not get to name who it is acting as.",
-  "fail_message": "If the model supplies the id, a hijacked plan can supply someone else's — or 1=1."
+  "pass_message": "Right. Identity does not refuse the request; it narrows it to the person signed in. Compare the SQL injection fix, which refused the call outright.",
+  "fail_message": "Read the SQL line in your secure run: it names the customer_id it used and how many rows came back."
 }
