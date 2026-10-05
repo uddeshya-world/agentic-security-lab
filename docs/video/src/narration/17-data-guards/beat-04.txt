@@ -1,0 +1,1 @@
+With no data guard, the restricted data crosses every hop.

@@ -1,0 +1,17 @@
+Airport security has two different checks.
+
+The boarding pass says where you are allowed to go.
+
+The X-ray says what is in your bag. A valid ticket does not carry a prohibited item through.
+
+An agent moves data through four channels. A synthetic SSN and card number are planted in them.
+
+With no data guard, the restricted data crosses every hop.
+
+In secure mode a scanner inspects the payload on every hop: restricted data is blocked, email addresses are masked.
+
+The Forensics tab shows the before and after for each channel.
+
+The lab's X-ray is a set of patterns for SSNs and card numbers. Real data in unusual formats can slip past pattern matching.
+
+Find which control stopped the SSN, and which one did not need to.

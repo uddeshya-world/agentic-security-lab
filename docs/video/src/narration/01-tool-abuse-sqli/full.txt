@@ -1,0 +1,15 @@
+Here is a library request slip. You write one title, the librarian fetches one book.
+
+Now someone writes "any book, all of them". A librarian who copies the slip straight onto the order fetches the whole library.
+
+The lab's database tool works like that slip. It pastes whatever filter it is given into its query.
+
+Press Run. The SQL line shows what the tool built. One equals one is always true, so the query matches every row.
+
+Three rows: the whole customer table, from a perfectly valid query. Nothing broke. The tool did exactly what it was told.
+
+The fix is a different slip: one box, for exactly one customer number. In secure mode the tool refuses a free-form filter.
+
+Unlike a library, a database runs the slip as code, instantly and silently. Nobody looks at the trolley and asks why.
+
+Run it yourself, read your own timeline, then switch it to secure.

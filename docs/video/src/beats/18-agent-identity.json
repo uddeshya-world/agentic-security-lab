@@ -1,0 +1,118 @@
+{
+  "scenario": "18-agent-identity",
+  "title": "Agent identity and the confused deputy",
+  "target_duration_s": 80,
+  "actual_duration_s": 80.044667,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "A valet key lets the valet drive your car, but not open the boot or the glovebox.",
+      "on_screen": "Illustration: a valet takes a car key; the key fob shows \"valet key\".",
+      "visual": {
+        "type": "slide",
+        "name": "valet",
+        "kw": {}
+      },
+      "audio_s": 5.3
+    },
+    {
+      "index": 1,
+      "narration": "The key sets the limit, not the valet's request.",
+      "on_screen": "The valet tries the boot. It stays shut.",
+      "visual": {
+        "type": "slide",
+        "name": "valet",
+        "kw": {}
+      },
+      "audio_s": 3.475
+    },
+    {
+      "index": 2,
+      "narration": "Here Alice is signed in. A hijacked planner asks for every customer anyway.",
+      "on_screen": "The lab, scenario 18. \"The signed-in user is Alice (customer_id=1).\" The planner asks for every customer.",
+      "visual": {
+        "type": "capture",
+        "id": "scenario",
+        "zoom": {
+          "z": 1.6,
+          "ax": 0.3,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 5.25
+    },
+    {
+      "index": 3,
+      "narration": "The agent's database credential can read the whole table, so it uses its own power instead of Alice's. That is a confused deputy.",
+      "on_screen": "**Run the attack**. SQL: `WHERE 1=1`, 3 rows, \"session ignored\".",
+      "visual": {
+        "type": "capture",
+        "id": "vuln-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 8.625
+    },
+    {
+      "index": 4,
+      "narration": "In secure mode the executor ignores the model's filter and binds the customer number from Alice's session. One row, hers.",
+      "on_screen": "Switch to **Secure**, run. `DEFENSE`: \"executor discarded the model's filter and bound customer_id=1\". SQL: 1 row. Caption: \"Contained at EXECUTOR\".",
+      "visual": {
+        "type": "capture",
+        "id": "secure-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 7.975
+    },
+    {
+      "index": 5,
+      "narration": "Notice the difference from the SQL injection fix. That one refused the call. Identity narrows it to the person signed in.",
+      "on_screen": "Side by side: SQL injection secure run (refused) and identity secure run (scoped to 1 row).",
+      "visual": {
+        "type": "slide",
+        "name": "generic",
+        "kw": {
+          "title": "Refuse vs scope",
+          "body_text": "SQL injection secure run refused the call. Identity narrows it to the person signed in \u2014 one row, Alice\u2019s."
+        }
+      },
+      "audio_s": 7.925
+    },
+    {
+      "index": 6,
+      "narration": "A valet key is a physical object. A session is data, so it has to be bound on the server, where the model cannot touch it.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "A valet key is a physical object. A session is data, so it has to be bound on the server, where the model cannot touch it."
+        }
+      },
+      "audio_s": 7.8
+    },
+    {
+      "index": 7,
+      "narration": "Compare your two runs and see whose rows came back.",
+      "on_screen": "End card: \"Open: Agent identity and confused deputy\".",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "Agent identity & confused deputy",
+          "hint": "Compare your two runs and see whose rows came back."
+        }
+      },
+      "audio_s": 3.625
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Unlike a library, a database runs the slip as code, instantly and silently. Nobody looks at the trolley and asks why.

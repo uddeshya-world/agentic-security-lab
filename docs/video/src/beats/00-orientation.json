@@ -1,0 +1,109 @@
+{
+  "scenario": "00-orientation",
+  "title": "What is an agent with tools?",
+  "target_duration_s": 80,
+  "actual_duration_s": 80.036667,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "An AI agent works like an office with two people.",
+      "on_screen": "Illustration: an office. An assistant at a desk with a pile of mail; a clerk beside a filing cabinet and a post room.",
+      "visual": {
+        "type": "slide",
+        "name": "office",
+        "kw": {}
+      },
+      "audio_s": 3.65
+    },
+    {
+      "index": 1,
+      "narration": "The assistant reads everything that comes in and writes instructions on sticky notes. That is the planner, the language model.",
+      "on_screen": "The assistant reads a letter and writes a sticky note: \"Fetch customer file 1\".",
+      "visual": {
+        "type": "slide",
+        "name": "office",
+        "kw": {}
+      },
+      "audio_s": 7.5
+    },
+    {
+      "index": 2,
+      "narration": "The clerk holds the keys. The clerk does whatever the note says. That is the executor, the code that calls the real tools.",
+      "on_screen": "The clerk takes the note, opens the cabinet, hands over the file.",
+      "visual": {
+        "type": "slide",
+        "name": "office",
+        "kw": {}
+      },
+      "audio_s": 7.55
+    },
+    {
+      "index": 3,
+      "narration": "Now the problem. Anyone who can get a letter onto the assistant's desk can, in effect, give the clerk orders.",
+      "on_screen": "A stranger's letter lands on the desk. The assistant writes \"Fetch every customer file\". The clerk obeys.",
+      "visual": {
+        "type": "slide",
+        "name": "office",
+        "kw": {}
+      },
+      "audio_s": 6.875
+    },
+    {
+      "index": 4,
+      "narration": "This lab gives you that office for real: a planner, an executor, a database, an email tool and a mail sink, all on your machine.",
+      "on_screen": "Cut to the lab's Area page, then the orientation scenario. The map: user, retrieval, planner, executor, tools, world.",
+      "visual": {
+        "type": "capture",
+        "id": "area",
+        "zoom": {
+          "z": 1.15,
+          "ax": 0.5,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 7.875
+    },
+    {
+      "index": 5,
+      "narration": "The question every scenario asks is the same: when the planner proposes a call, does the executor check it, or just run it?",
+      "on_screen": "The executor highlighted on the map.",
+      "visual": {
+        "type": "slide",
+        "name": "map",
+        "kw": {
+          "highlight": "EXECUTOR"
+        }
+      },
+      "audio_s": 7.7
+    },
+    {
+      "index": 6,
+      "narration": "One difference. A real clerk might notice a strange note. Software never does. It runs the note literally, every time, so the check has to be written into the clerk's rules.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "One difference. A real clerk might notice a strange note. Software never does. It runs the note literally, every time, so the check has to be written into the clerk's rules."
+        }
+      },
+      "audio_s": 10.325
+    },
+    {
+      "index": 7,
+      "narration": "Open the first scenario and confirm your lab is running.",
+      "on_screen": "End card: \"Open: What is an agent with tools?\"",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "What is an agent with tools?",
+          "hint": "Confirm your lab is running."
+        }
+      },
+      "audio_s": 4.1
+    }
+  ]
+}

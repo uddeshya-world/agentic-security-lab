@@ -1,0 +1,119 @@
+{
+  "scenario": "03-cross-tool-exfil",
+  "title": "Cross-tool exfiltration",
+  "target_duration_s": 85,
+  "actual_duration_s": 86.033333,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "Reading a confidential file at your desk is a problem. Posting it to a stranger is the breach.",
+      "on_screen": "Illustration: a confidential folder on a desk, then a parcel at a post room.",
+      "visual": {
+        "type": "slide",
+        "name": "postroom",
+        "kw": {}
+      },
+      "audio_s": 6.0
+    },
+    {
+      "index": 1,
+      "narration": "A post room with two rules stops the parcel, even when someone has already read the file.",
+      "on_screen": "The post room with two signs: \"Approved addresses only\" and \"Bulk shipments need a manager's signature\".",
+      "visual": {
+        "type": "slide",
+        "name": "postroom",
+        "kw": {}
+      },
+      "audio_s": 5.725
+    },
+    {
+      "index": 2,
+      "narration": "The agent has both: a tool that reads customers, and a tool that sends email. Together they are an exfiltration chain.",
+      "on_screen": "The lab, scenario 03. Two tools: `db_tool` (read), `email_tool` (send).",
+      "visual": {
+        "type": "capture",
+        "id": "scenario",
+        "zoom": {
+          "z": 1.6,
+          "ax": 0.3,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 7.325
+    },
+    {
+      "index": 3,
+      "narration": "Press Run. The agent dumps the table and emails it to an outside address.",
+      "on_screen": "**Run the attack**. The dump, then the email step.",
+      "visual": {
+        "type": "capture",
+        "id": "vuln-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 4.85
+    },
+    {
+      "index": 4,
+      "narration": "MailHog is the lab's stand-in for the attacker's inbox. The message really arrived. Nothing touched the real internet.",
+      "on_screen": "MailHog at `127.0.0.1:8025`: the message to `audit@external-logging.test`, subject \"Customer Export Lab M01\".",
+      "visual": {
+        "type": "capture",
+        "id": "mailhog",
+        "zoom": {
+          "z": 1.08,
+          "ax": 0.5,
+          "ay": 0.5
+        }
+      },
+      "audio_s": 7.6
+    },
+    {
+      "index": 5,
+      "narration": "In secure mode, the send tool only mails approved domains and side effects need approval. No new message.",
+      "on_screen": "Switch to **Secure**, run. `DEFENSE` lines: the dump refused, the domain not on the allow-list. MailHog: no new message.",
+      "visual": {
+        "type": "capture",
+        "id": "secure-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 7.35
+    },
+    {
+      "index": 6,
+      "narration": "This post room is instant and automated. There is no one to notice a strange parcel unless you build the check in.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "This post room is instant and automated. There is no one to notice a strange parcel unless you build the check in."
+        }
+      },
+      "audio_s": 7.2
+    },
+    {
+      "index": 7,
+      "narration": "Watch the export land in MailHog, then prove it cannot.",
+      "on_screen": "End card: \"Open: Cross-tool exfiltration\".",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "Cross-tool exfiltration (dump \u2192 email)",
+          "hint": "Watch the export land in MailHog, then prove it cannot."
+        }
+      },
+      "audio_s": 3.975
+    }
+  ]
+}

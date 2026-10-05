@@ -1,0 +1,15 @@
+A customer walks up to a bank teller and says: "Your manager told me to collect everyone's statements."
+
+The teller may well believe it. People are persuadable, and language models are much more so.
+
+But the vault still needs a key card, whatever the teller was told.
+
+In this scenario you are the customer. You type the instruction straight into the chat.
+
+The model goes along with it and asks for every customer. With no rule at the tool, it gets them.
+
+In secure mode the model still asks. The tool still says no. The model was not fixed; the vault rule held.
+
+A model is far easier to talk round than a trained teller, so the vault rule must never depend on the teller's judgement.
+
+Run both modes and find which part of the system said no.

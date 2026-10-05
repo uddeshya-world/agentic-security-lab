@@ -1,0 +1,1 @@
+When a new tool arrives, place it on the map and ask: does it bring data in, or let data out?

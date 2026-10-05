@@ -1,0 +1,119 @@
+{
+  "scenario": "01-tool-abuse-sqli",
+  "title": "Tool abuse: SQL injection",
+  "target_duration_s": 85,
+  "actual_duration_s": 85.1,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "Here is a library request slip. You write one title, the librarian fetches one book.",
+      "on_screen": "Illustration: a library request slip. \"Book title: ____\".",
+      "visual": {
+        "type": "slide",
+        "name": "library",
+        "kw": {}
+      },
+      "audio_s": 5.7
+    },
+    {
+      "index": 1,
+      "narration": "Now someone writes \"any book, all of them\". A librarian who copies the slip straight onto the order fetches the whole library.",
+      "on_screen": "Someone writes \"any book, all of them\". The librarian copies it straight onto the order. A trolley piled with every book.",
+      "visual": {
+        "type": "slide",
+        "name": "library",
+        "kw": {}
+      },
+      "audio_s": 7.125
+    },
+    {
+      "index": 2,
+      "narration": "The lab's database tool works like that slip. It pastes whatever filter it is given into its query.",
+      "on_screen": "The lab, scenario 01. The lesson shows `filter=1=1`.",
+      "visual": {
+        "type": "capture",
+        "id": "scenario",
+        "zoom": {
+          "z": 1.6,
+          "ax": 0.3,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 6.3
+    },
+    {
+      "index": 3,
+      "narration": "Press Run. The SQL line shows what the tool built. One equals one is always true, so the query matches every row.",
+      "on_screen": "Press **Run the attack**. The timeline fills; the SQL block reads `SELECT * FROM customers WHERE 1=1`.",
+      "visual": {
+        "type": "capture",
+        "id": "vuln-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 7.475
+    },
+    {
+      "index": 4,
+      "narration": "Three rows: the whole customer table, from a perfectly valid query. Nothing broke. The tool did exactly what it was told.",
+      "on_screen": "Zoom on the TOOL line: `count=3`, `mode=vulnerable`.",
+      "visual": {
+        "type": "slide",
+        "name": "sql",
+        "kw": {
+          "sql": "SELECT * FROM customers WHERE 1=1",
+          "count": 3,
+          "mode": "vulnerable"
+        }
+      },
+      "audio_s": 7.675
+    },
+    {
+      "index": 5,
+      "narration": "The fix is a different slip: one box, for exactly one customer number. In secure mode the tool refuses a free-form filter.",
+      "on_screen": "Switch to **Secure**, run again. A `DEFENSE` line: `customer_id required in secure mode`. Caption: \"Contained at TOOLS\".",
+      "visual": {
+        "type": "capture",
+        "id": "secure-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 8.425
+    },
+    {
+      "index": 6,
+      "narration": "Unlike a library, a database runs the slip as code, instantly and silently. Nobody looks at the trolley and asks why.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "Unlike a library, a database runs the slip as code, instantly and silently. Nobody looks at the trolley and asks why."
+        }
+      },
+      "audio_s": 7.8
+    },
+    {
+      "index": 7,
+      "narration": "Run it yourself, read your own timeline, then switch it to secure.",
+      "on_screen": "End card: \"Open: Tool abuse, SQL injection\".",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "Tool abuse \u2014 SQL injection (no LLM needed)",
+          "hint": "Run it yourself, then switch to secure."
+        }
+      },
+      "audio_s": 4.375
+    }
+  ]
+}

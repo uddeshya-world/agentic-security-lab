@@ -1,0 +1,15 @@
+A valet key lets the valet drive your car, but not open the boot or the glovebox.
+
+The key sets the limit, not the valet's request.
+
+Here Alice is signed in. A hijacked planner asks for every customer anyway.
+
+The agent's database credential can read the whole table, so it uses its own power instead of Alice's. That is a confused deputy.
+
+In secure mode the executor ignores the model's filter and binds the customer number from Alice's session. One row, hers.
+
+Notice the difference from the SQL injection fix. That one refused the call. Identity narrows it to the person signed in.
+
+A valet key is a physical object. A session is data, so it has to be bound on the server, where the model cannot touch it.
+
+Compare your two runs and see whose rows came back.

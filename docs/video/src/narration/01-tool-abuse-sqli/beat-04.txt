@@ -1,0 +1,1 @@
+Three rows: the whole customer table, from a perfectly valid query. Nothing broke. The tool did exactly what it was told.

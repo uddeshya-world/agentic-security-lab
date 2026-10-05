@@ -1,0 +1,1 @@
+This lab gives you that office for real: a planner, an executor, a database, an email tool and a mail sink, all on your machine.

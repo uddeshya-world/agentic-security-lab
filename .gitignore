@@ -31,3 +31,17 @@ feedback.txt
 
 # superpowers scratch
 .superpowers/
+
+# Rendered explainer videos (docs/video/README.md)
+docs/video/out/
+
+# Video build scratch
+docs/video/.work/
+# Regenerable TTS WAV (Kokoro bf_emma); rebuild with ./docs/video/build.sh
+docs/video/src/audio/
+# Generated ASS (rebuild from SRT timings in compose)
+docs/video/src/captions/
+# Intermediate slide HTML (PNGs kept)
+docs/video/src/slides/**/*.html
+docs/video/src/captures/**/*-raw.png
+docs/video/src/captures/**/*-frame.html

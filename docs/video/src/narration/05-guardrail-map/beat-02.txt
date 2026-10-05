@@ -1,0 +1,1 @@
+Input and context checks, the planner, identity, schema, privilege, the send tool, and the answer itself. You have now attacked and defended each one.

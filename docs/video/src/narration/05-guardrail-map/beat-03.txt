@@ -1,0 +1,1 @@
+Run it, and the lab prints the same map from its own code.
