@@ -153,11 +153,11 @@ def sim_data_guards() -> dict[str, Any]:
             events.emit("retrieve", f"Retrieved: {hop['raw']}", actor="rag", secure_mode=secure)
 
         events.emit(
-            "sql",
+            "payload",
             f"{hop['title']} — payload BEFORE the scanner",
             actor="guardrails",
             secure_mode=secure,
-            detail={"sql": hop["raw"]},
+            detail={"payload": hop["raw"]},
         )
 
         if secure:
@@ -171,11 +171,11 @@ def sim_data_guards() -> dict[str, Any]:
                 outcome="blocked",
             )
             events.emit(
-                "sql",
+                "payload",
                 f"{hop['title']} — payload AFTER scan_data",
                 actor="guardrails",
                 secure_mode=True,
-                detail={"sql": after},
+                detail={"payload": after},
             )
             if verdict["action"] == "allow":
                 leaked.append(hop["id"])
@@ -260,12 +260,18 @@ def sim_agent_identity() -> dict[str, Any]:
         actor="planner",
         secure_mode=secure,
     )
+    events.emit(
+        "tool",
+        "Executor received the planner's step: db_tool(table=customers, filter=1=1)",
+        actor="executor",
+        secure_mode=secure,
+    )
 
     if secure:
         events.emit(
             "defense",
             "IDENTITY: executor discarded the model's filter and bound "
-            f"customer_id={session_customer_id} from the session principal.",
+            f"customer_id={session_customer_id} from the session principal (session-bound identity).",
             actor="executor",
             secure_mode=True,
             outcome="blocked",

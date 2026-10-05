@@ -153,9 +153,25 @@ def eligibility(area_id: str, passed: list[dict[str, Any]] | None) -> dict[str, 
     }
 
 
+LEARNER_MAX = 60
+
+
+def clean_learner(name: Any) -> str | None:
+    """The name a learner typed: printable characters, single spaces, at most 60 chars.
+
+    It is self-asserted. The issuer signs it with the transcript but never checks it.
+    """
+    if not isinstance(name, str):
+        return None
+    name = " ".join("".join(ch for ch in name if ch.isprintable()).split())
+    return name[:LEARNER_MAX] or None
+
+
 def issue(area_id: str, learner: str | None, passed: list[dict[str, Any]] | None) -> dict[str, Any]:
     """Build a signed Open Badges-shaped assertion, or explain why it can't be issued."""
     from lab import content
+
+    learner = clean_learner(learner)
 
     area = content.get_area(area_id)
     if not area:

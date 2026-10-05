@@ -83,6 +83,10 @@ with sync_playwright() as p:
         page.wait_for_timeout(500)
         vec = page.inner_text("#hudVec")
         check(vec == "closure 1·1·1", f"[{width}] vulnerable run lights the HUD ({vec})")
+        timeline = page.inner_text("#timeline")
+        check(timeline.count("SELECT * FROM customers WHERE 1=1") <= 1,
+              f"[{width}] each SQL statement is printed once in the timeline")
+        check("Path traversal" not in timeline, f"[{width}] no unrelated path-traversal output")
         page.click("#btnCheck")
         page.wait_for_timeout(2500)
         check(not page.is_disabled("#next"), f"[{width}] Next opens after the check passes")

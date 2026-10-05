@@ -1,0 +1,182 @@
+[
+ {
+  "page": "catalog-html",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "catalog-html",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "catalog-html",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [],
+  "axe_serious": []
+ },
+ {
+  "page": "catalog-html",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [],
+  "axe_serious": []
+ },
+ {
+  "page": "area-html-id-ai-security",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "area-html-id-ai-security",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "area-html-id-ai-security",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 1,
+    "sample": ".cr-announce"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "area-html-id-ai-security",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "region",
+    "impact": "moderate",
+    "n": 1,
+    "sample": ".cr-announce"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "scenario-html-area-ai-security-id-17-data-guards",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "scenario-html-area-ai-security-id-17-data-guards",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "scenario-html-area-ai-security-id-17-data-guards",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "#timeline > .state > h4"
+   },
+   {
+    "id": "landmark-unique",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "#rail"
+   },
+   {
+    "id": "page-has-heading-one",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "scenario-html-area-ai-security-id-17-data-guards",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [
+   {
+    "id": "heading-order",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "#timeline > .state > h4"
+   },
+   {
+    "id": "landmark-unique",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "#rail"
+   },
+   {
+    "id": "page-has-heading-one",
+    "impact": "moderate",
+    "n": 1,
+    "sample": "html"
+   }
+  ],
+  "axe_serious": []
+ },
+ {
+  "page": "verify-html",
+  "width": 390,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "verify-html",
+  "width": 390,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": []
+ },
+ {
+  "page": "verify-html",
+  "width": 1280,
+  "scheme": "light",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [],
+  "axe_serious": []
+ },
+ {
+  "page": "verify-html",
+  "width": 1280,
+  "scheme": "dark",
+  "overflow": 0,
+  "console_errors": [],
+  "axe": [],
+  "axe_serious": []
+ }
+]

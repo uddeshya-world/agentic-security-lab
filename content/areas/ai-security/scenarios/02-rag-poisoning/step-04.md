@@ -11,15 +11,16 @@ if is_secure():
 This is **control C6 — RAG trust / provenance filter**. The poison never reaches
 the planner, so there is nothing to obey.
 
-Set the mode switch above the timeline to **secure** and press **Run** — that
-forces the control on for this run only, with no rebuild. To harden the
-long-running tool servers persistently instead, recreate the stack:
+The next step turns it on for one run with the mode switch above the timeline.
+No rebuild is needed.
 
-```bash
-SECURE_MODE=true docker compose up -d --force-recreate agent db-tool email-tool file-tool
-```
+One honest caveat: in this lab the poisoned document arrives already labelled
+`trust=untrusted`, so the filter has an easy job. In a real system nobody labels
+the attacker's page for you. Provenance has to come from where the content was
+collected (who wrote it, which source, whether the source lets the public edit),
+and getting that right is most of the work.
 
 > Important nuance for later: filtering at retrieval is **one** layer. If a
 > poisoned chunk ever slips through, the executor and tool guardrails from the
 > other scenarios must still hold. That defense-in-depth idea is the payoff of
-> scenario A4.
+> the full agent exploit scenario.

@@ -8,7 +8,7 @@ Not all tools carry the same blast radius:
 | `file_tool` (write) | side-effect | data/state *changed* |
 | `email_tool` (send) | side-effect | data *leaves* the boundary |
 
-The exfil chain combines a read with a send. The read alone (scenario A1) leaks
+The exfil chain combines a read with a send. The read alone (the SQL injection scenario) leaks
 data into the agent's context. The send is what moves it to an attacker.
 
 That is why the fix here is not just "scope the query." Even a perfectly scoped

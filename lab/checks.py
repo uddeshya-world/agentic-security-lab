@@ -115,6 +115,20 @@ def _check_evidence(check: dict, step_key: str | None = None) -> dict:
             {"run": run},
         )
 
+    # ``event_contains_all: [...]`` — every phrase must appear in some timeline line,
+    # so a layered-defense step cannot pass on a single guardrail.
+    missing = [
+        n for n in (check.get("event_contains_all") or [])
+        if not any(n.lower() in (e.get("message") or "").lower() for e in recorded)
+    ]
+    if missing:
+        return _result(
+            False,
+            check.get("fail_message") or f"The timeline is missing: {', '.join(missing)}.",
+            "evidence",
+            {"run": run, "missing": missing},
+        )
+
     needle = check.get("event_contains")
     if needle and not any(needle.lower() in (e.get("message") or "").lower() for e in recorded):
         return _result(

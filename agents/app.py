@@ -82,6 +82,11 @@ def root():
     return RedirectResponse(url="/lab/ui/catalog.html")
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return RedirectResponse(url="/lab/ui/assets/favicon.svg")
+
+
 @app.get("/health")
 def health():
     from defenses.config import is_secure

@@ -12,6 +12,7 @@ import math
 from typing import Sequence
 
 import chromadb
+import chromadb.config
 from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
 
 CHROMA_PATH = "/data/chroma"
@@ -54,7 +55,10 @@ _ef = HashEmbeddingFunction()
 def get_collection():
     global _client, _collection
     if _collection is None:
-        _client = chromadb.PersistentClient(path=CHROMA_PATH)
+        # Telemetry off: the lab promises nothing leaves the machine.
+        _client = chromadb.PersistentClient(
+            path=CHROMA_PATH, settings=chromadb.config.Settings(anonymized_telemetry=False)
+        )
         _collection = _client.get_or_create_collection(
             name=COLLECTION_NAME,
             embedding_function=_ef,

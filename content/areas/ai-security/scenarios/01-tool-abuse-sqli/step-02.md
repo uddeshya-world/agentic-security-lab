@@ -11,7 +11,7 @@ curl -s -X POST http://127.0.0.1:8101/invoke \
 You should get back a `rows` array with **more than one customer** and a
 `count` of the whole table. That is the dump.
 
-Press **Run** below. It drives the lab's A1 path deterministically against the
+Press **Run** below. It drives the same call deterministically against the
 real database — no Ollama, no live planner, so it works the same in every class.
 Then read the `SQL` line in the timeline. **Check** grades the run you just made;
 it will not make one for you.

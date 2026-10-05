@@ -84,6 +84,7 @@ services:
       - SECURE_MODE=${SECURE_MODE:-false}
       - LAB_APPROVE=${LAB_APPROVE:-0}
       - MAX_PLAN_STEPS=${MAX_PLAN_STEPS:-8}
+      - ANONYMIZED_TELEMETRY=False
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:1.5b-instruct}
       - DB_TOOL_URL=http://db-tool:8101

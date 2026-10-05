@@ -39,11 +39,16 @@ safe to host publicly. Everything below is the real lab it previews.
 
 ## Start here — guided, hands-on paths
 
+You need Docker (see [Setup](#setup)). Then:
+
 ```text
+git clone https://github.com/uddeshya-world/agentic-security-lab.git
+cd agentic-security-lab
 docker compose up -d
 ```
 
-Open the **catalog** (Killercoda-style, guided, step-verified):
+The first start downloads images and a small local model, so give it a few
+minutes. Then open the **catalog** (Killercoda-style, guided, step-verified):
 
 ### 👉 http://127.0.0.1:8000/  (Areas catalog → guided scenarios)
 
@@ -55,8 +60,9 @@ fired. Check never runs the attack for you, so a step cannot be completed withou
 doing the work. Flip the run's mode to secure and prove the same payload is
 stopped.
 
-Finish every graded check in the Area to claim a **lab completion badge**: an
-HMAC-signed transcript of exactly which checks you passed and in which mode. It is
+Finish the **Core path** (9 scenarios, 23 graded checks) to claim the **AI Security
+Practitioner completion badge**: an HMAC-signed transcript of exactly which checks
+you passed and in which mode, with an optional name you type in. It is
 signed by your own instance, so it is tamper-evident, not third-party attested —
 `/lab/ui/verify.html` says so on the badge itself.
 
@@ -87,11 +93,12 @@ Ollama, MailHog, or terminal, and `LAB_HOSTED=1` removes the attack routes
 (`/run`, `/lab/attack`, graded checks, ingestion) from the app. The attack path
 exists only in the local stack above.
 
-### Ollama (required for live attacks)
+### Ollama (only for live attacks and chat)
 
+- Graded steps never need it. Every scenario's Run and Check are deterministic.
 - Runs **inside** compose (`ollama` service). Host `:11434` is closed on purpose.
-- Agent reaches it at `http://ollama:11434`. Model: `qwen2.5:3b-instruct` (or `OLLAMA_MODEL`).
-- Live attacks need Ollama healthy (console shows **ollama** pill green).
+- Agent reaches it at `http://ollama:11434`. Default model: `qwen2.5:1.5b-instruct` (set `OLLAMA_MODEL` to change it).
+- Live attacks and the sandbox chat need Ollama healthy (console shows **ollama** pill green). On a CPU-only machine a live call can take minutes.
 
 Deterministic teaching sims still exist at `POST /lab/simulate/{id}` for CI / no-LLM demos.
 ---
@@ -114,17 +121,34 @@ Architecture: **planner (LLM) → tool executor → HTTP tools** (not multi-agen
 
 ## Setup
 
-Prerequisites: Docker Desktop. Host Python optional (CLI attacks only).
+Prerequisites:
+
+- **Windows or macOS:** Docker Desktop.
+- **Linux:** Docker Engine with the Compose plugin (`docker compose version` should work). If every tool shows "timed out" on the status panel, containers cannot reach each other: check the host firewall (an iptables `FORWARD` policy of `DROP` blocks Docker's bridge network).
+- Host Python is optional (CLI attacks only).
+- Clone outside a synced folder (OneDrive, Dropbox) if you can. The agent mounts the source folder, and sync clients slow its start-up a lot.
 
 ```text
-cp .env.example .env
+cp .env.example .env    # optional: every setting has a default
 docker compose up -d
-# open http://127.0.0.1:8000/lab/ui/
+# open http://127.0.0.1:8000/
 ```
 
 PowerShell / scripts: `.\run.ps1 -Cmd up` then open the console URL.
 
 ### Secure vs vulnerable mode
+
+Guided scenarios switch the mode for one run with the switch above the timeline,
+and graded steps pick the right mode for you. Nothing below is needed to finish a
+scenario. To harden the long-running tool servers persistently instead:
+
+```bash
+# Vulnerable (attacks succeed)
+SECURE_MODE=false docker compose up -d --force-recreate agent db-tool email-tool file-tool
+
+# Secure (attacks blocked)
+SECURE_MODE=true docker compose up -d --force-recreate agent db-tool email-tool file-tool
+```
 
 ```powershell
 # Vulnerable (attacks succeed)

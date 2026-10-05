@@ -1,5 +1,42 @@
 # Changelog
 
+## v2.2.0 — 2026-10-05
+
+Fixes from the first full run of the Core path, a badge emblem, and plain-language
+analogies for every Core scenario.
+
+### Added
+- Completion badge emblem (inline SVG, drawn from theme tokens) on the Area credential card,
+  the issued badge and the verify page. "Download badge (SVG)" saves a standalone copy.
+- Optional name on the badge. It is self-asserted, capped at 60 printable characters on the
+  server, signed with the transcript, and labelled "name as entered by the learner, not
+  verified" on the verify page.
+- "In plain terms" analogy, with the line where it breaks, at the top of each of the 9 Core
+  scenarios. Matching ~80-second video scripts in `docs/video/CORE_VIDEO_SCRIPTS.md`.
+- Lesson code that names a repo file links to it on GitHub.
+- `/lab/status` names the likely cause when every tool times out (containers cannot reach
+  each other) and the player shows it.
+- `tests/test_first_run_feedback.py` and `scripts/qa/badge_flow.py`.
+
+### Changed
+- The capstone check (04 step 5) needs all three guardrail lines (retrieval filter, blocked
+  `db_tool`, blocked `email_tool`), not any one defense event. Tool-mode and "Active:" lines
+  are now `status` events, so they can no longer satisfy a defense check.
+- Five recall questions rewritten to need the learner's own run or a transfer to a new case
+  (00, 01, 16, 18, 05). Graded check count unchanged: 23 on the Core path, 53 in total.
+- Timeline: each SQL statement prints once; DLP payloads show as `DATA` lines; setup lines
+  say when a run forced a mode ("this run is SECURE, container default VULNERABLE").
+- Trace captions name the control (retrieval trust filter, session-bound identity) and data
+  guards are contained at `USER`.
+- The SQL injection run no longer prints the unrelated path-traversal probe (still available
+  as `sim_a1(include_traversal=True)`), and shows the tool's `count`, `mode` and note.
+- Lesson copy matches the UI: no "recreate the stack" for graded steps, no "Check re-runs",
+  no internal A1–A6 codes, correct layer and stage counts in scenario 04.
+- README: clone command, the real badge rule (Core path, 23 checks), Linux prerequisites,
+  bash secure-mode commands, one start URL, default model `qwen2.5:1.5b-instruct`.
+- Chroma telemetry off (`anonymized_telemetry=False`, `ANONYMIZED_TELEMETRY=False`).
+- Favicon on every page and at `/favicon.ico`.
+
 ## v2.1.0 — 2026-10-04
 
 OWASP AISVS v1.0 and the OWASP Agentic Skills Top 10 (v1.0-2026), added beside the

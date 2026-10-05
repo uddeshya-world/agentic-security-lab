@@ -45,7 +45,7 @@ def collect_status() -> dict[str, Any]:
         }
 
     ollama_base = os.environ.get("OLLAMA_BASE_URL", "http://ollama:11434")
-    ollama_model = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b-instruct")
+    ollama_model = os.environ.get("OLLAMA_MODEL", "qwen2.5:1.5b-instruct")
     ollama = _probe(ollama_base, path="/api/tags", timeout=5.0)
     ollama_ok = ollama.get("ok", False)
 
@@ -54,7 +54,19 @@ def collect_status() -> dict[str, Any]:
     all_secure = bool(tool_modes) and all(tool_modes) and agent_secure
     all_vuln = bool(tool_modes) and not any(tool_modes) and not agent_secure
 
+    # Every tool timing out at once is almost never the tools: the agent container
+    # cannot reach its neighbours (host firewall or Docker networking).
+    errors = [str(t.get("error") or "") for t in tools.values()]
+    network_hint = None
+    if tools and all("timed out" in e.lower() or "timeout" in e.lower() for e in errors):
+        network_hint = (
+            "Every tool timed out, so the agent container probably cannot reach the other containers. "
+            "Check the host firewall or Docker networking (on Linux, an iptables FORWARD policy of DROP "
+            "blocks container-to-container traffic), then run docker compose up -d again."
+        )
+
     return {
+        "network_hint": network_hint,
         "agent": {
             "ok": True,
             "secure_mode": agent_secure,

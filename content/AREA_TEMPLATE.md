@@ -178,6 +178,35 @@ heading — the scenario title is already on screen, so do not repeat it.
 
 Inline the code you want read. "Open `agents/executor.py`" only works for someone
 who already has the repo in an editor; fifteen quoted lines work for everyone.
+Inline code that names a repo file (`agents/executor.py`,
+`guardrails/pipeline.py::scan_data`) becomes a GitHub link in the player.
+
+Name the UI as it is: **Run**, **Check**, the **Secure** switch above the timeline.
+Never tell a learner to recreate containers for a graded step (the switch does it
+per run), and never say Check "re-runs" anything: it reads the run they made.
+Quote timeline lines from a real run, not from memory.
+
+### In plain terms (every Core scenario)
+
+`intro.md` opens with a one-paragraph analogy and the line where it stops being
+true:
+
+```markdown
+> **In plain terms.** A library request slip says "Book title: ____". ...
+>
+> *Where the analogy breaks:* a database runs the slip as code, instantly and silently.
+```
+
+The "where it breaks" line is not optional. A security analogy that overreaches
+teaches the wrong model. The matching ~80-second video script lives in
+`docs/video/CORE_VIDEO_SCRIPTS.md`; add one there when you add a Core scenario.
+
+### Recall questions
+
+A recall question should need the learner's own run or a transfer to a new case.
+If the paragraph right above it answers it, rewrite it. Good shapes: "which pair did
+your run print?", "compare your two runs", "a new tool does X, which controls go on
+that hop?". Vary which option is correct.
 
 ---
 

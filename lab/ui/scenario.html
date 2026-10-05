@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<link rel="icon" href="/lab/ui/assets/favicon.svg" type="image/svg+xml" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CyberRange — scenario</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=19" />
 <script src="/lab/ui/vendor/marked.min.js"></script>
 <style>
   html, body { height: 100%; }
@@ -375,7 +376,7 @@
 
 </div>
 
-<script src="/lab/ui/cyberrange.js?v=18"></script>
+<script src="/lab/ui/cyberrange.js?v=19"></script>
 <script>
 const esc = CR.esc;
 const TTYD = `http://${location.hostname}:7681`;
@@ -492,7 +493,7 @@ function renderRunbar() {
   document.getElementById("barFacts").innerHTML =
     chips.map(([tone, text]) => `<span class="tag ${tone}">${esc(text)}</span>`).join("") +
     CR.aisvsChips(data.aisvs, 2) + CR.astChips(data.ast) +
-    `<span class="grow"></span><span class="sid">${esc(data.legacy_id || data.id || SCEN)}</span>`;
+    `<span class="grow"></span><span class="sid">${esc(data.id || SCEN)}</span>`;
   bar.hidden = false;
   paintHud(null);
 }
@@ -607,6 +608,11 @@ function renderStep() {
     html += `<hr><div data-reveal>${marked.parse(data.finish_md)}</div>`;
   }
   el.innerHTML = html;
+  CR.linkSource(el);
+  // The "In plain terms" analogy is an explainer, not a warning: give it the calm callout.
+  el.querySelectorAll("blockquote").forEach((q) => {
+    if (/^In plain terms\./.test((q.textContent || "").trim())) q.classList.add("plain");
+  });
   CR.enhanceCode(el, sendToTerminal);
   CR.revealScan(el);
   renderActs(step);
@@ -889,7 +895,7 @@ async function hydrate() {
 }
 
 const KEY = { plan: "PLAN", tool: "TOOL", sql: "SQL", defense: "DEFENSE", result: "RESULT",
-              retrieve: "RAG", explain: "NOTE", teach: "NOTE", user: "USER" };
+              retrieve: "RAG", explain: "NOTE", teach: "NOTE", user: "USER", status: "SETUP", payload: "DATA" };
 
 function fillForensics(r) {
   const ev = r.evidence || {};
@@ -920,14 +926,18 @@ function fillForensics(r) {
 function renderTimeline(list) {
   const el = document.getElementById("timeline");
   if (!list.length) {
-    el.innerHTML = `<div class="state"><h4>Nothing recorded</h4><p>The run produced no events. Check the stack is up.</p></div>`;
+    el.innerHTML = `<div class="state"><h4>No run on this step</h4><p>Steps with a Run button fill this timeline. Reading and question steps leave it empty, and that is expected.</p></div>`;
     return;
   }
   el.innerHTML = list.map((e) => {
     const cls = (e.phase || "").toLowerCase();
-    const sql = e.detail?.sql || (cls === "sql" ? (e.message || "").replace(/^SQL:\s*/i, "") : null);
+    const sql = cls === "sql" ? (e.detail?.sql || (e.message || "").replace(/^SQL:\s*/i, ""))
+      : cls === "payload" ? (e.detail?.payload ?? null) : null;
+    // The message usually ends with the statement itself; print it once, in the SQL block.
+    let msg = e.message || "";
+    if (sql && msg.endsWith(sql)) msg = msg.slice(0, -sql.length).replace(/[:\s]+$/, "");
     return `<div class="ev"><span class="k ${cls}">${KEY[cls] || (e.phase || "LOG").toUpperCase()}</span>
-      <span class="m">${esc(e.message)}${sql && cls === "sql" ? `<span class="sql">${esc(sql)}</span>` : ""}</span></div>`;
+      <span class="m">${esc(msg)}${sql ? `<span class="sql${cls === "payload" ? " data" : ""}">${esc(sql)}</span>` : ""}</span></div>`;
   }).join("");
 }
 
@@ -975,6 +985,7 @@ function renderPreflight() {
          plan, the mail it sent. Nothing here starts it for you.</p>
       <div class="svclist">${svcRows || '<span class="lbl">No services declared for this Area.</span>'}</div>
       ${(env.requires || []).length ? `<p class="lbl">Requires</p><p>${esc((env.requires || []).join(", "))}</p>` : ""}
+      ${stackData && stackData.network_hint ? `<p class="lbl">Likely cause</p><p>${esc(stackData.network_hint)}</p>` : ""}
       <p class="lbl">Start it</p>
       <div class="cmd"><code>docker compose up -d</code><button type="button" class="btn sm ghost" id="pfCopy">Copy</button></div>
       <p class="fine">Run that from the project root. This is your machine — we cannot start it for you.</p>

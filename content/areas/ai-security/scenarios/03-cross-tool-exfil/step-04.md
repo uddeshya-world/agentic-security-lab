@@ -23,4 +23,4 @@ Either one alone breaks the chain. Together they are defense in depth: even if a
 recipient somehow passed the allow-list, the human gate still stops an
 unattended bulk export.
 
-Enable secure mode (console toggle, or recreate the stack) for the graded run.
+The next step switches this run to **Secure**. No rebuild is needed.

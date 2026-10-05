@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=19" />
 <style>
   .page { max-width: 780px; margin: 0 auto; padding: var(--s7) var(--s5) var(--s8); }
   .page h1 { font-family: var(--display); font-size: 30px; letter-spacing: -.03em; margin: var(--s3) 0 var(--s3); }
@@ -82,7 +82,7 @@
   <p>Local only. All names, records and domains are synthetic.</p>
 </footer>
 
-<script src="/lab/ui/cyberrange.js?v=18"></script>
+<script src="/lab/ui/cyberrange.js?v=19"></script>
 <script>
 const esc = CR.esc;
 
@@ -102,18 +102,22 @@ function render(res) {
     <article class="badgecard verdict" aria-labelledby="bname">
       <span class="sig ${valid ? "ok" : "bad"}">${valid ? "✓ Valid signature" : "✗ Not valid"}</span>
       ${valid || res.note ? "" : `<p style="margin:var(--s2) 0 0;color:var(--text-2)">${esc(res.reason || res.error || "The signature does not match this instance's key. The token was edited, or another instance issued it.")}</p>`}
+      ${valid ? `<div style="display:flex;justify-content:center;margin:var(--s4) 0">${CR.badgeEmblem({
+          title: a.badge?.name, state: "earned", size: 180,
+          name: a.recipient?.identity === "anonymous learner" ? "" : a.recipient?.identity,
+          date: (a.issuedOn || "").slice(0, 10), checks: tx.length })}</div>` : ""}
       <h2 id="bname" style="margin-top:var(--s3)">${esc(a.badge?.name || "Badge")}</h2>
       <dl>
-        <dt>Issued to</dt><dd>${esc(a.recipient?.identity || "anonymous learner")}</dd>
+        <dt>Issued to</dt><dd>${esc(a.recipient?.identity || "anonymous learner")} <span style="color:var(--text-3);font-size:var(--fs-sm)">(name as entered by the learner, not verified)</span></dd>
         ${a.issuedOn ? `<dt>Issued on</dt><dd>${esc(a.issuedOn)}</dd>` : ""}
         ${(a.badge?.issuer?.name || res.issuer) ? `<dt>Issuer</dt><dd>${esc(a.badge?.issuer?.name || res.issuer)}</dd>` : ""}
         <dt>Graded checks</dt><dd>${tx.length}${Object.keys(counts).length ? ` (${Object.entries(counts).map(([k, v]) => `${v} ${esc(k)}`).join(" · ")})` : ""}</dd>
-        ${(a.badge?.criteria?.frameworks || []).length ? `<dt>Frameworks</dt><dd>${a.badge.criteria.frameworks.map((f) => `<span class="tag quiet">${esc(f)}</span>`).join(" ")}</dd>` : ""}
+        ${(a.badge?.criteria?.frameworks || []).length ? `<dt>Frameworks</dt><dd>${a.badge.criteria.frameworks.map((f) => `<span class="tag quiet" style="white-space:normal;height:auto">${esc(f)}</span>`).join(" ")}</dd>` : ""}
         ${a.badge?.criteria?.narrative ? `<dt>Criteria</dt><dd>${esc(a.badge.criteria.narrative)}</dd>` : ""}
       </dl>
 
       <h3 class="eyebrow" style="margin:var(--s5) 0 var(--s2)">Transcript</h3>
-      <div class="tablewrap" style="max-height:420px;overflow:auto">
+      <div class="tablewrap" style="overflow-x:auto">
         <table class="tbl">
           <thead><tr><th scope="col">Scenario</th><th scope="col">Step</th><th scope="col">Kind</th><th scope="col">Mode</th></tr></thead>
           <tbody>${tx.map((r) => `<tr><td class="mono">${esc(r.scenario)}</td><td class="mono">${esc(r.step)}</td><td>${esc(r.kind)}</td><td>${modeWord(r.mode)}</td></tr>`).join("")}</tbody>

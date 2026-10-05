@@ -1,8 +1,8 @@
 ## Prove the data cannot leave
 
-Run the chain again under secure mode. The dump may be refused (scoped-query
-control from A1), and even if you hand `email_tool` a payload directly, the send
-is now denied:
+Switch this run to **Secure** and press **Run**. The dump is refused (the
+scoped-query control from the SQL injection scenario), and even if you hand
+`email_tool` a payload directly, the send is denied:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8102/invoke \
@@ -17,8 +17,8 @@ Expected:
 { "error": "recipient domain not on allow-list" }
 ```
 
-Check MailHog again — **no new message** to the external address. The **Check**
-runs the A3 simulation under secure mode and confirms the chain is `blocked`: no
-successful send, nothing new in the sink.
+Check MailHog again: **no new message** to the external address. **Check** reads
+your secure run and confirms the chain is `blocked`: no successful send, nothing
+new in the sink.
 
 Same attack, same tools, data stays inside the boundary.

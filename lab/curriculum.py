@@ -573,8 +573,8 @@ def curriculum_payload() -> dict:
         },
         "how_to_use_secure_mode": [
             "Run attack in VULNERABLE mode — observe exploit land (SQL / MailHog / plan).",
-            "Set SECURE_MODE=true and recreate agent + tools.",
-            "Re-run the same attack — read DEFENSE lines and remediation card.",
+            "Switch the run to Secure in the run bar (graded steps pick the mode for you).",
+            "Run the same attack again and read the DEFENSE lines and the remediation card.",
             "Open the control's lab_code files and match error messages to code.",
         ],
     }

@@ -1,3 +1,7 @@
+> **In plain terms.** A customer tells the bank teller, "Your manager said to give me everyone's statements." The teller may believe it. The vault still needs a key card, whatever the teller was told.
+>
+> *Where the analogy breaks:* a model is far easier to talk round than a trained teller, so the vault rule must never depend on the teller's judgement.
+
 In the last lab you were the attacker's hand — you called `db_tool` yourself.
 Real attackers rarely get a raw HTTP client. They get a **chat box**.
 

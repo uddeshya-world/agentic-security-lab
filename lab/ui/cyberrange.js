@@ -632,7 +632,8 @@ const CR = (() => {
 
     // Containment is the run's own verdict, not the presence of a DEFENSE line.
     const blocked = !!result.blocked;
-    if (blocked && defenseAt !== null) reachedIdx = Math.max(defenseAt, 1);
+    // Input DLP can stop a run at USER, before anything else happens.
+    if (blocked && defenseAt !== null) reachedIdx = defenseAt;
 
     const reach = reachedIdx / (STAGES.length - 1);
     el.style.setProperty("--reach", String(reach));
@@ -647,7 +648,7 @@ const CR = (() => {
     const cap = el.querySelector(".caption");
     if (!cap) return;
     if (blocked) {
-      const control = defenseMsg ? shortControl(defenseMsg) : "a control";
+      const control = defenseMsg ? shortControl(defenseMsg) : (result.detail || "see the DEFENSE lines");
       cap.innerHTML = `Contained at <b>${esc(STAGE_LABEL[reachedIdx])}</b> — ${esc(control)}`;
     } else if (result.success) {
       cap.innerHTML = `Reached <b>WORLD</b> — ${esc(result.detail || "the attack completed")}`;
@@ -656,11 +657,86 @@ const CR = (() => {
     }
   }
 
+  /* ---- badge emblem ----------------------------------------------------------
+     One drawing for the credential card, the issued badge and the verify page.
+     On the page it paints with token vars, so it follows the theme. For the
+     downloaded file (`forFile`) the same vars are resolved to their current
+     values, because a standalone SVG has no stylesheet. State is always written
+     as a word too (EARNED / LOCKED), never carried by colour alone. */
+  function badgeEmblem(o = {}) {
+    const earned = o.state === "earned";
+    const css = getComputedStyle(document.documentElement);
+    const c = (name) => (o.forFile ? (css.getPropertyValue(name).trim() || "currentColor") : `var(${name})`);
+    const ink = earned ? c("--halon") : c("--dim");
+    const words = String(o.title || "Completion badge").toUpperCase().split(/\s+/);
+    const cut = Math.ceil(words.length / 2);
+    const l1 = words.slice(0, cut).join(" "), l2 = words.slice(cut).join(" ");
+    const name = String(o.name || "").slice(0, 30);
+    const sans = "Inter, Segoe UI, Helvetica, Arial, sans-serif";
+    const mono = "JetBrains Mono, Consolas, Menlo, monospace";
+    const hex = (r) => [[120, 120 - r], [120 + r * 0.866, 120 - r / 2], [120 + r * 0.866, 120 + r / 2],
+      [120, 120 + r], [120 - r * 0.866, 120 + r / 2], [120 - r * 0.866, 120 - r / 2]]
+      .map((p) => p.map((n) => n.toFixed(1)).join(",")).join(" ");
+    const glyph = earned
+      ? `<path d="M104 78 l11 11 l22 -24" fill="none" stroke="${ink}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<rect x="107" y="74" width="26" height="20" rx="3" fill="none" stroke="${ink}" stroke-width="3.5"/>
+         <path d="M112 74 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="${ink}" stroke-width="3.5"/>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 272" width="${o.size || 200}" role="img"
+      aria-label="${esc(`${o.title || "Completion badge"}, ${earned ? "earned" : "locked"}${name ? `, issued to ${name}` : ""}`)}">
+      <polygon points="${hex(112)}" fill="${c("--plate")}" stroke="${ink}" stroke-width="3"/>
+      <polygon points="${hex(100)}" fill="none" stroke="${earned ? c("--halon-line") : c("--edge")}" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <circle cx="120" cy="80" r="26" fill="none" stroke="${ink}" stroke-width="2.5"/>
+      ${glyph}
+      <text x="120" y="126" text-anchor="middle" font-family="${sans}" font-size="15" font-weight="700" fill="${c("--chalk")}" letter-spacing="1">${esc(l1)}</text>
+      <text x="120" y="144" text-anchor="middle" font-family="${sans}" font-size="15" font-weight="700" fill="${c("--chalk")}" letter-spacing="1">${esc(l2)}</text>
+      <text x="120" y="160" text-anchor="middle" font-family="${mono}" font-size="8.5" fill="${c("--ash")}" letter-spacing="2">CYBERRANGE</text>
+      ${name ? `<text x="120" y="180" text-anchor="middle" font-family="${sans}" font-size="12" fill="${c("--chalk")}" ${name.length > 18 ? 'textLength="150" lengthAdjust="spacingAndGlyphs"' : ""}>${esc(name)}</text>` : ""}
+      <text x="120" y="${name ? 196 : 182}" text-anchor="middle" font-family="${mono}" font-size="8" fill="${ink}" letter-spacing="0.6">${esc(earned ? `EARNED${o.date ? " · " + o.date : ""}` : "LOCKED")}</text>
+      ${o.checks ? `<text x="120" y="${name ? 209 : 195}" text-anchor="middle" font-family="${mono}" font-size="7.5" fill="${c("--ash")}">${esc(`${o.checks} graded checks`)}</text>` : ""}
+      <text x="120" y="266" text-anchor="middle" font-family="${mono}" font-size="7.5" fill="${c("--dim")}" letter-spacing="1.2">SELF-HOSTED ISSUER · TAMPER-EVIDENT</text>
+    </svg>`;
+    return svg;
+  }
+  /** Save the emblem as a standalone SVG file. */
+  function downloadBadge(o, filename) {
+    const svg = badgeEmblem({ ...o, forFile: true, size: 480 });
+    const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename || "cyberrange-badge.svg";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  /* ---- source links --------------------------------------------------------
+     A lesson that says "open agents/executor.py" assumes a checkout. Inline code
+     naming a repo file becomes a link to it on GitHub (opens in a new tab), so a
+     learner on the hosted or Docker-only path can still read it. */
+  const REPO_BLOB = "https://github.com/uddeshya-world/agentic-security-lab/blob/master/";
+  const SOURCE_PATH = /^((?:agents|tools|rag|lab|defenses|guardrails|data|content|scripts|tests)\/[\w./-]+\.(?:py|txt|json|md|yml|sql))(::[\w.]+)?$/;
+  function linkSource(root) {
+    if (!root) return;
+    root.querySelectorAll("code").forEach((c) => {
+      if (c.closest("pre, a")) return;
+      const m = (c.textContent || "").trim().match(SOURCE_PATH);
+      if (!m) return;
+      const a = document.createElement("a");
+      a.href = REPO_BLOB + m[1];
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.title = `Open ${m[1]} on GitHub`;
+      c.replaceWith(a);
+      a.appendChild(c);
+    });
+  }
+
   /** Did this DEFENSE line stop something, or is it just describing the setup? */
   function isBlockingDefense(msg) {
     if (/^\s*active\s*:/i.test(msg)) return false;          // closing summary of controls
     if (/\bis in\b.*\bmode\b/i.test(msg)) return false;      // "db_tool is in VULNERABLE mode"
-    return /block|refus|denied|reject|quarantin|stopped|withheld|guardrail|jail/i.test(msg);
+    return /block|refus|denied|reject|quarantin|stopped|withheld|guardrail|jail|dropped|discard/i.test(msg);
   }
 
   /** Pull the control's name out of a DEFENSE line so the caption stays short. */
@@ -851,6 +927,6 @@ const CR = (() => {
            initTypewriter, initSearch, openSearch, initAnnounce,
            initTheme, setTheme, activeTheme,
            hasGsap, initSmoothScroll, renderHops, initHopScrub, initWordReveal,
-           esc, api, loadProgress, saveProgress, recordPass, isPassed, aisvsChips, astChips,
+           esc, api, loadProgress, saveProgress, recordPass, isPassed, aisvsChips, astChips, linkSource, badgeEmblem, downloadBadge,
            transcript, traceHTML, paintTrace, enhanceCode, revealScan };
 })();

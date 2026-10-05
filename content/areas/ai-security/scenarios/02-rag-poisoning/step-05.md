@@ -1,6 +1,6 @@
 ## Prove the poison is gone from context
 
-Re-run the same benign retrieval under secure mode:
+Switch this run to **Secure** and press **Run**. To see the same thing by hand, query retrieval directly:
 
 ```bash
 curl -s "http://127.0.0.1:8000/lab/retrieve?q=What%20is%20the%20standard%20shipping%20time%3F" \

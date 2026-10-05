@@ -17,9 +17,12 @@ apart. This step needs the first one.
 
 1. **This run.** The mode switch above the timeline sets the mode for the run you
    are about to perform. Nothing rebuilds; the app forces the control on for that
-   single request. Set it to **secure**, press **Run**, then **Check**.
-2. **The whole stack, persistently.** Recreating the containers hardens the
-   long-running tool servers themselves. Optional here, and it survives a reload:
+   single request. Graded steps pick the right mode for you. Set it to **secure**,
+   press **Run**, then **Check**. The `SETUP` lines in the timeline say
+   "this run is SECURE (container default VULNERABLE)", which is expected.
+2. **The whole stack, persistently.** Optional, and not needed for any graded step.
+   Recreating the containers hardens the long-running tool servers themselves and
+   survives a reload:
 
 ```bash
 # from the lab folder

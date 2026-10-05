@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<link rel="icon" href="/lab/ui/assets/favicon.svg" type="image/svg+xml" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Area · CyberRange</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=18" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=19" />
 <style>
   /* ---- crumb ------------------------------------------------------------ */
   .crumb { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); margin: var(--s5) 0 var(--s5); display: flex; gap: 8px; align-items: center; }
@@ -147,6 +148,14 @@
   .credcard .req { font-family: var(--mono); font-size: 11.5px; color: var(--halon-ink); background: var(--halon-bed); border: 1px solid var(--halon-line); border-radius: var(--r-sm); padding: 3px 8px; display: inline-block; margin-bottom: var(--s3); }
   .credcard .honest { font-size: 12px; color: var(--dim); line-height: 1.6; margin: var(--s3) 0 0; }
   .credcard .side { border-left: 1px solid var(--edge); padding-left: var(--s5); }
+  .emblem { display: flex; justify-content: center; margin-bottom: var(--s4); }
+  .emblem svg { max-width: 100%; height: auto; }
+  .sheet .namefield { display: grid; gap: var(--s2); margin: var(--s4) 0 var(--s2); }
+  .sheet .namefield label { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ash); }
+  .sheet .namefield input { font: inherit; font-size: 14px; color: var(--chalk); background: var(--void); border: 1px solid var(--edge-hi); border-radius: var(--r); padding: 9px 11px; min-height: 40px; }
+  .sheet .namefield input:focus-visible { outline: 2px solid var(--halon); outline-offset: 2px; }
+  .sheet .issued { display: grid; grid-template-columns: 170px minmax(0,1fr); gap: var(--s5); align-items: start; }
+  @media (max-width: 560px) { .sheet .issued { grid-template-columns: 1fr; justify-items: center; } }
   .progress-block .row { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; color: var(--ash); margin-bottom: var(--s2); }
   .progress-block .row b { color: var(--chalk); font-weight: 500; }
 
@@ -157,7 +166,7 @@
   .sheet h3 { font-family: var(--display); font-size: 20px; letter-spacing: -.02em; margin: var(--s2) 0 var(--s2); }
   .sheet p { color: var(--ash); font-size: 13px; line-height: 1.6; margin: 0 0 var(--s3); }
   .sheet .token { font-family: var(--mono); font-size: 10.5px; color: var(--dim); word-break: break-all; background: var(--void); border: 1px solid var(--edge); border-radius: var(--r); padding: var(--s3); max-height: 110px; overflow: auto; }
-  .sheet .foot { display: flex; justify-content: space-between; gap: var(--s2); margin-top: var(--s5); }
+  .sheet .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2); margin-top: var(--s5); }
   .sheet .missing { max-height: 200px; overflow: auto; font-family: var(--mono); font-size: 11.5px; color: var(--ash); }
   .sheet .missing div { padding: 4px 0; border-bottom: 1px solid var(--edge); }
 
@@ -227,7 +236,7 @@
 
 <dialog id="badgeSheet"><div class="sheet" id="badgeBody"></div></dialog>
 
-<script src="/lab/ui/cyberrange.js?v=18"></script>
+<script src="/lab/ui/cyberrange.js?v=19"></script>
 <script>
 const esc = CR.esc;
 const params = new URLSearchParams(location.search);
@@ -522,6 +531,7 @@ function render(area) {
             not edited after issuance: tamper-evident, not third-party attested. <a href="/lab/ui/verify.html" style="color:var(--halon-ink);border-bottom:1px solid var(--halon-line)">Verify any badge</a> against this instance's key.</p>
         </div>
         <div class="side">
+          <div class="emblem">${CR.badgeEmblem({ title: cred.title, state: coreComplete === coreTotal && coreTotal ? "earned" : "locked", size: 150 })}</div>
           <div class="progress-block">
             <div class="row"><span>Core complete</span><b>${coreComplete} / ${coreTotal}</b></div>
             <div class="meter"><i style="width:${pct}%"></i></div>
@@ -575,17 +585,40 @@ async function renderGaps() {
 
 /* ---- badge (moved here from catalog.html — the credential lives on the
    Area detail page now, not the index) ------------------------------------ */
-async function openBadge(area) {
+function openBadge(area) {
+  const body = document.getElementById("badgeBody");
+  const sheet = document.getElementById("badgeSheet");
+  const cred = area.credential || {};
+  body.innerHTML = `
+    <div class="eyebrow">Claim your completion badge</div>
+    <h3>${esc(cred.title || "Completion badge")}</h3>
+    <form id="nameForm">
+      <div class="namefield">
+        <label for="learnerName">Name on the badge (optional)</label>
+        <input id="learnerName" name="learner" maxlength="60" autocomplete="name" placeholder="Leave empty for anonymous learner">
+      </div>
+      <p style="color:var(--dim)">The name is self-asserted: this instance does not check who you are. It is signed with the transcript, so it cannot be changed later.</p>
+      <div class="foot"><button type="button" class="btn sm ghost" id="closeBadge">Cancel</button><button class="btn sm assert" type="submit">Issue badge</button></div>
+    </form>`;
+  sheet.showModal();
+  document.getElementById("closeBadge").onclick = () => sheet.close();
+  document.getElementById("nameForm").onsubmit = (e) => {
+    e.preventDefault();
+    issueBadge(area, document.getElementById("learnerName").value.trim() || null);
+  };
+  document.getElementById("learnerName").focus();
+}
+
+async function issueBadge(area, learner) {
   const body = document.getElementById("badgeBody");
   const sheet = document.getElementById("badgeSheet");
   body.innerHTML = `<p><span class="spinner"></span> Checking your graded results…</p>`;
-  sheet.showModal();
 
   let res;
   try {
     res = await CR.api(`/credential/${area.id}/issue`, {
       method: "POST",
-      body: JSON.stringify({ learner: null, passed: CR.transcript(area.id, area.scenarios) }),
+      body: JSON.stringify({ learner, passed: CR.transcript(area.id, area.scenarios) }),
     });
   } catch (e) {
     body.innerHTML = `<div class="state bad"><h4>The lab did not answer</h4><p>${esc(e.message)}</p></div>
@@ -599,33 +632,45 @@ async function openBadge(area) {
     body.innerHTML = `
       <div class="eyebrow">Badge requirements</div>
       <h3>${esc(el.passed_count)} of ${esc(el.required_count)} graded checks passed</h3>
-      <p>The badge is issued when every graded check in this Area has passed on this machine.
-         A check counts; reading a step does not. Still open:</p>
+      <p>The badge is issued when every graded check on the Core path has passed on this machine.
+         A check counts; reading or skipping a step does not. Still open:</p>
       <div class="missing">${el.missing.slice(0, 40).map((m) =>
         `<div>${esc(m.scenario)} · ${esc(m.step)} · ${esc(m.step_title || m.kind)}</div>`).join("")}</div>
       <div class="foot"><span></span><button class="btn sm" id="closeBadge">Close</button></div>`;
   } else {
     const a = res.assertion;
+    const who = a.recipient && a.recipient.identity;
+    const emblem = { title: a.badge.name, state: "earned", name: who === "anonymous learner" ? "" : who,
+                     date: (a.issuedOn || "").slice(0, 10), checks: a.evidence.transcript.length };
     body.innerHTML = `
       <div class="eyebrow">Issued by this instance</div>
-      <h3>${esc(a.badge.name)}</h3>
-      <p>${esc(a.badge.description || "")}</p>
-      <p><b>${esc(a.evidence.transcript.length)} graded checks</b> are recorded in this badge, each naming the
-         scenario, the step and the mode it was graded in. The transcript is signed, so an edited badge fails
-         verification.</p>
+      <div class="issued">
+        <div class="emblem">${CR.badgeEmblem({ ...emblem, size: 170 })}</div>
+        <div>
+          <h3>${esc(a.badge.name)}</h3>
+          <p>Issued to <b>${esc(who || "anonymous learner")}</b>.</p>
+          <p><b>${esc(a.evidence.transcript.length)} graded checks</b> are recorded in this badge, each naming the
+             scenario, the step and the mode it was graded in. The transcript is signed, so an edited badge fails
+             verification.</p>
+        </div>
+      </div>
       <p style="color:var(--dim)">${esc(res.verification.note)}</p>
       <div class="token" id="tok">${esc(res.token)}</div>
       <div class="foot">
-        <button class="btn sm" id="copyTok">Copy badge token</button>
+        <span style="display:flex;gap:var(--s2);flex-wrap:wrap">
+          <button class="btn sm" id="copyTok">Copy badge token</button>
+          <button class="btn sm ghost" id="dlBadge">Download badge (SVG)</button>
+        </span>
         <span style="display:flex;gap:var(--s2)">
-          <a class="btn sm ghost" href="/lab/ui/verify.html?token=${encodeURIComponent(res.token)}">Verify it</a>
-          <button class="btn sm" id="closeBadge">Close</button>
+          <a class="btn sm assert" href="/lab/ui/verify.html?token=${encodeURIComponent(res.token)}">Verify it</a>
+          <button class="btn sm ghost" id="closeBadge">Close</button>
         </span>
       </div>`;
     document.getElementById("copyTok").onclick = (e) => {
       navigator.clipboard?.writeText(res.token);
       e.target.textContent = "Copied";
     };
+    document.getElementById("dlBadge").onclick = () => CR.downloadBadge(emblem, "ai-security-practitioner-badge.svg");
   }
   document.getElementById("closeBadge").onclick = () => sheet.close();
 }

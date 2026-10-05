@@ -58,7 +58,6 @@ SUBJECT = "Customer Export Lab M01"
 SECURE_DEFENSES = {
     "a1": [
         "DB: free-form SQL filter rejected; only parameterized customer_id queries allowed",
-        "File: path jail via resolve + relative_to (blocks ../ escapes)",
         "Executor (agent path): schema allow-list rejects .. paths and unscoped filters",
     ],
     "a2": [
@@ -168,13 +167,18 @@ def _outside_workspace(resolved: str) -> bool:
     return bool(resolved) and not norm.startswith("/workspace")
 
 
-def sim_a1() -> dict[str, Any]:
+def sim_a1(include_traversal: bool = False) -> dict[str, Any]:
+    """SQL injection against the real db_tool.
+
+    ``include_traversal`` adds the file_tool path-traversal probe. It is off for the
+    graded scenarios (01, 16, 18), whose lessons are about the SQL filter only.
+    """
     secure = _tool_secure(DB_TOOL_URL)
     evidence: dict[str, Any] = {}
 
     events.emit(
         "explain",
-        "STEP 1 — SQL injection surface: the tool will build SQL by pasting your filter into WHERE",
+        "SQL injection surface: the tool will build SQL by pasting your filter into WHERE",
         actor="lab",
         secure_mode=secure,
     )
@@ -226,12 +230,14 @@ def sim_a1() -> dict[str, Any]:
             names = [r.get("name") or r.get("email") for r in rows[:5]]
             events.emit(
                 "tool",
-                f"Query returned {count} customer row(s): {names}",
+                f"Query returned count={count} customer row(s), mode={body.get('mode') or '?'}: {names}",
                 actor="db_tool",
-                detail={"count": count, "rows_preview": rows[:3]},
+                detail={"count": count, "mode": body.get("mode"), "rows_preview": rows[:3]},
                 secure_mode=secure,
                 outcome="success" if sqli_ok else "info",
             )
+            if body.get("note"):
+                events.emit("tool", f"Tool note: {body['note']}", actor="db_tool", secure_mode=secure, outcome="info")
             if sqli_ok:
                 events.emit(
                     "explain",
@@ -244,9 +250,42 @@ def sim_a1() -> dict[str, Any]:
     except Exception as e:
         events.emit("tool", f"db_tool error: {e}", actor="db_tool", outcome="error")
 
+    trav_ok = False
+    if include_traversal:
+        trav_ok = _traversal_probe(secure, evidence)
+
+    success = sqli_ok or trav_ok
+    blocked = secure and not success
+    detail = (
+        f"SQL injection worked (dumped {evidence.get('db_response', {}).get('count', '?')} rows)"
+        if sqli_ok and not secure
+        else (
+            "Secure mode refused the free-form SQL filter"
+            if blocked
+            else f"sqli={sqli_ok}, path_traversal={trav_ok}"
+        )
+    )
+    return {
+        "attack_id": "a1_param_manipulation",
+        "name": "Parameter manipulation (SQL injection)",
+        "layer": "A",
+        "secure_mode": secure,
+        "success": success,
+        "blocked": blocked,
+        "detail": detail,
+        "evidence": {
+            "sql": sql_text,
+            "sql_row_count": (evidence.get("db_response") or {}).get("count"),
+            "defenses_active_when_secure": SECURE_DEFENSES["a1"],
+        },
+    }
+
+
+def _traversal_probe(secure: bool, evidence: dict[str, Any]) -> bool:
+    """Optional second surface on the same tool class: read outside the workspace jail."""
     events.emit(
         "explain",
-        "STEP 2 — Path traversal surface: try to read ../etc/hostname outside the workspace jail",
+        "Path traversal surface: try to read ../etc/hostname outside the workspace jail",
         actor="lab",
         secure_mode=secure,
     )
@@ -285,32 +324,7 @@ def sim_a1() -> dict[str, Any]:
                 )
     except Exception as e:
         events.emit("tool", f"file_tool error: {e}", actor="file_tool", outcome="error")
-
-    success = sqli_ok or trav_ok
-    blocked = secure and not success
-    detail = (
-        f"SQL injection worked (dumped {evidence.get('db_response', {}).get('count', '?')} rows)"
-        if sqli_ok and not secure
-        else (
-            "Secure mode blocked free-form SQL / path abuse"
-            if blocked
-            else f"sqli={sqli_ok}, path_traversal={trav_ok}"
-        )
-    )
-    return {
-        "attack_id": "a1_param_manipulation",
-        "name": "Parameter manipulation (SQLi + path traversal)",
-        "layer": "A",
-        "secure_mode": secure,
-        "success": success,
-        "blocked": blocked,
-        "detail": detail,
-        "evidence": {
-            "sql": sql_text,
-            "sql_row_count": (evidence.get("db_response") or {}).get("count"),
-            "defenses_active_when_secure": SECURE_DEFENSES["a1"],
-        },
-    }
+    return trav_ok
 
 
 def sim_a2() -> dict[str, Any]:
@@ -362,7 +376,7 @@ def sim_a2() -> dict[str, Any]:
     if secure and not poison_hit:
         events.emit(
             "defense",
-            "SECURE_MODE RAG filter dropped trust=untrusted chunks before they entered context.",
+            "SECURE_MODE RAG filter dropped trust=untrusted chunks before they entered context (retrieval trust filter).",
             actor="rag",
             outcome="blocked",
         )
@@ -545,7 +559,7 @@ def sim_a4_agent_exploit() -> dict[str, Any]:
     secure = is_secure()
     events.emit(
         "explain",
-        "A4 = how an agent is exploited end-to-end: "
+        "How an agent is exploited end to end: "
         "(1) poison enters context via RAG → (2) planner 'obeys' and emits tool calls → "
         "(3) executor runs tools. Real Ollama is optional; we inject a fixed exploited plan "
         "so the lesson always works — same shape as a jailbroken/prompt-injected model.",
@@ -554,7 +568,7 @@ def sim_a4_agent_exploit() -> dict[str, Any]:
     )
 
     # --- Stage 1: RAG ---
-    events.emit("plan", "STAGE 1 — Retrieval (context supply chain)", actor="rag", secure_mode=secure)
+    events.emit("retrieve", "STAGE 1 — Retrieval (context supply chain)", actor="rag", secure_mode=secure)
     ingest_benign_corpus()
     if POISON_DOC.exists():
         ingest_poisoned_doc(POISON_DOC)
@@ -580,7 +594,7 @@ def sim_a4_agent_exploit() -> dict[str, Any]:
     elif secure:
         events.emit(
             "defense",
-            "GUARDRAIL L1 (RAG): untrusted chunks filtered — planner never sees the SYSTEM NOTE.",
+            "GUARDRAIL L1 (retrieval trust filter): untrusted chunks filtered — planner never sees the SYSTEM NOTE.",
             actor="rag",
             outcome="blocked",
         )
@@ -813,14 +827,14 @@ def sim_a4_agent_exploit() -> dict[str, Any]:
     if success:
         events.emit(
             "teach",
-            "NEXT: SECURE_MODE=true + recreate → re-run A4. You should see STAGE 1 and/or STAGE 3 blocks "
-            "and learn WHICH guardrail fired.",
+            "NEXT: switch this run to Secure in the run bar and run it again. You should see STAGE 1 "
+            "and/or STAGE 3 blocks, and which guardrail fired.",
             outcome="success",
         )
     elif blocked or secure:
         events.emit(
             "teach",
-            "Map each DEFENSE line to a guardrail type in lesson G1 (Guardrail map).",
+            "Map each DEFENSE line to a guardrail type in the Guardrail map scenario.",
             outcome="blocked",
         )
 
@@ -992,9 +1006,12 @@ def run_simulation(
 
     events.emit(
         "explain",
-        "Lab tools are real (DB/email/RAG). A4 also runs a compromised planner plan through "
-        "the real executor (simulated exploited LLM — reliable for class). "
-        "Watch SQL / PLAN / DEFENSE lines.",
+        "Lab tools are real (database, email, retrieval). Watch the SQL, PLAN and DEFENSE lines."
+        + (
+            " This run feeds a fixed compromised plan to the real executor, standing in for an exploited model."
+            if defense_key == "a4"
+            else ""
+        ),
         actor="lab",
         outcome="info",
     )
@@ -1002,6 +1019,7 @@ def run_simulation(
     if lesson:
         events.emit("teach", lesson["story"], actor="lab", outcome="info")
 
+    forced = get_override()
     for name, url in [
         ("db_tool", DB_TOOL_URL),
         ("email_tool", EMAIL_TOOL_URL),
@@ -1009,13 +1027,18 @@ def run_simulation(
     ]:
         try:
             h = httpx.get(f"{url}/health", timeout=5.0).json()
-            mode = "SECURE" if h.get("secure_mode") else "VULNERABLE"
+            default = "SECURE" if h.get("secure_mode") else "VULNERABLE"
+            if forced is None:
+                msg = f"{name} is in {default} mode"
+            else:
+                run_mode = "SECURE" if forced else "VULNERABLE"
+                msg = f"{name}: this run is {run_mode} (container default {default})"
             events.emit(
-                "defense",
-                f"{name} is in {mode} mode",
+                "status",
+                msg,
                 actor=name,
                 detail=h,
-                secure_mode=bool(h.get("secure_mode")),
+                secure_mode=bool(forced) if forced is not None else bool(h.get("secure_mode")),
             )
         except Exception as e:
             events.emit("tool", f"{name} health failed: {e}", actor=name, outcome="error")
@@ -1039,7 +1062,7 @@ def run_simulation(
     if result["success"]:
         events.emit(
             "teach",
-            "NEXT: set SECURE_MODE=true, recreate agent+tools, re-run this lesson — you should see BLOCKED.",
+            "NEXT: switch this run to Secure in the run bar and run it again. You should see BLOCKED.",
             outcome="success",
         )
         events.emit(
@@ -1054,7 +1077,7 @@ def run_simulation(
             outcome="blocked",
         )
         for d in SECURE_DEFENSES.get(defense_key, []):
-            events.emit("defense", f"Active: {d}", outcome="blocked")
+            events.emit("status", f"Active: {d}", outcome="blocked")
 
     if lesson and lesson.get("mailhog") and result.get("success"):
         events.emit(
