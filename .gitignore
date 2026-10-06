@@ -32,8 +32,6 @@ feedback.txt
 # superpowers scratch
 .superpowers/
 
-# Rendered explainer videos (docs/video/README.md)
-docs/video/out/
 
 # Video build scratch
 docs/video/.work/

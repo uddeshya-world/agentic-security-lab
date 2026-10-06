@@ -1,0 +1,73 @@
+1
+00:00:00,000 --> 00:00:03,660
+Someone slips a forged page into the staff
+handbook.
+
+2
+00:00:09,667 --> 00:00:15,456
+Now anyone who looks up shipping times also reads
+an instruction to email the customer list
+
+3
+00:00:15,496 --> 00:00:15,777
+away.
+
+4
+00:00:21,267 --> 00:00:23,029
+That is retrieval poisoning.
+
+5
+00:00:23,069 --> 00:00:25,282
+The user asks an innocent question.
+
+6
+00:00:25,322 --> 00:00:28,952
+Retrieval pulls in the forged page with the right
+answer.
+
+7
+00:00:32,867 --> 00:00:33,457
+Press Run.
+
+8
+00:00:33,497 --> 00:00:38,877
+The timeline shows the poison arriving in the
+model's context next to the real answer.
+
+9
+00:00:44,467 --> 00:00:47,441
+The fix: only file pages from known authors.
+
+10
+00:00:47,481 --> 00:00:53,127
+In secure mode, retrieval drops untrusted chunks
+before the planner ever sees them.
+
+11
+00:00:56,067 --> 00:00:57,554
+The feature still works.
+
+12
+00:00:57,594 --> 00:00:59,781
+The shipping answer is still there.
+
+13
+00:00:59,821 --> 00:01:01,627
+Only the forged page is gone.
+
+14
+00:01:05,733 --> 00:01:09,656
+In this lab the forged page arrives already marked
+untrusted.
+
+15
+00:01:09,696 --> 00:01:12,060
+In real life nobody marks it for you.
+
+16
+00:01:12,100 --> 00:01:14,918
+You have to know where every page came from.
+
+17
+00:01:17,333 --> 00:01:20,843
+Plant the poison, retrieve it, then quarantine it.

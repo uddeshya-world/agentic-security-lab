@@ -1,0 +1,66 @@
+1
+00:00:00,000 --> 00:00:02,756
+A customer walks up to a bank teller and says:
+
+2
+00:00:02,796 --> 00:00:06,160
+"Your manager told me to collect everyone's
+statements."
+
+3
+00:00:09,533 --> 00:00:11,439
+The teller may well believe it.
+
+4
+00:00:11,479 --> 00:00:15,268
+People are persuadable, and language models are
+much more so.
+
+5
+00:00:19,067 --> 00:00:23,202
+But the vault still needs a key card, whatever the
+teller was told.
+
+6
+00:00:28,600 --> 00:00:30,869
+In this scenario you are the customer.
+
+7
+00:00:30,909 --> 00:00:33,785
+You type the instruction straight into the chat.
+
+8
+00:00:40,033 --> 00:00:43,511
+The model goes along with it and asks for every
+customer.
+
+9
+00:00:43,551 --> 00:00:45,918
+With no rule at the tool, it gets them.
+
+10
+00:00:51,467 --> 00:00:53,806
+In secure mode the model still asks.
+
+11
+00:00:53,846 --> 00:00:55,327
+The tool still says no.
+
+12
+00:00:55,367 --> 00:00:58,302
+The model was not fixed; the vault rule held.
+
+13
+00:01:02,900 --> 00:01:06,219
+A model is far easier to talk round than a trained
+teller,
+
+14
+00:01:06,259 --> 00:01:09,810
+so the vault rule must never depend on the
+teller's judgement.
+
+15
+00:01:12,433 --> 00:01:16,368
+Run both modes and find which part of the system
+said no.

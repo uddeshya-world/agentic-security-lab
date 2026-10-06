@@ -1,0 +1,64 @@
+1
+00:00:00,000 --> 00:00:05,260
+A valet key lets the valet drive your car, but not
+open the boot or the glovebox.
+
+2
+00:00:09,302 --> 00:00:12,737
+The key sets the limit, not the valet's request.
+
+3
+00:00:16,744 --> 00:00:18,407
+Here Alice is signed in.
+
+4
+00:00:18,447 --> 00:00:21,954
+A hijacked planner asks for every customer anyway.
+
+5
+00:00:27,911 --> 00:00:31,742
+The agent's database credential can read the whole
+table,
+
+6
+00:00:31,782 --> 00:00:34,730
+so it uses its own power instead of Alice's.
+
+7
+00:00:34,770 --> 00:00:36,496
+That is a confused deputy.
+
+8
+00:00:40,944 --> 00:00:46,819
+In secure mode the executor ignores the model's
+filter and binds the customer number from
+
+9
+00:00:46,859 --> 00:00:48,879
+Alice's session. One row, hers.
+
+10
+00:00:53,977 --> 00:00:57,201
+Notice the difference from the SQL injection fix.
+
+11
+00:00:57,241 --> 00:00:58,932
+That one refused the call.
+
+12
+00:00:58,972 --> 00:01:01,862
+Identity narrows it to the person signed in.
+
+13
+00:01:03,279 --> 00:01:05,367
+A valet key is a physical object.
+
+14
+00:01:05,407 --> 00:01:11,039
+A session is data, so it has to be bound on the
+server, where the model cannot touch it.
+
+15
+00:01:12,581 --> 00:01:16,166
+Compare your two runs and see whose rows came
+back.

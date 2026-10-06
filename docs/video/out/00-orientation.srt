@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:03,610
+An AI agent works like an office with two people.
+
+2
+00:00:07,273 --> 00:00:12,333
+The assistant reads everything that comes in and
+writes instructions on sticky notes.
+
+3
+00:00:12,373 --> 00:00:14,733
+That is the planner, the language model.
+
+4
+00:00:18,182 --> 00:00:19,715
+The clerk holds the keys.
+
+5
+00:00:19,755 --> 00:00:22,106
+The clerk does whatever the note says.
+
+6
+00:00:22,146 --> 00:00:25,692
+That is the executor, the code that calls the real
+tools.
+
+7
+00:00:29,091 --> 00:00:30,070
+Now the problem.
+
+8
+00:00:30,110 --> 00:00:35,926
+Anyone who can get a letter onto the assistant's
+desk can, in effect, give the clerk orders.
+
+9
+00:00:41,824 --> 00:00:46,497
+This lab gives you that office for real: a
+planner, an executor, a database,
+
+10
+00:00:46,537 --> 00:00:49,659
+an email tool and a mail sink, all on your
+machine.
+
+11
+00:00:52,733 --> 00:00:57,679
+The question every scenario asks is the same: when
+the planner proposes a call,
+
+12
+00:00:57,719 --> 00:01:00,393
+does the executor check it, or just run it?
+
+13
+00:01:01,833 --> 00:01:02,704
+One difference.
+
+14
+00:01:02,744 --> 00:01:05,195
+A real clerk might notice a strange note.
+
+15
+00:01:05,235 --> 00:01:06,409
+Software never does.
+
+16
+00:01:06,449 --> 00:01:12,118
+It runs the note literally, every time, so the
+check has to be written into the clerk's rules.
+
+17
+00:01:12,742 --> 00:01:16,802
+Open the first scenario and confirm your lab is
+running.
