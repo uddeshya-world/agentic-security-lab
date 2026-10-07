@@ -4,6 +4,19 @@ Nine short explainers for the CyberRange Core track. Scripts in
 [`CORE_VIDEO_SCRIPTS.md`](CORE_VIDEO_SCRIPTS.md) are the source of truth for beats
 and narration; lab UI strings win when they differ.
 
+## Where the published videos live
+
+The rendered MP4s are **not** in git, so a student's clone stays small. They are
+assets of the GitHub release
+[`videos-v1`](https://github.com/uddeshya-world/agentic-security-lab/releases/tag/videos-v1),
+and the Pages workflow copies them to
+`https://uddeshya-world.github.io/agentic-security-lab/video/NN-<id>.mp4`, where the
+lessons and the README play them. Captions (WebVTT) and posters for the lessons are in
+`lab/ui/video/`.
+
+To publish a rebuild, create a new release (`videos-v2`, ...) with the new files, then
+point `VIDEO_RELEASE` in `.github/workflows/pages.yml` at it.
+
 ## Outputs
 
 Rendered files land in `out/` (gitignored):

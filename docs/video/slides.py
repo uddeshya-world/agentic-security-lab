@@ -258,10 +258,11 @@ def slide_bank_doors() -> str:
     body = """
     <div class="title" style="font-size:44px">Several doors, each with its own key</div>
     <div class="diagram">
-      <div class="node ok">RAG filter</div><div class="arrow">·</div>
+      <div class="node ok">Retrieval filter</div><div class="arrow">·</div>
       <div class="node ok">Schema</div><div class="arrow">·</div>
-      <div class="node ok">Identity</div><div class="arrow">·</div>
-      <div class="node ok">Egress</div>
+      <div class="node ok">Least privilege</div><div class="arrow">·</div>
+      <div class="node ok">Approval</div><div class="arrow">·</div>
+      <div class="node ok">Allow-list</div>
     </div>
     <div class="subtitle">Defense in depth: one failure is not a breach.</div>"""
     return wrap(body, kicker="Defense in depth", kicker_class="halon")

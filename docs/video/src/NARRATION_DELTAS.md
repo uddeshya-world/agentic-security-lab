@@ -49,3 +49,11 @@ time, master @ 2471533). The lab UI wins when it differs from the script.
   The narration ("No new message") is accurate.
 - MailHog is a third-party UI. Its logo, GitHub link and "Jim" panel are hidden, and the
   inbox sits inside a CyberRange frame.
+
+## Correction after review
+
+- **04 "Several doors" slide**: the first render showed `RAG filter · Schema · Identity ·
+  Egress`. The secure 04 run has no identity layer; it lists five `Active:` layers. The
+  slide source (`slides.py::slide_bank_doors`) now reads `Retrieval filter · Schema · Least
+  privilege · Approval · Allow-list`, and the published `04-agent-exploit.mp4` was patched
+  for that beat only (37.53 s to 46.90 s, chips row overlaid, audio and captions untouched).

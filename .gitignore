@@ -33,7 +33,8 @@ feedback.txt
 .superpowers/
 
 
-# Video build scratch
+# Video build scratch and renders (published as release assets, not in git)
+docs/video/out/
 docs/video/.work/
 # Regenerable TTS WAV (Kokoro bf_emma); rebuild with ./docs/video/build.sh
 docs/video/src/audio/
