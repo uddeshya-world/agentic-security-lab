@@ -1,0 +1,1 @@
+The lab's database tool works like that slip. It pastes whatever filter it is given into its query.

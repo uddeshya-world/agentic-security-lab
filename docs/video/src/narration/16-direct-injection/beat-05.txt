@@ -1,0 +1,1 @@
+In secure mode the model still asks. The tool still says no. The model was not fixed; the vault rule held.

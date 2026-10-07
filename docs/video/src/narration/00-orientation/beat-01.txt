@@ -1,0 +1,1 @@
+The assistant reads everything that comes in and writes instructions on sticky notes. That is the planner, the language model.

@@ -1,0 +1,13 @@
+A fire plan does not put every extinguisher in the lobby. It puts one at each point on the escape route.
+
+The guardrail map does the same for an agent: eight hops from the user's question to data leaving, with a control on each.
+
+Input and context checks, the planner, identity, schema, privilege, the send tool, and the answer itself. You have now attacked and defended each one.
+
+Run it, and the lab prints the same map from its own code.
+
+When a new tool arrives, place it on the map and ask: does it bring data in, or let data out?
+
+Fire does not change its route when it sees your plan. Attackers do, so review the map every time a tool or data source is added.
+
+Answer the last question, then claim your completion badge on the Area page.

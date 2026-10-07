@@ -1,0 +1,1 @@
+In secure mode the executor ignores the model's filter and binds the customer number from Alice's session. One row, hers.

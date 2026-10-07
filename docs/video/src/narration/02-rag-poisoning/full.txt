@@ -1,0 +1,15 @@
+Someone slips a forged page into the staff handbook.
+
+Now anyone who looks up shipping times also reads an instruction to email the customer list away.
+
+That is retrieval poisoning. The user asks an innocent question. Retrieval pulls in the forged page with the right answer.
+
+Press Run. The timeline shows the poison arriving in the model's context next to the real answer.
+
+The fix: only file pages from known authors. In secure mode, retrieval drops untrusted chunks before the planner ever sees them.
+
+The feature still works. The shipping answer is still there. Only the forged page is gone.
+
+In this lab the forged page arrives already marked untrusted. In real life nobody marks it for you. You have to know where every page came from.
+
+Plant the poison, retrieve it, then quarantine it.

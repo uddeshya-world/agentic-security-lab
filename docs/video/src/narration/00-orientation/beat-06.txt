@@ -1,0 +1,1 @@
+One difference. A real clerk might notice a strange note. Software never does. It runs the note literally, every time, so the check has to be written into the clerk's rules.

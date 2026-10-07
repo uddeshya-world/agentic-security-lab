@@ -1,0 +1,1 @@
+A valet key is a physical object. A session is data, so it has to be bound on the server, where the model cannot touch it.

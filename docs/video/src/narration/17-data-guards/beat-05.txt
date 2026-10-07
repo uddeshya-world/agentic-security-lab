@@ -1,0 +1,1 @@
+In secure mode a scanner inspects the payload on every hop: restricted data is blocked, email addresses are masked.

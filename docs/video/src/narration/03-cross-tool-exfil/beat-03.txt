@@ -1,0 +1,1 @@
+Press Run. The agent dumps the table and emails it to an outside address.

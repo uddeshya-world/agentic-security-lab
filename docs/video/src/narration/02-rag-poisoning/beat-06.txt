@@ -1,0 +1,1 @@
+In this lab the forged page arrives already marked untrusted. In real life nobody marks it for you. You have to know where every page came from.

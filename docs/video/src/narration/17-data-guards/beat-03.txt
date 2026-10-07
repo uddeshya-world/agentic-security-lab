@@ -1,0 +1,1 @@
+An agent moves data through four channels. A synthetic SSN and card number are planted in them.

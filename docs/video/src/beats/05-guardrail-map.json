@@ -1,0 +1,100 @@
+{
+  "scenario": "05-guardrail-map",
+  "title": "Guardrail map",
+  "target_duration_s": 75,
+  "actual_duration_s": 75.071333,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "A fire plan does not put every extinguisher in the lobby. It puts one at each point on the escape route.",
+      "on_screen": "Illustration: a building floor plan with an escape route. Extinguishers, doors and alarms at points along it.",
+      "visual": {
+        "type": "slide",
+        "name": "fireplan",
+        "kw": {}
+      },
+      "audio_s": 6.525
+    },
+    {
+      "index": 1,
+      "narration": "The guardrail map does the same for an agent: eight hops from the user's question to data leaving, with a control on each.",
+      "on_screen": "The lab, scenario 05. The eight-hop map from user to world.",
+      "visual": {
+        "type": "capture",
+        "id": "scenario",
+        "zoom": {
+          "z": 1.6,
+          "ax": 0.3,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 7.5
+    },
+    {
+      "index": 2,
+      "narration": "Input and context checks, the planner, identity, schema, privilege, the send tool, and the answer itself. You have now attacked and defended each one.",
+      "on_screen": "Hops highlighted one by one with the scenario that taught them.",
+      "visual": {
+        "type": "slide",
+        "name": "hops",
+        "kw": {}
+      },
+      "audio_s": 9.1
+    },
+    {
+      "index": 3,
+      "narration": "Run it, and the lab prints the same map from its own code.",
+      "on_screen": "**Run the attack** (prints the map), then **Check the evidence**.",
+      "visual": {
+        "type": "capture",
+        "id": "run-map",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.45
+        }
+      },
+      "audio_s": 3.95
+    },
+    {
+      "index": 4,
+      "narration": "When a new tool arrives, place it on the map and ask: does it bring data in, or let data out?",
+      "on_screen": "A new tool appears on the map: \"save report to partner folder\".",
+      "visual": {
+        "type": "slide",
+        "name": "new_tool",
+        "kw": {}
+      },
+      "audio_s": 5.95
+    },
+    {
+      "index": 5,
+      "narration": "Fire does not change its route when it sees your plan. Attackers do, so review the map every time a tool or data source is added.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "Fire does not change its route when it sees your plan. Attackers do, so review the map every time a tool or data source is added."
+        }
+      },
+      "audio_s": 7.9
+    },
+    {
+      "index": 6,
+      "narration": "Answer the last question, then claim your completion badge on the Area page.",
+      "on_screen": "End card: \"Finish the Core path, then claim your completion badge.\"",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Finish the Core path",
+          "title": "Claim your completion badge",
+          "hint": "Answer the last question, then claim it on the Area page."
+        }
+      },
+      "audio_s": 5.075
+    }
+  ]
+}

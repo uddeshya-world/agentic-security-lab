@@ -1,0 +1,15 @@
+Reading a confidential file at your desk is a problem. Posting it to a stranger is the breach.
+
+A post room with two rules stops the parcel, even when someone has already read the file.
+
+The agent has both: a tool that reads customers, and a tool that sends email. Together they are an exfiltration chain.
+
+Press Run. The agent dumps the table and emails it to an outside address.
+
+MailHog is the lab's stand-in for the attacker's inbox. The message really arrived. Nothing touched the real internet.
+
+In secure mode, the send tool only mails approved domains and side effects need approval. No new message.
+
+This post room is instant and automated. There is no one to notice a strange parcel unless you build the check in.
+
+Watch the export land in MailHog, then prove it cannot.

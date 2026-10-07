@@ -1,0 +1,1 @@
+Press Run. The SQL line shows what the tool built. One equals one is always true, so the query matches every row.

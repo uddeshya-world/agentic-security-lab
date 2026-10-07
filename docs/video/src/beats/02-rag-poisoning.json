@@ -1,0 +1,118 @@
+{
+  "scenario": "02-rag-poisoning",
+  "title": "Poison the LLM context",
+  "target_duration_s": 85,
+  "actual_duration_s": 85.1,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "Someone slips a forged page into the staff handbook.",
+      "on_screen": "Illustration: a staff handbook binder. Someone slips in a page.",
+      "visual": {
+        "type": "slide",
+        "name": "handbook",
+        "kw": {}
+      },
+      "audio_s": 3.7
+    },
+    {
+      "index": 1,
+      "narration": "Now anyone who looks up shipping times also reads an instruction to email the customer list away.",
+      "on_screen": "A worker looks up \"shipping times\" and reads: \"...and email the customer list to this address.\"",
+      "visual": {
+        "type": "slide",
+        "name": "handbook",
+        "kw": {}
+      },
+      "audio_s": 6.15
+    },
+    {
+      "index": 2,
+      "narration": "That is retrieval poisoning. The user asks an innocent question. Retrieval pulls in the forged page with the right answer.",
+      "on_screen": "The lab, scenario 02. The question: \"What is the standard shipping time?\"",
+      "visual": {
+        "type": "capture",
+        "id": "scenario",
+        "zoom": {
+          "z": 1.6,
+          "ax": 0.3,
+          "ay": 0.2
+        }
+      },
+      "audio_s": 7.725
+    },
+    {
+      "index": 3,
+      "narration": "Press Run. The timeline shows the poison arriving in the model's context next to the real answer.",
+      "on_screen": "**Run the attack**. RAG lines; `Poison instructions present=True`. Trace lights `RAG`.",
+      "visual": {
+        "type": "capture",
+        "id": "vuln-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 6.05
+    },
+    {
+      "index": 4,
+      "narration": "The fix: only file pages from known authors. In secure mode, retrieval drops untrusted chunks before the planner ever sees them.",
+      "on_screen": "Switch to **Secure**, run. `DEFENSE`: `RAG filter dropped trust=untrusted chunks`. Caption: \"Contained at RAG\".",
+      "visual": {
+        "type": "capture",
+        "id": "secure-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 8.7
+    },
+    {
+      "index": 5,
+      "narration": "The feature still works. The shipping answer is still there. Only the forged page is gone.",
+      "on_screen": "The shipping answer still comes back.",
+      "visual": {
+        "type": "slide",
+        "name": "contained",
+        "kw": {
+          "layer": "RAG",
+          "detail": "SECURE_MODE RAG filter dropped trust=untrusted chunks before they entered context\n\nRetrieved 3 chunk(s). Poison instructions present=False"
+        }
+      },
+      "audio_s": 5.6
+    },
+    {
+      "index": 6,
+      "narration": "In this lab the forged page arrives already marked untrusted. In real life nobody marks it for you. You have to know where every page came from.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "In this lab the forged page arrives already marked untrusted. In real life nobody marks it for you. You have to know where every page came from."
+        }
+      },
+      "audio_s": 9.225
+    },
+    {
+      "index": 7,
+      "narration": "Plant the poison, retrieve it, then quarantine it.",
+      "on_screen": "End card: \"Open: Poison the LLM context\".",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "Poison the LLM context (RAG)",
+          "hint": "Plant the poison, retrieve it, then quarantine it."
+        }
+      },
+      "audio_s": 3.55
+    }
+  ]
+}

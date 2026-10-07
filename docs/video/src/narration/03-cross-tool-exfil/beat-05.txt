@@ -1,0 +1,1 @@
+In secure mode, the send tool only mails approved domains and side effects need approval. No new message.

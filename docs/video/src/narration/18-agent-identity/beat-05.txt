@@ -1,0 +1,1 @@
+Notice the difference from the SQL injection fix. That one refused the call. Identity narrows it to the person signed in.

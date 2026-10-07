@@ -1,0 +1,1 @@
+The Forensics tab shows the before and after for each channel.

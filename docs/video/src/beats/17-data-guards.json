@@ -1,0 +1,126 @@
+{
+  "scenario": "17-data-guards",
+  "title": "Data guards: DLP for agents",
+  "target_duration_s": 85,
+  "actual_duration_s": 86.033333,
+  "voice": "bf_emma",
+  "beats": [
+    {
+      "index": 0,
+      "narration": "Airport security has two different checks.",
+      "on_screen": "Illustration: an airport. A boarding pass check, then an X-ray belt.",
+      "visual": {
+        "type": "slide",
+        "name": "airport",
+        "kw": {}
+      },
+      "audio_s": 3.1
+    },
+    {
+      "index": 1,
+      "narration": "The boarding pass says where you are allowed to go.",
+      "on_screen": "Boarding pass scanned: \"Gate 12\".",
+      "visual": {
+        "type": "slide",
+        "name": "airport",
+        "kw": {}
+      },
+      "audio_s": 3.15
+    },
+    {
+      "index": 2,
+      "narration": "The X-ray says what is in your bag. A valid ticket does not carry a prohibited item through.",
+      "on_screen": "A bag on the X-ray with a prohibited item. It is pulled aside.",
+      "visual": {
+        "type": "slide",
+        "name": "airport",
+        "kw": {}
+      },
+      "audio_s": 6.125
+    },
+    {
+      "index": 3,
+      "narration": "An agent moves data through four channels. A synthetic SSN and card number are planted in them.",
+      "on_screen": "The lab, scenario 17. Four channels: prompt, retrieved chunk, tool result, model answer.",
+      "visual": {
+        "type": "slide",
+        "name": "channels",
+        "kw": {}
+      },
+      "audio_s": 6.55
+    },
+    {
+      "index": 4,
+      "narration": "With no data guard, the restricted data crosses every hop.",
+      "on_screen": "**Run the attack** in vulnerable mode. Each hop forwards the raw data.",
+      "visual": {
+        "type": "capture",
+        "id": "vuln-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 4.425
+    },
+    {
+      "index": 5,
+      "narration": "In secure mode a scanner inspects the payload on every hop: restricted data is blocked, email addresses are masked.",
+      "on_screen": "Switch to **Secure**, run. `DATA` before, `DEFENSE` C21 scan_data BLOCK, `DATA` after `[SSN]`. Caption: \"Contained at USER\".",
+      "visual": {
+        "type": "capture",
+        "id": "secure-run",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.6
+        }
+      },
+      "audio_s": 7.475
+    },
+    {
+      "index": 6,
+      "narration": "The Forensics tab shows the before and after for each channel.",
+      "on_screen": "Open the **Forensics** tab: before and after per channel.",
+      "visual": {
+        "type": "capture",
+        "id": "forensics",
+        "zoom": {
+          "z": 1.55,
+          "ax": 1.0,
+          "ay": 0.45
+        }
+      },
+      "audio_s": 4.125
+    },
+    {
+      "index": 7,
+      "narration": "The lab's X-ray is a set of patterns for SSNs and card numbers. Real data in unusual formats can slip past pattern matching.",
+      "on_screen": "Text card: \"Where the analogy breaks\".",
+      "visual": {
+        "type": "slide",
+        "name": "break",
+        "kw": {
+          "text": "The lab's X-ray is a set of patterns for SSNs and card numbers. Real data in unusual formats can slip past pattern matching."
+        }
+      },
+      "audio_s": 8.45
+    },
+    {
+      "index": 8,
+      "narration": "Find which control stopped the SSN, and which one did not need to.",
+      "on_screen": "End card: \"Open: Data guards\".",
+      "visual": {
+        "type": "slide",
+        "name": "end",
+        "kw": {
+          "open_label": "Open",
+          "title": "Data guards \u2014 DLP for agents",
+          "hint": "Find which control stopped the SSN."
+        }
+      },
+      "audio_s": 4.8
+    }
+  ]
+}

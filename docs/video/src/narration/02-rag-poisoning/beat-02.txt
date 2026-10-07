@@ -1,0 +1,1 @@
+That is retrieval poisoning. The user asks an innocent question. Retrieval pulls in the forged page with the right answer.

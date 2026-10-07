@@ -1,0 +1,1 @@
+MailHog is the lab's stand-in for the attacker's inbox. The message really arrived. Nothing touched the real internet.

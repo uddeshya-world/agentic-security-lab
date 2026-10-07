@@ -1,0 +1,1 @@
+The agent's database credential can read the whole table, so it uses its own power instead of Alice's. That is a confused deputy.

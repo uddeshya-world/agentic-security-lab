@@ -1,0 +1,15 @@
+An AI agent works like an office with two people.
+
+The assistant reads everything that comes in and writes instructions on sticky notes. That is the planner, the language model.
+
+The clerk holds the keys. The clerk does whatever the note says. That is the executor, the code that calls the real tools.
+
+Now the problem. Anyone who can get a letter onto the assistant's desk can, in effect, give the clerk orders.
+
+This lab gives you that office for real: a planner, an executor, a database, an email tool and a mail sink, all on your machine.
+
+The question every scenario asks is the same: when the planner proposes a call, does the executor check it, or just run it?
+
+One difference. A real clerk might notice a strange note. Software never does. It runs the note literally, every time, so the check has to be written into the clerk's rules.
+
+Open the first scenario and confirm your lab is running.
