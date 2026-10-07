@@ -1,5 +1,26 @@
 # Changelog
 
+## v2.3.0 — 2026-10-07
+
+Explainer videos for the 9 Core scenarios.
+
+### Added
+- Nine explainers of 75 to 90 seconds, one per Core lesson: the lesson's analogy, the real lab
+  on synthetic data, and where the analogy breaks. Captions burned in, offline narration
+  (Kokoro-82M). Files and checksums: the `videos-v1` release.
+- **Watch** button in each Core lesson's "In plain terms" box. The video streams from GitHub
+  Pages only when pressed (`preload="metadata"`, never autoplay); the poster and transcript
+  ship with the lab in `lab/ui/video/`, so the transcript still works offline.
+- README "Watch first" section with the nine videos.
+- `docs/video/`: scripts, sources and the one-command rebuild pipeline.
+- `tests/test_videos.py`.
+
+### Changed
+- The Pages workflow adds the release's MP4s and thumbnails, plus the transcripts, under
+  `/video/`, and checks all nine are present. The MP4s are never committed, so a clone stays
+  about 34 MB.
+- `04-agent-exploit` video: the "Several doors" slide now names the five layers the lab prints.
+
 ## v2.2.0 — 2026-10-05
 
 Fixes from the first full run of the Core path, a badge emblem, and plain-language

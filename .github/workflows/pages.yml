@@ -6,7 +6,7 @@ name: playground (GitHub Pages)
 on:
   push:
     branches: [master]
-    paths: ["lab/ui/play.html", "lab/ui/assets/**", ".github/workflows/pages.yml"]
+    paths: ["lab/ui/play.html", "lab/ui/assets/**", "lab/ui/video/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -20,6 +20,8 @@ concurrency:
 
 env:
   PLAYGROUND_URL: https://uddeshya-world.github.io/agentic-security-lab/
+  # Core explainer videos: release assets, not git, so a clone stays small.
+  VIDEO_RELEASE: videos-v1
 
 jobs:
   build:
@@ -39,6 +41,14 @@ jobs:
           cp _site/play.html _site/index.html
           touch _site/.nojekyll
 
+      - name: Add the Core explainer videos from the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p _site/video
+          gh release download "$VIDEO_RELEASE" --repo "$GITHUB_REPOSITORY"             --pattern "*.mp4" --pattern "*-thumb.png" --dir _site/video
+          cp lab/ui/video/*.vtt _site/video/
+
       - name: Safety checks on the published bundle
         run: |
           set -e
@@ -46,6 +56,8 @@ jobs:
           ! grep -R -E "fetch\(|XMLHttpRequest|/run|/lab/attack|/credential/" _site --include=*.html
           ls -R _site
           test "$(find _site -name '*.html' | wc -l)" -eq 2
+          test "$(find _site/video -name '*.mp4' | wc -l)" -eq 9
+          test "$(find _site/video -name '*.vtt' | wc -l)" -eq 9
 
       - uses: actions/upload-pages-artifact@v3
         with:

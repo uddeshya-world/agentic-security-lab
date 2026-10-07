@@ -18,5 +18,6 @@
     { "id": "step-02", "title": "Four channels", "file": "step-02.md" },
     { "id": "step-03", "title": "Turn the guards on", "file": "step-03.md" },
     { "id": "step-04", "title": "What DLP is not", "file": "step-04.md" }
-  ]
+  ],
+  "video": { "src": "17-data-guards", "seconds": 86 }
 }

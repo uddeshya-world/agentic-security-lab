@@ -56,5 +56,6 @@
       "file": "step-06.md"
     }
   ],
-  "track": "core"
+  "track": "core",
+  "video": { "src": "01-tool-abuse-sqli", "seconds": 85 }
 }

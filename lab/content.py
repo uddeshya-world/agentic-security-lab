@@ -279,6 +279,16 @@ def catalog_payload() -> dict[str, Any]:
     }
 
 
+def _video(scen: dict[str, Any]) -> dict[str, Any] | None:
+    v = scen.get("video")
+    if not isinstance(v, dict) or not isinstance(v.get("src"), str):
+        return None
+    src = v["src"]
+    if not src.replace("-", "").isalnum():
+        return None
+    return {"src": src, "seconds": int(v.get("seconds") or 0)}
+
+
 def scenario_payload(area_id: str, scenario_id: str) -> dict[str, Any] | None:
     """Full scenario for the stepper: metadata + ordered steps with rendered bodies."""
     scen = get_scenario(area_id, scenario_id)
@@ -305,6 +315,9 @@ def scenario_payload(area_id: str, scenario_id: str) -> dict[str, Any] | None:
         "controls": scen.get("controls") or [],
         # Optional trifecta legs the scenario's attack path touches: any of "u", "p", "e".
         "legs": [leg for leg in (scen.get("legs") or []) if leg in ("u", "p", "e")],
+        # Optional explainer video: {"src": "<file stem>", "seconds": N}. The MP4 streams
+        # from GitHub Pages; the poster and transcript ship with the lab (lab/ui/video/).
+        "video": _video(scen),
         **_standards(scen),
         "attack_id": scen.get("attack_id"),
         "mailhog": scen.get("mailhog", False),

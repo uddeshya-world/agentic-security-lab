@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=19" />
+<link rel="stylesheet" href="/lab/ui/cyberrange.css?v=20" />
 <script src="/lab/ui/vendor/marked.min.js"></script>
 <style>
   html, body { height: 100%; }
@@ -376,7 +376,7 @@
 
 </div>
 
-<script src="/lab/ui/cyberrange.js?v=19"></script>
+<script src="/lab/ui/cyberrange.js?v=20"></script>
 <script>
 const esc = CR.esc;
 const TTYD = `http://${location.hostname}:7681`;
@@ -611,7 +611,12 @@ function renderStep() {
   CR.linkSource(el);
   // The "In plain terms" analogy is an explainer, not a warning: give it the calm callout.
   el.querySelectorAll("blockquote").forEach((q) => {
-    if (/^In plain terms\./.test((q.textContent || "").trim())) q.classList.add("plain");
+    if (!/^In plain terms\./.test((q.textContent || "").trim())) return;
+    q.classList.add("plain");
+    if (data.video) {
+      q.insertAdjacentHTML("beforeend", `<p class="watchrow">${CR.videoButton(data.video)}</p>`);
+      q.querySelector(".watch").onclick = () => CR.openVideo(data.video.src, data.video.seconds, data.title);
+    }
   });
   CR.enhanceCode(el, sendToTerminal);
   CR.revealScan(el);

@@ -710,6 +710,53 @@ const CR = (() => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  /* ---- explainer videos ------------------------------------------------------
+     The MP4s are assets of the videos-v1 release, published to GitHub Pages so a
+     clone stays small. Poster and transcript ship with the lab (lab/ui/video/), so
+     the transcript still works offline. Nothing loads until the learner presses Watch. */
+  const VIDEO_BASE = "https://uddeshya-world.github.io/agentic-security-lab/video/";
+  const clock = (s) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+  function vttToText(vtt) {
+    return String(vtt || "")
+      .replace(/^WEBVTT[^\n]*\n/, "")
+      .split(/\n\s*\n/)
+      .map((cue) => cue.split("\n").filter((l) => l && !/^\d+$/.test(l) && !/-->/.test(l)).join(" "))
+      .filter(Boolean)
+      .join(" ");
+  }
+  function videoButton(v) {
+    return `<button type="button" class="btn sm watch" data-video="${esc(v.src)}" data-seconds="${esc(v.seconds || 0)}">` +
+      `▶ Watch the ${esc(clock(v.seconds || 0))} explainer</button>`;
+  }
+  function openVideo(src, seconds, title) {
+    let sheet = document.getElementById("videoSheet");
+    if (!sheet) {
+      sheet = document.createElement("dialog");
+      sheet.id = "videoSheet";
+      sheet.className = "vsheet";
+      sheet.setAttribute("aria-labelledby", "videoTitle");
+      document.body.appendChild(sheet);
+      sheet.addEventListener("close", () => { const vid = sheet.querySelector("video"); if (vid) vid.pause(); });
+    }
+    sheet.innerHTML = `
+      <div class="vhead"><h3 id="videoTitle">${esc(title || "Explainer")} <span class="lbl">${esc(clock(seconds || 0))}</span></h3>
+        <button type="button" class="btn sm ghost" data-close>Close</button></div>
+      <video controls playsinline preload="metadata" poster="/lab/ui/video/${esc(src)}.jpg">
+        <source src="${VIDEO_BASE}${esc(src)}.mp4" type="video/mp4">
+      </video>
+      <p class="vnote" data-err hidden>The video could not load. It streams from GitHub Pages, so it needs an internet connection. The transcript below has every word.</p>
+      <p class="vnote">Captions are in the video. Streams from uddeshya-world.github.io; the lab itself stays on your machine.</p>
+      <details class="vtx"><summary>Transcript</summary><p data-tx>Loading…</p></details>`;
+    sheet.querySelector("[data-close]").onclick = () => sheet.close();
+    sheet.querySelector("video").addEventListener("error", () => { sheet.querySelector("[data-err]").hidden = false; }, true);
+    fetch(`/lab/ui/video/${encodeURIComponent(src)}.vtt`)
+      .then((r) => (r.ok ? r.text() : Promise.reject()))
+      .then((t) => { sheet.querySelector("[data-tx]").textContent = vttToText(t); })
+      .catch(() => { sheet.querySelector("[data-tx]").textContent = "Transcript unavailable."; });
+    sheet.showModal();
+    sheet.querySelector("[data-close]").focus();
+  }
+
   /* ---- source links --------------------------------------------------------
      A lesson that says "open agents/executor.py" assumes a checkout. Inline code
      naming a repo file becomes a link to it on GitHub (opens in a new tab), so a
@@ -927,6 +974,6 @@ const CR = (() => {
            initTypewriter, initSearch, openSearch, initAnnounce,
            initTheme, setTheme, activeTheme,
            hasGsap, initSmoothScroll, renderHops, initHopScrub, initWordReveal,
-           esc, api, loadProgress, saveProgress, recordPass, isPassed, aisvsChips, astChips, linkSource, badgeEmblem, downloadBadge,
+           esc, api, loadProgress, saveProgress, recordPass, isPassed, aisvsChips, astChips, linkSource, badgeEmblem, downloadBadge, videoButton, openVideo, vttToText, VIDEO_BASE,
            transcript, traceHTML, paintTrace, enhanceCode, revealScan };
 })();

@@ -18,5 +18,6 @@
     { "id": "step-02", "title": "The deputy dumps everyone", "file": "step-02.md" },
     { "id": "step-03", "title": "Bind the session", "file": "step-03.md" },
     { "id": "step-04", "title": "Who is the principal?", "file": "step-04.md" }
-  ]
+  ],
+  "video": { "src": "18-agent-identity", "seconds": 80 }
 }

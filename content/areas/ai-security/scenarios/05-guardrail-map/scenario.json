@@ -50,5 +50,6 @@
       "file": "step-03.md"
     }
   ],
-  "track": "core"
+  "track": "core",
+  "video": { "src": "05-guardrail-map", "seconds": 75 }
 }

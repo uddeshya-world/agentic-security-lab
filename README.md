@@ -37,6 +37,32 @@ safe to host publicly. Everything below is the real lab it previews.
 
 ---
 
+## Watch first: the Core path in 9 short videos
+
+Each Core scenario has an explainer of about 80 seconds: one everyday analogy, the
+real lab running on synthetic data, and the point where the analogy stops being true.
+The same video opens from the **Watch** button at the top of each lesson.
+
+[![Tool abuse: SQL injection, explainer video](https://uddeshya-world.github.io/agentic-security-lab/video/01-tool-abuse-sqli-thumb.png)](https://uddeshya-world.github.io/agentic-security-lab/video/01-tool-abuse-sqli.mp4)
+
+| # | Video | Analogy | Length |
+|---|---|---|---|
+| 1 | [What is an agent with tools?](https://uddeshya-world.github.io/agentic-security-lab/video/00-orientation.mp4) | an office assistant and a clerk | 1:20 |
+| 2 | [Tool abuse: SQL injection](https://uddeshya-world.github.io/agentic-security-lab/video/01-tool-abuse-sqli.mp4) | a library request slip | 1:25 |
+| 3 | [Direct prompt injection](https://uddeshya-world.github.io/agentic-security-lab/video/16-direct-injection.mp4) | a bank teller and the vault | 1:20 |
+| 4 | [Poison the LLM context (RAG)](https://uddeshya-world.github.io/agentic-security-lab/video/02-rag-poisoning.mp4) | a forged page in the handbook | 1:25 |
+| 5 | [Cross-tool exfiltration](https://uddeshya-world.github.io/agentic-security-lab/video/03-cross-tool-exfil.mp4) | the post room | 1:26 |
+| 6 | [Data guards (DLP)](https://uddeshya-world.github.io/agentic-security-lab/video/17-data-guards.mp4) | airport security | 1:26 |
+| 7 | [Agent identity and the confused deputy](https://uddeshya-world.github.io/agentic-security-lab/video/18-agent-identity.mp4) | a valet key | 1:20 |
+| 8 | [Exploit the agent end to end](https://uddeshya-world.github.io/agentic-security-lab/video/04-agent-exploit.mp4) | a heist and a bank's doors | 1:30 |
+| 9 | [Guardrail map](https://uddeshya-world.github.io/agentic-security-lab/video/05-guardrail-map.mp4) | a building fire plan | 1:15 |
+
+Captions are burned in; transcripts are in [`lab/ui/video/`](lab/ui/video/). Scripts and
+the rebuild pipeline: [`docs/video/`](docs/video/). Files and checksums: the
+[`videos-v1` release](https://github.com/uddeshya-world/agentic-security-lab/releases/tag/videos-v1).
+
+---
+
 ## Start here — guided, hands-on paths
 
 You need Docker (see [Setup](#setup)). Then:

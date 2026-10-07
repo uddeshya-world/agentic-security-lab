@@ -519,6 +519,17 @@ a { color: inherit; text-decoration: none; }
 .md blockquote p:last-child { margin-bottom: 0; }
 .md blockquote.plain { background: var(--halon-bed); border-left-color: var(--halon); color: var(--chalk); }
 .md blockquote.plain strong { color: var(--halon-ink); }
+.md blockquote .watchrow { margin: var(--s3) 0 0; }
+.vsheet { border: 1px solid var(--edge-hi); background: var(--plate); color: var(--chalk); border-radius: var(--r-lg);
+          padding: var(--s5); width: min(960px, 94vw); max-height: 92vh; overflow: auto; }
+.vsheet::backdrop { background: var(--veil); }
+.vsheet .vhead { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); margin-bottom: var(--s3); }
+.vsheet h3 { font-family: var(--display); font-size: 17px; margin: 0; }
+.vsheet h3 .lbl { font-family: var(--mono); font-size: 11px; color: var(--ash); margin-left: var(--s2); }
+.vsheet video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--void); border-radius: var(--r); }
+.vsheet .vnote { font-size: 12.5px; color: var(--ash); margin: var(--s3) 0 0; }
+.vsheet .vtx { margin-top: var(--s3); font-size: 13.5px; color: var(--ash); line-height: 1.65; }
+.vsheet .vtx summary { cursor: pointer; color: var(--chalk); min-height: 32px; }
 .md hr { border: 0; border-top: 1px solid var(--edge); margin: var(--s6) 0; }
 .md table { border-collapse: collapse; width: 100%; font-size: 13px; margin: var(--s4) 0; }
 .md .tablewrap { overflow-x: auto; margin: var(--s4) 0; }

@@ -39,5 +39,6 @@
       "file": "step-04.md"
     }
   ],
-  "track": "core"
+  "track": "core",
+  "video": { "src": "00-orientation", "seconds": 80 }
 }

@@ -18,5 +18,6 @@
     { "id": "step-02", "title": "Steer the planner from chat", "file": "step-02.md" },
     { "id": "step-03", "title": "Prove the executor still holds", "file": "step-03.md" },
     { "id": "step-04", "title": "Name the channel", "file": "step-04.md" }
-  ]
+  ],
+  "video": { "src": "16-direct-injection", "seconds": 80 }
 }

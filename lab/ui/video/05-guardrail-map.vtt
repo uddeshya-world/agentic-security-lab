@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.571
+A fire plan does not put every extinguisher in the
+lobby.
+
+2
+00:00:03.611 --> 00:00:06.485
+It puts one at each point on the escape route.
+
+3
+00:00:11.267 --> 00:00:14.016
+The guardrail map does the same for an agent:
+
+4
+00:00:14.056 --> 00:00:18.727
+eight hops from the user's question to data
+leaving, with a control on each.
+
+5
+00:00:22.533 --> 00:00:27.535
+Input and context checks, the planner, identity,
+schema, privilege, the send tool,
+
+6
+00:00:27.575 --> 00:00:28.888
+and the answer itself.
+
+7
+00:00:28.928 --> 00:00:31.593
+You have now attacked and defended each one.
+
+8
+00:00:41.300 --> 00:00:45.210
+Run it, and the lab prints the same map from its
+own code.
+
+9
+00:00:48.800 --> 00:00:54.710
+When a new tool arrives, place it on the map and
+ask: does it bring data in, or let data out?
+
+10
+00:00:58.175 --> 00:01:01.468
+Fire does not change its route when it sees your
+plan.
+
+11
+00:01:01.508 --> 00:01:06.035
+Attackers do, so review the map every time a tool
+or data source is added.
+
+12
+00:01:07.550 --> 00:01:12.585
+Answer the last question, then claim your
+completion badge on the Area page.

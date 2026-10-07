@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.060
+Airport security has two different checks.
+
+2
+00:00:08.000 --> 00:00:11.110
+The boarding pass says where you are allowed to
+go.
+
+3
+00:00:14.000 --> 00:00:16.316
+The X-ray says what is in your bag.
+
+4
+00:00:16.356 --> 00:00:20.085
+A valid ticket does not carry a prohibited item
+through.
+
+5
+00:00:24.000 --> 00:00:26.887
+An agent moves data through four channels.
+
+6
+00:00:26.927 --> 00:00:30.510
+A synthetic SSN and card number are planted in
+them.
+
+7
+00:00:36.000 --> 00:00:40.385
+With no data guard, the restricted data crosses
+every hop.
+
+8
+00:00:46.000 --> 00:00:51.665
+In secure mode a scanner inspects the payload on
+every hop: restricted data is blocked,
+
+9
+00:00:51.705 --> 00:00:53.435
+email addresses are masked.
+
+10
+00:00:58.000 --> 00:01:02.085
+The Forensics tab shows the before and after for
+each channel.
+
+11
+00:01:06.000 --> 00:01:10.288
+The lab's X-ray is a set of patterns for SSNs and
+card numbers.
+
+12
+00:01:10.328 --> 00:01:14.410
+Real data in unusual formats can slip past pattern
+matching.
+
+13
+00:01:18.000 --> 00:01:22.760
+Find which control stopped the SSN, and which one
+did not need to.

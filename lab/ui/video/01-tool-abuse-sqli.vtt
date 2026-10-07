@@ -1,0 +1,74 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:02.089
+Here is a library request slip.
+
+2
+00:00:02.129 --> 00:00:05.660
+You write one title, the librarian fetches one
+book.
+
+3
+00:00:07.733 --> 00:00:10.144
+Now someone writes "any book, all of them".
+
+4
+00:00:10.184 --> 00:00:14.818
+A librarian who copies the slip straight onto the
+order fetches the whole library.
+
+5
+00:00:21.267 --> 00:00:24.120
+The lab's database tool works like that slip.
+
+6
+00:00:24.160 --> 00:00:27.527
+It pastes whatever filter it is given into its
+query.
+
+7
+00:00:30.933 --> 00:00:31.567
+Press Run.
+
+8
+00:00:31.607 --> 00:00:34.193
+The SQL line shows what the tool built.
+
+9
+00:00:34.233 --> 00:00:38.368
+One equals one is always true, so the query
+matches every row.
+
+10
+00:00:42.533 --> 00:00:47.738
+Three rows: the whole customer table, from a
+perfectly valid query. Nothing broke.
+
+11
+00:00:47.778 --> 00:00:50.168
+The tool did exactly what it was told.
+
+12
+00:00:54.133 --> 00:00:58.967
+The fix is a different slip: one box, for exactly
+one customer number.
+
+13
+00:00:59.007 --> 00:01:02.518
+In secure mode the tool refuses a free-form
+filter.
+
+14
+00:01:07.667 --> 00:01:12.670
+Unlike a library, a database runs the slip as
+code, instantly and silently.
+
+15
+00:01:12.710 --> 00:01:15.427
+Nobody looks at the trolley and asks why.
+
+16
+00:01:17.333 --> 00:01:21.668
+Run it yourself, read your own timeline, then
+switch it to secure.

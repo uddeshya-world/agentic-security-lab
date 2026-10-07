@@ -58,5 +58,6 @@
     "u",
     "p",
     "e"
-  ]
+  ],
+  "video": { "src": "03-cross-tool-exfil", "seconds": 86 }
 }
