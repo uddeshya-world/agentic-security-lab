@@ -65,7 +65,10 @@ the rebuild pipeline: [`docs/video/`](docs/video/). Files and checksums: the
 
 ## Start here — guided, hands-on paths
 
-You need Docker (see [Setup](#setup)). Then:
+**New student? Follow the [student guide](docs/LEARN.md)**: what to install, how a
+lesson works, the Core order, claiming the badge, and fixes for common problems.
+
+The short version. You need Docker (see [Setup](#setup)). Then:
 
 ```text
 git clone https://github.com/uddeshya-world/agentic-security-lab.git
@@ -207,7 +210,7 @@ pip install -r requirements.txt
 |-----|---------|
 | [docs/REMEDIATION.md](docs/REMEDIATION.md) | How to stop each attack |
 | [docs/OWASP_COVERAGE.md](docs/OWASP_COVERAGE.md) | What’s covered / not covered |
-| [docs/LEARN.md](docs/LEARN.md) | Core path (~2.5 hours) |
+| [docs/LEARN.md](docs/LEARN.md) | Student guide: start here (Core path, ~2.5 hours, badge) |
 | [SECURITY_NOTES.md](SECURITY_NOTES.md) | Weakness inventory |
 | `GET /lab/curriculum` | Machine-readable map |
 
@@ -219,7 +222,7 @@ pip install -r requirements.txt
 - `lab/simulate.py` — guided simulations + event log  
 - `attacks/m01/` — CLI attack scripts  
 - `defenses/m01/` — secure-mode controls  
-- `docs/LEARN.md` — Core path (~2.5 hours)  
+- `docs/LEARN.md`: student guide, start here (Core path, ~2.5 hours, badge)  
 - `lab/ui/play.html` — 15-minute in-browser preview (no Docker)  
 
 ## Contributing and security
