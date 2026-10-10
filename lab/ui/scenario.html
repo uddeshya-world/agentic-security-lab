@@ -146,6 +146,24 @@
   .act.fail { border-color: var(--ember-line); }
   .act.fail .say { color: var(--ember-ink); }
 
+  /* ---- recall question: one option per row, the whole row is the target ---- */
+  .quiz { padding: var(--s4); display: grid; gap: var(--s2); }
+  .quiz .q { font-size: var(--fs-md); line-height: 1.6; color: var(--chalk); margin-bottom: var(--s2); }
+  .quiz fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+  .quiz label {
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: var(--s3);
+    min-height: 44px; padding: var(--s3) var(--s4);
+    border: 1px solid var(--edge); border-radius: var(--r); background: var(--void);
+    color: var(--ash); line-height: 1.5; cursor: pointer;
+    transition: border-color var(--t-fast), background var(--t-fast);
+  }
+  .quiz label:hover { border-color: var(--edge-hi); color: var(--chalk); }
+  .quiz label:has(input:checked) { border-color: var(--halon); background: var(--halon-bed); color: var(--chalk); }
+  .quiz label:has(input:focus-visible) { outline: 2px solid var(--halon); outline-offset: 2px; }
+  .quiz input[type=radio] { margin: 3px 0 0; accent-color: var(--halon); width: 16px; height: 16px; }
+  .quiz .key { font-family: var(--mono); font-size: 11px; color: var(--dim); margin-right: var(--s2); }
+  .act .quiz + .say:not(:empty) { padding-top: 0; }
+
   /* ---- checks rubric ------------------------------------------------------
      The highest-value change: what Check is actually going to assert, named
      before the button is pressed. Only appears when the content carries
@@ -709,9 +727,11 @@ function renderActs(step) {
         <div class="bar"><span class="t">Answer this</span><span class="grow"></span>
           <button class="btn assert sm lift" id="btnCheck">Check answer</button></div>
         <div class="quiz">
-          <div class="q">${esc(c.prompt || "")}</div>
+          <div class="q" id="quizQ">${esc(c.prompt || "")}</div>
+          <fieldset aria-labelledby="quizQ">
           ${(c.options || []).map((o, i) => `
-            <label><input type="radio" name="recall" value="${i}" /><span>${esc(o)}</span></label>`).join("")}
+            <label><input type="radio" name="recall" value="${i}" /><span><span class="key">${"ABCDEFGH"[i] || ""}</span>${esc(o)}</span></label>`).join("")}
+          </fieldset>
         </div>
         <div class="say" id="checkSay"></div>
       </div>`);
@@ -731,6 +751,11 @@ function renderActs(step) {
       </div>`);
   }
   document.getElementById("btnCheck").onclick = () => doCheck(step);
+  // Choosing an answer clears a stale "pick an answer" or wrong-answer verdict.
+  document.querySelectorAll('input[name="recall"]').forEach((r) => r.addEventListener("change", () => {
+    const box = document.getElementById("actCheck");
+    if (box.classList.contains("fail")) { box.className = "act verify"; document.getElementById("checkSay").innerHTML = ""; }
+  }));
 }
 
 /* The graded verdict, as the shared .check component. The glyph and the word
