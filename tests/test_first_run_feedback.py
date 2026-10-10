@@ -141,3 +141,11 @@ def test_status_names_the_network_when_every_tool_times_out(monkeypatch):
 
     monkeypatch.setattr(status, "_probe", lambda url, path="/health", timeout=3.0: {"ok": True, "body": {}})
     assert status.collect_status()["network_hint"] is None
+
+
+def test_terminal_tab_names_the_overlay_command_and_probes_first():
+    # ttyd only exists in docker-compose.terminal.yml; "docker compose up -d ttyd" alone fails.
+    html = (ROOT / "lab" / "ui" / "scenario.html").read_text(encoding="utf-8")
+    assert "docker compose -f docker-compose.yml -f docker-compose.terminal.yml up -d ttyd" in html
+    assert "<code>docker compose up -d ttyd</code>" not in html
+    assert 'fetch(TTYD, { mode: "no-cors"' in html
